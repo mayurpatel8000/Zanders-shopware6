@@ -1,0 +1,99 @@
+{
+    "name": "shopware/production",
+    "license": "MIT",
+    "type": "project",
+    "require": {
+        "composer-runtime-api": "^2.0",
+        "shopware/administration": "6.7.16.0",
+        "shopware/core": "6.7.16.0",
+        "shopware/elasticsearch": "6.7.16.0",
+        "shopware/storefront": "6.7.16.0",
+        "swag/paypal": "10.9.0",
+        "symfony/flex": "~2",
+        "symfony/runtime": ">=5"
+    },
+    "repositories": [
+        {
+            "type": "path",
+            "url": "custom/plugins/*",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "custom/plugins/*/packages/*",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "custom/static-plugins/*",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "composer",
+            "url": "https://shopware.github.io/conflicts/"
+        }
+    ],
+    "prefer-stable": true,
+    "config": {
+        "allow-plugins": {
+            "symfony/flex": true,
+            "symfony/runtime": true
+        },
+        "optimize-autoloader": true,
+        "sort-packages": true,
+        "audit": {
+            "ignore": {
+                "CVE-2026-59943": {
+                    "apply": "block",
+                    "reason": "Shopware is not affected because only authenticated administration users can manipulate input rendered by dompdf. See https://github.com/advisories/GHSA-j8qw-6jw8-r297"
+                },
+                "CVE-2026-59942": {
+                    "apply": "block",
+                    "reason": "Shopware is not affected because only authenticated administration users can manipulate input rendered by dompdf. See https://github.com/advisories/GHSA-f5gf-2cj8-52g2"
+                },
+                "CVE-2026-59941": {
+                    "apply": "block",
+                    "reason": "Shopware is not affected because only authenticated administration users can manipulate input rendered by dompdf. See https://github.com/advisories/GHSA-8hg6-c449-896m"
+                },
+                "CVE-2026-56722": {
+                    "apply": "block",
+                    "reason": "Shopware is not affected because only authenticated administration users can manipulate input rendered by dompdf. See https://github.com/advisories/GHSA-cx96-42px-69fm"
+                },
+                "CVE-2026-55555": {
+                    "apply": "block",
+                    "reason": "Shopware is not affected because only authenticated administration users can manipulate input rendered by dompdf. See https://github.com/advisories/GHSA-7x2p-4jvh-6384"
+                },
+                "CVE-2026-55554": {
+                    "apply": "block",
+                    "reason": "Shopware is not affected because only authenticated administration users can manipulate input rendered by dompdf. See https://github.com/advisories/GHSA-wvh6-f5jh-8gw4"
+                }
+            }
+        }
+    },
+    "scripts": {
+        "auto-scripts": {
+            "assets:install": "symfony-cmd"
+        },
+        "post-install-cmd": [
+            "@auto-scripts"
+        ],
+        "post-update-cmd": [
+            "@auto-scripts"
+        ]
+    },
+    "extra": {
+        "symfony": {
+            "allow-contrib": true,
+            "endpoint": [
+                "https://raw.githubusercontent.com/shopware/recipes/flex/main/index.json",
+                "flex://defaults"
+            ]
+        }
+    }
+}
