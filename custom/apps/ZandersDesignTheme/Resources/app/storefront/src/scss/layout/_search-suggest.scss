@@ -1,0 +1,119 @@
+/*
+Search Suggest Popover
+==================================================
+Zanders Search Suggest Dropdown:
+- Positioned popover container with shadow and custom scrollbar
+- Image container sizing and search term highlight badge
+*/
+
+.search-suggest {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    width: 100%;
+    z-index: 1050;
+    margin-top: 0;
+    background: transparent;
+}
+
+.search-suggest-container {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    transform: none !important;
+    width: 100%;
+    border: 1px solid #dcdcdc !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15) !important;
+    max-height: 520px !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+
+    // Remove Shopware default triangle arrow
+    &::after {
+        display: none !important;
+    }
+
+    // Slim, clean scrollbar
+    scrollbar-width: thin;
+    scrollbar-color: #999999 #f1f1f1;
+
+    &::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: #999999;
+        border-radius: 3px;
+
+        &:hover {
+            background: #777777;
+        }
+    }
+}
+
+// Product row styling
+.search-suggest-product {
+    border-bottom: 1px solid #ECECEC;
+    transition: background-color 0.15s ease;
+
+    &:last-of-type {
+        border-bottom: 0;
+    }
+
+    &:hover {
+        background-color: #FAFAFA;
+    }
+
+    .search-suggest-product-image-container {
+        width: 90px;
+        min-width: 90px;
+        height: 65px;
+
+        .search-suggest-product-image {
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+        }
+    }
+
+    // Highlight search term matches
+    .search-highlight {
+        background-color: $primary;
+        color: #ffffff;
+        font-weight: 700;
+        padding: 0 3px;
+        border-radius: 2px;
+        display: inline;
+    }
+}
+
+.search-suggest-matches-bar {
+    background-color: #FDF2F4;
+    border-bottom: 1px solid #F6DDE1;
+}
+
+.search-suggest-total {
+    .search-suggest-total-link {
+        &:hover {
+            color: darken($primary, 10%) !important;
+            text-decoration: underline !important;
+        }
+
+        .icon {
+            color: $primary;
+            fill: $primary;
+
+            svg {
+                fill: $primary;
+            }
+        }
+    }
+}

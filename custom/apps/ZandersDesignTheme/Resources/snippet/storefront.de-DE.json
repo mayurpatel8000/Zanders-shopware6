@@ -1,0 +1,44 @@
+{
+  "account": {
+    "myAccount": "Mein Konto",
+    "logout": "Abmelden",
+    "loginSubmit": "Anmelden"
+  },
+  "zanders": {
+    "topBar": {
+      "phone": "800.851.4373",
+      "phoneTitle": "Anrufen 800.851.4373",
+      "hoursDays": "Mo - Fr",
+      "hoursTime": "08:00 - 16:30 CST",
+      "welcome": "Willkommen bei Zanders Sporting Goods!"
+    },
+    "ageVerification": {
+      "title": "ALTERSBESTÄTIGUNG",
+      "description": "Bestimmte Bundesstaaten verbieten die Werbung oder Vermarktung von Schusswaffen, Munition und zugehörigen Komponenten an Minderjährige. Wir möchten sicherstellen, dass Sie mindestens 18 Jahre alt sind, bevor Sie in unserem Shop einkaufen.",
+      "question": "Sind Sie 18 Jahre alt oder älter?",
+      "btnYes": "JA",
+      "btnNo": "NEIN"
+    },
+    "search": {
+      "productsTitle": "Produkte (%count%)",
+      "matchesIn": "Treffer in",
+      "itemNumber": "Artikelnummer",
+      "upc": "UPC",
+      "manufacturerNumber": "Herstellernummer",
+      "msrp": "UVP"
+    },
+    "productCard": {
+      "itemNumber": "Artikelnummer",
+      "upc": "UPC",
+      "available": "Verfügbarkeit",
+      "inStock": "Auf Lager",
+      "outOfStock": "Nicht vorrätig",
+      "msrp": "UVP"
+    },
+    "footer": {
+      "stayConnected": "Bleiben Sie verbunden",
+      "copyrightNotice": "© 1996-%year% Zanders Sporting Goods",
+      "distributorNotice": "Zanders Sporting Goods ist ein Großhändler für Schusswaffen, der ausschließlich an bundesweit lizenzierte Händler verkauft"
+    }
+  }
+}

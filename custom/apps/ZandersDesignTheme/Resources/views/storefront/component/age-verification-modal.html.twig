@@ -1,0 +1,148 @@
+{% block component_age_verification_modal %}
+<div class="age-verification-backdrop d-flex align-items-center justify-content-center p-3" id="ageVerificationModal" role="dialog" aria-modal="true" aria-labelledby="ageVerificationTitle" aria-describedby="ageVerificationDesc">
+    <div class="age-verification-modal bg-white w-100 rounded-0 text-center position-relative">
+        {% block component_age_verification_modal_logo %}
+            {% if theme_config('sw-logo-desktop') %}
+                <div class="age-verification-logo-wrap text-center mb-3 mb-md-4">
+                    <img src="{{ theme_config('sw-logo-desktop')|sw_encode_url }}"
+                         alt="{{ 'header.logoLink'|trans|striptags }}"
+                         class="img-fluid age-verification-logo">
+                </div>
+            {% endif %}
+        {% endblock %}
+
+        {% block component_age_verification_modal_title %}
+            <h2 class="age-verification-title text-dark text-uppercase fw-medium mb-3" id="ageVerificationTitle">
+                {{ 'zanders.ageVerification.title'|trans|sw_sanitize }}
+            </h2>
+        {% endblock %}
+
+        {% block component_age_verification_modal_description %}
+            <p class="age-verification-desc text-secondary mb-3 mb-md-4" id="ageVerificationDesc">
+                {{ 'zanders.ageVerification.description'|trans|sw_sanitize }}
+            </p>
+        {% endblock %}
+
+        {% block component_age_verification_modal_question %}
+            <p class="age-verification-question text-dark fw-medium mb-4">
+                {{ 'zanders.ageVerification.question'|trans|sw_sanitize }}
+            </p>
+        {% endblock %}
+
+        {% block component_age_verification_modal_actions %}
+            <div class="age-verification-actions d-flex align-items-center justify-content-center gap-3 gap-sm-4">
+                <button type="button" class="btn btn-age-verify btn-age-yes rounded-0 text-uppercase fw-bold" id="ageVerificationYes">
+                    {{ 'zanders.ageVerification.btnYes'|trans|sw_sanitize }}
+                </button>
+                <button type="button" class="btn btn-age-verify btn-age-no rounded-0 text-uppercase fw-bold" id="ageVerificationNo">
+                    {{ 'zanders.ageVerification.btnNo'|trans|sw_sanitize }}
+                </button>
+            </div>
+        {% endblock %}
+    </div>
+</div>
+
+<script>
+    (function() {
+        var modal = document.getElementById('ageVerificationModal');
+        if (!modal) return;
+
+        var btnYes = document.getElementById('ageVerificationYes');
+        var btnNo = document.getElementById('ageVerificationNo');
+
+        function isAgeVerified() {
+            try {
+                if (localStorage.getItem('zanders_age_verified') === 'true') {
+                    return true;
+                }
+            } catch (e) {}
+
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var c = cookies[i].trim();
+                if (c.indexOf('zanders_age_verified=true') === 0) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function closeModal() {
+            modal.style.display = 'none';
+            document.body.classList.remove('age-verification-modal-open');
+            document.documentElement.classList.remove('age-verification-modal-open');
+        }
+
+        function openModal() {
+            document.documentElement.classList.remove('zanders-age-verified');
+            document.body.classList.add('age-verification-modal-open');
+            document.documentElement.classList.add('age-verification-modal-open');
+            modal.style.display = 'flex';
+            if (btnYes) {
+                btnYes.focus();
+            }
+        }
+
+        if (isAgeVerified()) {
+            document.documentElement.classList.add('zanders-age-verified');
+            closeModal();
+            return;
+        }
+
+        // Show modal and lock page scroll
+        openModal();
+
+        // Close on outside click (clicking on the dark backdrop)
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+
+        // Close on Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && modal.style.display !== 'none') {
+                closeModal();
+            }
+        });
+
+        // Tab trap between YES and NO buttons
+        modal.addEventListener('keydown', function(e) {
+            if (e.key === 'Tab') {
+                if (e.shiftKey && document.activeElement === btnYes) {
+                    e.preventDefault();
+                    btnNo.focus();
+                } else if (!e.shiftKey && document.activeElement === btnNo) {
+                    e.preventDefault();
+                    btnYes.focus();
+                }
+            }
+        });
+
+        // YES button: remember verification and close
+        if (btnYes) {
+            btnYes.addEventListener('click', function(e) {
+                e.preventDefault();
+                try {
+                    localStorage.setItem('zanders_age_verified', 'true');
+                } catch (err) {}
+                var d = new Date();
+                d.setTime(d.getTime() + (365 * 24 * 60 * 60 * 1000));
+                document.cookie = "zanders_age_verified=true; expires=" + d.toUTCString() + "; path=/; SameSite=Lax";
+
+                document.documentElement.classList.add('zanders-age-verified');
+                closeModal();
+            });
+        }
+
+        // NO button: redirect to Google
+        if (btnNo) {
+            btnNo.addEventListener('click', function(e) {
+                e.preventDefault();
+                window.location.href = "https://www.google.com";
+            });
+        }
+    })();
+</script>
+{% endblock %}
+

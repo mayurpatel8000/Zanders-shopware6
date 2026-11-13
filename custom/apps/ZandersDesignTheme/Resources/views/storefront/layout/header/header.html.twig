@@ -1,0 +1,7 @@
+{% sw_extends '@Storefront/storefront/layout/header/header.html.twig' %}
+
+{# Suppress default inner top-bar since it is rendered full-width at base_header_inner level #}
+{% block layout_top_bar %}{% endblock %}
+
+{# Suppress default account icon next to search/cart #}
+{% block layout_header_actions_account %}{% endblock %}

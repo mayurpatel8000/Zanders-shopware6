@@ -1,0 +1,9 @@
+{% sw_extends '@Storefront/storefront/base.html.twig' %}
+
+{% block base_pseudo_modal %}
+    {{ parent() }}
+
+    {% block base_age_verification_modal %}
+        {% sw_include '@Storefront/storefront/component/age-verification-modal.html.twig' %}
+    {% endblock %}
+{% endblock %}

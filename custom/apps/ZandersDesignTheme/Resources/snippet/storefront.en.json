@@ -1,0 +1,44 @@
+{
+  "account": {
+    "myAccount": "My Account",
+    "logout": "LogOut",
+    "loginSubmit": "Login"
+  },
+  "zanders": {
+    "topBar": {
+      "phone": "800.851.4373",
+      "phoneTitle": "Call 800.851.4373",
+      "hoursDays": "Mon - Fri",
+      "hoursTime": "8:00AM To 4:30PM CST",
+      "welcome": "Welcome to Zanders Sporting Goods!"
+    },
+    "ageVerification": {
+      "title": "VERIFY YOUR AGE",
+      "description": "Certain states prohibit advertising or marketing of firearms, ammunition, and related firearm components to minors. We'd like to ensure that you're 18 years of age or older before allowing you to shop our site.",
+      "question": "Are you 18 years of age or older?",
+      "btnYes": "YES",
+      "btnNo": "NO"
+    },
+    "search": {
+      "productsTitle": "Products (%count%)",
+      "matchesIn": "Matches In",
+      "itemNumber": "Item Number",
+      "upc": "UPC",
+      "manufacturerNumber": "Manufacturer number",
+      "msrp": "MSRP"
+    },
+    "productCard": {
+      "itemNumber": "Item Number",
+      "upc": "UPC",
+      "available": "Available",
+      "inStock": "In stock",
+      "outOfStock": "Out of stock",
+      "msrp": "MSRP"
+    },
+    "footer": {
+      "stayConnected": "Stay connected",
+      "copyrightNotice": "© 1996-%year% Zanders Sporting Goods",
+      "distributorNotice": "Zanders Sporting Goods is a wholesale firearms distributor selling only to federally licensed dealers"
+    }
+  }
+}

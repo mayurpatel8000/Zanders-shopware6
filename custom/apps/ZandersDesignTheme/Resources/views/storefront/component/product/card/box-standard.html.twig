@@ -1,0 +1,109 @@
+{% sw_extends '@Storefront/storefront/component/product/card/box-standard.html.twig' %}
+
+{% block component_product_box_content %}
+    <div class="card-body p-4 d-flex flex-column align-items-center justify-content-between text-center h-100">
+        {% block component_product_box_badges %}
+            {# Badges hidden for clean card design matching reference #}
+        {% endblock %}
+
+        {% block component_product_box_image %}
+            <div class="product-image-wrapper w-100 d-flex align-items-center justify-content-center flex-shrink-0 position-relative mb-3">
+                <a href="{{ seoUrl('frontend.detail.page', routeArguments) }}"
+                   title="{{ name }}"
+                   class="product-image-link w-100 h-100 d-flex align-items-center justify-content-center text-decoration-none is-contain">
+                    {% if cover.url and cover.isSpatialObject() == false %}
+                        {% set attributes = {
+                            class: 'product-image img-fluid d-block mx-auto is-contain',
+                            alt: (cover.translated.alt ?: name),
+                            title: (cover.translated.title ?: name),
+                            loading: 'lazy'
+                        } %}
+                        {% sw_thumbnails 'product-image-thumbnails' with {
+                            media: cover,
+                            sizes: sizes,
+                            attributes: attributes
+                        } %}
+                    {% else %}
+                        <div class="product-image-placeholder d-flex align-items-center justify-content-center mx-auto">
+                            {% sw_icon 'placeholder' style {
+                                size: 'fluid'
+                            } %}
+                        </div>
+                    {% endif %}
+                </a>
+            </div>
+        {% endblock %}
+
+        {% block component_product_box_info %}
+            <div class="product-info w-100 d-flex flex-column align-items-center justify-content-end text-center flex-grow-1">
+                {% block component_product_box_rating %}
+                    {# Rating hidden #}
+                {% endblock %}
+
+                {% block component_product_box_name %}
+                    <a href="{{ seoUrl('frontend.detail.page', routeArguments) }}"
+                       title="{{ name }}"
+                       class="product-name text-dark fw-bold text-uppercase text-decoration-none text-center w-100 mb-3 d-block">
+                        {{ name }}
+                    </a>
+                {% endblock %}
+
+                {% block component_product_box_variant_characteristics %}
+                    {# Variant characteristics hidden #}
+                {% endblock %}
+
+                {% block component_product_box_description %}
+                    {# Description hidden #}
+                {% endblock %}
+
+                {% block component_product_box_price %}
+                    <div class="product-card-meta w-100 d-flex flex-column align-items-center text-center gap-1 mb-3">
+                        {% if sku %}
+                            <div class="product-card-meta-item small lh-sm text-dark">
+                                <span class="meta-label text-secondary fw-normal me-1">{{ 'zanders.productCard.itemNumber'|trans }}:</span>
+                                <span class="meta-value fw-bold text-dark">{{ sku }}</span>
+                            </div>
+                        {% endif %}
+
+                        {% if product.ean %}
+                            <div class="product-card-meta-item small lh-sm text-dark">
+                                <span class="meta-label text-secondary fw-normal me-1">{{ 'zanders.productCard.upc'|trans }}:</span>
+                                <span class="meta-value fw-bold text-dark">{{ product.ean }}</span>
+                            </div>
+                        {% elseif product.translated.customFields.upc or product.translated.customFields.custom_upc %}
+                            <div class="product-card-meta-item small lh-sm text-dark">
+                                <span class="meta-label text-secondary fw-normal me-1">{{ 'zanders.productCard.upc'|trans }}:</span>
+                                <span class="meta-value fw-bold text-dark">{{ product.translated.customFields.upc ?: product.translated.customFields.custom_upc }}</span>
+                            </div>
+                        {% endif %}
+
+                        <div class="product-card-meta-item small lh-sm text-dark">
+                            <span class="meta-label text-secondary fw-normal me-1">{{ 'zanders.productCard.available'|trans }}:</span>
+                            {% set isInStock = product.available and (not product.isCloseout or product.availableStock > 0 or product.stock > 0) %}
+                            <span class="meta-value fw-bold {% if isInStock %}text-dark{% else %}text-muted{% endif %}">
+                                {{ (isInStock ? 'zanders.productCard.inStock' : 'zanders.productCard.outOfStock')|trans }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="product-card-msrp w-100 text-center fw-bold text-primary mt-1">
+                        {% set price = product.calculatedPrice %}
+                        {% if product.calculatedPrices.count > 0 %}
+                            {% set price = product.calculatedPrices.last %}
+                        {% endif %}
+                        {% if product.variantListingConfig.displayParent and product.parentId === null %}
+                            {% set price = product.calculatedCheapestPrice %}
+                        {% endif %}
+
+                        <span class="msrp-label text-primary me-1">{{ 'zanders.productCard.msrp'|trans }}:</span>
+                        <span class="msrp-price text-primary">{{ (price.listPrice ? price.listPrice.price : price.unitPrice)|currency }}</span>
+                    </div>
+                {% endblock %}
+
+                {% block component_product_box_action %}
+                    {# Action hidden for clean card design matching reference #}
+                {% endblock %}
+            </div>
+        {% endblock %}
+    </div>
+{% endblock %}

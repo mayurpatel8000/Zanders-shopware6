@@ -1,0 +1,172 @@
+{% sw_extends '@Storefront/storefront/layout/header/search-suggest.html.twig' %}
+
+{% block layout_search_suggest_container %}
+    <ul class="search-suggest-container list-unstyled p-0 m-0 w-100 bg-white"
+        id="search-suggest-listbox"
+        aria-label="{{ 'header.searchDropdownTitle'|trans|striptags }}">
+
+        {% block layout_search_suggest_results %}
+            {% if page.searchResult.total > 0 %}
+                <li class="search-suggest-header bg-primary text-white sticky-top py-2 px-3" aria-hidden="true">
+                    <span class="search-suggest-header-title text-white fw-bold d-block">
+                        {{ 'zanders.search.productsTitle'|trans({'%count%': page.searchResult.total}) }}
+                    </span>
+                </li>
+            {% endif %}
+
+            {% for product in page.searchResult.entities %}
+                {% block layout_search_suggest_result_product %}
+                    {% set productCategories = page.extensions.productCategories ? page.extensions.productCategories.all[product.id] : [] %}
+                    {% set categoryKey = productCategories ? productCategories|join(' > ') : '' %}
+                    {% set prevIndex = loop.index0 - 1 %}
+                    {% set prevProduct = prevIndex >= 0 ? page.searchResult.entities[prevIndex] : null %}
+                    {% set prevCategories = (prevProduct and page.extensions.productCategories) ? page.extensions.productCategories.all[prevProduct.id] : [] %}
+                    {% set prevKey = prevCategories ? prevCategories|join(' > ') : '' %}
+
+                    {% if categoryKey and (loop.first or categoryKey != prevKey) %}
+                        <li class="search-suggest-matches-bar d-flex align-items-center flex-wrap gap-2 py-2 px-3" aria-hidden="true">
+                            <span class="matches-bar-label fw-bold text-dark me-1">{{ 'zanders.search.matchesIn'|trans }}:</span>
+                            {% for crumb in productCategories %}
+                                <span class="matches-bar-pill badge rounded-pill bg-primary fw-medium text-white px-3 py-1">{{ crumb }}</span>
+                            {% endfor %}
+                        </li>
+                    {% endif %}
+
+                    <li class="search-suggest-product js-result">
+                        {% block layout_search_suggest_result_link %}
+                            <a href="{{ seoUrl('frontend.detail.page', {productId: product.id}) }}"
+                               title="{{ product.translated.name }}"
+                               class="search-suggest-product-link d-block text-decoration-none text-reset p-3">
+                                <div class="search-suggest-product-row d-flex align-items-center gap-3 gap-md-4">
+                                    {% block layout_search_suggest_result_image %}
+                                        <div class="search-suggest-product-image-container d-flex align-items-center justify-content-center flex-shrink-0 m-0">
+                                            {% set altAttribute = product.cover.media.translated.alt ?: product.translated.name %}
+                                            {% set titleAttribute = altAttribute ? (product.cover.media.translated.title ?: product.translated.name) : '' %}
+                                            {% set attributes = {
+                                                class: 'search-suggest-product-image img-fluid',
+                                                title: titleAttribute,
+                                                alt: altAttribute
+                                            } %}
+
+                                            {% if product.cover.media.url and product.cover.media.isSpatialObject() == false %}
+                                                {% sw_thumbnails 'search-suggest-product-image-thumbnails' with {
+                                                    media: product.cover.media,
+                                                    sizes: {
+                                                        default: '120px'
+                                                    },
+                                                    attributes: attributes
+                                                } %}
+                                            {% else %}
+                                                {% sw_icon 'placeholder' style {
+                                                    size: 'lg'
+                                                } %}
+                                            {% endif %}
+                                        </div>
+                                    {% endblock %}
+
+                                    <div class="search-suggest-product-info flex-grow-1 min-w-0">
+                                        {% block layout_search_suggest_result_name %}
+                                            <div class="search-suggest-product-name fw-bold text-dark text-truncate mb-1">
+                                                {% set term = page.searchTerm|trim %}
+                                                {% if term|length > 0 %}
+                                                    {% set termUpper = term|upper %}
+                                                    {% set termLower = term|lower %}
+                                                    {% set termCap = term|capitalize %}
+                                                    {{ product.translated.name
+                                                        |replace({
+                                                            (termUpper): '<span class="search-highlight">' ~ termUpper ~ '</span>',
+                                                            (termLower): '<span class="search-highlight">' ~ termLower ~ '</span>',
+                                                            (termCap): '<span class="search-highlight">' ~ termCap ~ '</span>'
+                                                        })|raw }}
+                                                {% else %}
+                                                    {{ product.translated.name }}
+                                                {% endif %}
+                                            </div>
+                                        {% endblock %}
+
+                                        <div class="search-suggest-product-meta d-flex flex-column gap-1">
+                                            {% if product.productNumber %}
+                                                <div class="search-suggest-meta-item small lh-sm">
+                                                    <span class="meta-label fw-bold text-dark me-1">{{ 'zanders.search.itemNumber'|trans }}:</span>
+                                                    <span class="meta-value text-secondary">{{ product.productNumber }}</span>
+                                                </div>
+                                            {% endif %}
+
+                                            {% if product.ean %}
+                                                <div class="search-suggest-meta-item small lh-sm">
+                                                    <span class="meta-label fw-bold text-dark me-1">{{ 'zanders.search.upc'|trans }}:</span>
+                                                    <span class="meta-value text-secondary">{{ product.ean }}</span>
+                                                </div>
+                                            {% endif %}
+
+                                            {% if product.manufacturerNumber %}
+                                                <div class="search-suggest-meta-item small lh-sm">
+                                                    <span class="meta-label fw-bold text-dark me-1">{{ 'zanders.search.manufacturerNumber'|trans }}:</span>
+                                                    <span class="meta-value text-secondary">{{ product.manufacturerNumber }}</span>
+                                                </div>
+                                            {% endif %}
+
+                                            {% block layout_search_suggest_result_price %}
+                                                <div class="search-suggest-meta-item small lh-sm">
+                                                    <span class="meta-label fw-bold text-dark me-1">{{ 'zanders.search.msrp'|trans }}:</span>
+                                                    <span class="meta-value text-secondary">
+                                                        {% set price = product.calculatedPrice %}
+                                                        {% if product.calculatedPrices.count > 0 %}
+                                                            {% set price = product.calculatedPrices.last %}
+                                                        {% endif %}
+
+                                                        {% if product.variantListingConfig.displayParent and product.parentId === null %}
+                                                            {% set price = product.calculatedCheapestPrice %}
+                                                        {% endif %}
+
+                                                        {{ (price.listPrice ? price.listPrice.price : price.unitPrice)|currency }}
+                                                    </span>
+                                                </div>
+                                            {% endblock %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        {% endblock %}
+                    </li>
+                {% endblock %}
+            {% endfor %}
+        {% endblock %}
+
+        {% block layout_search_suggest_result_total %}
+            {% if page.searchResult.total == 0 %}
+                {% block layout_search_suggest_no_result %}
+                    <li class="search-suggest-no-result text-center text-secondary py-4 px-3" id="search-suggest-result-info">
+                        {{ 'header.searchNoResult'|trans|sw_sanitize }}
+                    </li>
+                {% endblock %}
+            {% else %}
+                {% block layout_search_suggest_result_total_result %}
+                    <li class="js-result search-suggest-total bg-light py-2 px-3 border-top">
+                        <div class="row align-items-center g-0">
+                            {% block layout_search_suggest_result_total_link %}
+                                <div class="col">
+                                    <a href="{{ path('frontend.search.page') }}?search={{ page.searchTerm }}"
+                                       title="{{ 'header.searchAllResults'|trans|striptags }}"
+                                       aria-label="{{ 'header.searchAllResults'|trans|striptags }}"
+                                       class="search-suggest-total-link text-primary fw-semibold d-inline-flex align-items-center gap-2 text-decoration-none">
+                                        {% sw_icon 'arrow-head-right' style { size: 'sm' } %}
+                                        {{ 'header.searchAllResults'|trans|sw_sanitize }}
+                                    </a>
+                                </div>
+                            {% endblock %}
+
+                            {% block layout_search_suggest_result_total_count %}
+                                <div class="col-auto search-suggest-total-count text-secondary fw-medium" id="search-suggest-result-info">
+                                    {{ 'header.searchResults'|trans({
+                                        '%count%': page.searchResult.total,
+                                    })|sw_sanitize }}
+                                </div>
+                            {% endblock %}
+                        </div>
+                    </li>
+                {% endblock %}
+            {% endif %}
+        {% endblock %}
+    </ul>
+{% endblock %}

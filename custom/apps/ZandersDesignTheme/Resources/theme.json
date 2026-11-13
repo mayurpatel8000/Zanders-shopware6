@@ -1,0 +1,22 @@
+{
+  "name": "ZandersDesignTheme",
+  "author": "Zanders Team",
+  "views": [
+     "@Storefront",
+     "@Plugins",
+     "@ZandersDesignTheme"
+  ],
+  "style": [
+    "app/storefront/src/scss/overrides.scss",
+    "@Storefront",
+    "app/storefront/src/scss/base.scss"
+  ],
+  "script": [
+    "@Storefront",
+    "app/storefront/dist/storefront/js/zanders-design-theme/zanders-design-theme.js"
+  ],
+  "asset": [
+    "@Storefront",
+    "app/storefront/src/assets"
+  ]
+}

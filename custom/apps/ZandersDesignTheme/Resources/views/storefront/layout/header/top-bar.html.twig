@@ -1,0 +1,85 @@
+{% sw_extends '@Storefront/storefront/layout/header/top-bar.html.twig' %}
+
+{% block layout_header_top_bar %}
+    <div class="top-bar bg-primary text-white py-2">
+        <div class="container d-flex justify-content-between align-items-center">
+
+            {# Left Side: Phone & Operating Hours #}
+            <div class="d-flex align-items-center gap-3 gap-md-4">                
+                <a href="tel:8008514373" class="d-flex align-items-center text-white text-decoration-none">
+                    <span class="top-bar-circle-icon rounded-circle border border-2 border-white d-inline-flex align-items-center justify-content-center flex-shrink-0 me-2 me-lg-4">
+                        <svg width="15" height="15" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M8.05745 10.901L6.7085 12.2499C6.42412 12.5343 5.97204 12.5343 5.68037 12.2572C5.60016 12.177 5.51995 12.1041 5.43975 12.0239C4.6887 11.2655 4.01058 10.4708 3.40537 9.6395C2.80745 8.80825 2.3262 7.977 1.9762 7.15304C1.6335 6.32179 1.4585 5.527 1.4585 4.76867C1.4585 4.27284 1.546 3.79888 1.721 3.36138C1.896 2.91659 2.17308 2.50825 2.55954 2.14367C3.0262 1.68429 3.53662 1.45825 4.0762 1.45825C4.28037 1.45825 4.48454 1.502 4.66683 1.5895C4.85641 1.677 5.02412 1.80825 5.15537 1.99784L6.84704 4.38221C6.97829 4.5645 7.07308 4.73221 7.1387 4.89263C7.20433 5.04575 7.24079 5.19888 7.24079 5.33742C7.24079 5.51242 7.18975 5.68742 7.08766 5.85513C6.99287 6.02284 6.85433 6.19784 6.67933 6.37284L6.12516 6.94888C6.04495 7.02909 6.0085 7.12388 6.0085 7.24054C6.0085 7.29888 6.01579 7.34992 6.03037 7.40825C6.05225 7.46659 6.07412 7.51033 6.08871 7.55409C6.21995 7.79471 6.446 8.10825 6.76683 8.48742C7.09495 8.86659 7.44495 9.25304 7.82412 9.6395C7.89704 9.71242 7.97725 9.78534 8.05016 9.85825C8.34183 10.1426 8.34912 10.6093 8.05745 10.901Z" fill="currentColor"/>
+                            <path d="M16.0198 13.3657C16.0198 13.5698 15.9833 13.7813 15.9104 13.9855C15.8885 14.0438 15.8667 14.1021 15.8375 14.1605C15.7135 14.423 15.5531 14.6709 15.3417 14.9042C14.9844 15.298 14.5906 15.5823 14.1458 15.7646C14.1385 15.7646 14.1313 15.7719 14.124 15.7719C13.6938 15.9469 13.2271 16.0417 12.724 16.0417C11.9802 16.0417 11.1854 15.8667 10.3469 15.5094C9.50833 15.1521 8.66979 14.6709 7.83854 14.0657C7.55417 13.8542 7.26979 13.6428 7 13.4167L9.38437 11.0323C9.58854 11.1855 9.77083 11.3021 9.92396 11.3823C9.96042 11.3969 10.0042 11.4188 10.0552 11.4407C10.1135 11.4625 10.1719 11.4698 10.2375 11.4698C10.3615 11.4698 10.4562 11.4261 10.5365 11.3459L11.0906 10.799C11.2729 10.6167 11.4479 10.4782 11.6156 10.3907C11.7833 10.2886 11.951 10.2375 12.1333 10.2375C12.2719 10.2375 12.4177 10.2667 12.5781 10.3323C12.7385 10.398 12.9063 10.4928 13.0885 10.6167L15.5021 12.3303C15.6917 12.4615 15.8229 12.6146 15.9031 12.7969C15.976 12.9792 16.0198 13.1615 16.0198 13.3657Z" fill="currentColor"/>
+                        </svg>
+                    </span>
+                    <span class="top-bar-text">800.851.4373</span>
+                </a>
+
+                <div class="d-flex align-items-center text-white">
+                    <span class="top-bar-circle-icon rounded-circle border border-2 border-white d-inline-flex align-items-center justify-content-center flex-shrink-0 me-2 me-lg-4">
+                        <svg width="15" height="15" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M8.75016 1.45825C4.73245 1.45825 1.4585 4.73221 1.4585 8.74992C1.4585 12.7676 4.73245 16.0416 8.75016 16.0416C12.7679 16.0416 16.0418 12.7676 16.0418 8.74992C16.0418 4.73221 12.7679 1.45825 8.75016 1.45825ZM11.922 11.353C11.82 11.528 11.6377 11.6228 11.4481 11.6228C11.3533 11.6228 11.2585 11.601 11.171 11.5426L8.91058 10.1937C8.34912 9.85825 7.9335 9.12179 7.9335 8.47284V5.48325C7.9335 5.18429 8.18141 4.93638 8.48037 4.93638C8.77933 4.93638 9.02725 5.18429 9.02725 5.48325V8.47284C9.02725 8.73534 9.246 9.12179 9.47204 9.25304L11.7325 10.602C11.995 10.7551 12.0825 11.0905 11.922 11.353Z" fill="currentColor"/>
+                        </svg>
+                    </span>
+                    <div class="top-bar-hours lh-sm">
+                        <span class="d-none d-lg-block top-bar-hours-days">Mon - Fri</span>
+                        <span class="d-block top-bar-hours-time">8:00AM To 4:30PM CST</span>
+                    </div>
+                </div>
+            </div>
+
+            {# Right Side: Welcome text / Account Dropdown & Login / Logout #}
+            <div class="d-none d-lg-flex align-items-center gap-4">
+                {% if context.customer %}
+                    <div class="dropdown top-bar-account-dropdown">
+                        <button class="top-bar-account-btn btn btn-link p-0 border-0 shadow-none d-flex align-items-center text-white text-decoration-none"
+                                type="button"
+                                id="topBarAccountWidget"
+                                data-account-menu="true"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false"
+                                aria-label="{{ 'account.myAccount'|trans|striptags }}"
+                                title="{{ 'account.myAccount'|trans|striptags }}">
+                            <span class="top-bar-circle-icon rounded-circle border border-2 border-white d-inline-flex align-items-center justify-content-center flex-shrink-0 me-2">
+                                <svg width="15" height="15" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M8.75033 8.74992C10.7639 8.74992 12.3962 7.11762 12.3962 5.10409C12.3962 3.09055 10.7639 1.45825 8.75033 1.45825C6.73679 1.45825 5.10449 3.09055 5.10449 5.10409C5.10449 7.11762 6.73679 8.74992 8.75033 8.74992Z" fill="currentColor"/>
+                                    <path d="M8.7502 10.573C5.09707 10.573 2.12207 13.023 2.12207 16.0417C2.12207 16.2459 2.28249 16.4063 2.48665 16.4063H15.0137C15.2179 16.4063 15.3783 16.2459 15.3783 16.0417C15.3783 13.023 12.4033 10.573 8.7502 10.573Z" fill="currentColor"/>
+                                </svg>
+                            </span>
+                            <span class="top-bar-text">My Account</span>
+                        </button>
+
+                        <div class="dropdown-menu dropdown-menu-end account-menu-dropdown js-account-menu-dropdown"
+                            aria-labelledby="topBarAccountWidget">
+                            {% sw_include '@Storefront/storefront/layout/header/account-menu.html.twig' %}
+                        </div>
+                    </div>
+                    <a href="{{ path('frontend.account.logout.page') }}" class="d-flex align-items-center text-white text-decoration-none">
+                        <span class="top-bar-circle-icon rounded-circle border border-2 border-white d-inline-flex align-items-center justify-content-center flex-shrink-0 me-2">
+                            <svg width="15" height="15" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M7.84583 1.45825C7.49583 1.45825 7.21875 1.73534 7.21875 2.08534V8.25409H9.89479L8.75 7.10929C8.53854 6.89784 8.53854 6.54784 8.75 6.33638C8.96146 6.12492 9.31146 6.12492 9.52292 6.33638L11.5938 8.4145C11.8052 8.62596 11.8052 8.97596 11.5938 9.18742L9.52292 11.2655C9.41354 11.3749 9.275 11.426 9.13646 11.426C8.99792 11.426 8.85938 11.3749 8.75 11.2655C8.53854 11.0541 8.53854 10.7041 8.75 10.4926L9.8875 9.35513H7.21875V15.4291C7.21875 15.7718 7.49583 16.0562 7.84583 16.0562C12.1406 16.0562 15.1375 13.0593 15.1375 8.7645C15.1375 4.46971 12.1333 1.45825 7.84583 1.45825Z" fill="currentColor"/>
+                                <path d="M2.90918 8.25415C2.61022 8.25415 2.3623 8.50207 2.3623 8.80103C2.3623 9.09998 2.61022 9.3479 2.90918 9.3479H7.21126V8.25415H2.90918Z" fill="currentColor"/>
+                            </svg>
+                        </span>
+                        <span class="top-bar-text">LogOut</span>
+                    </a>
+                {% else %}
+                    {% block layout_header_top_bar_welcome %}
+                    <span class="top-bar-welcome text-white">{{ 'zanders.topBar.welcome'|trans|sw_sanitize }}</span>
+                    {% endblock %}
+                    <a href="{{ path('frontend.account.login.page') }}" class="d-flex align-items-center text-white text-decoration-none">
+                        <span class="top-bar-circle-icon rounded-circle border border-2 border-white d-inline-flex align-items-center justify-content-center flex-shrink-0 me-2">
+                            <svg width="15" height="15" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M7.84583 1.45825C7.49583 1.45825 7.21875 1.73534 7.21875 2.08534V8.25409H9.89479L8.75 7.10929C8.53854 6.89784 8.53854 6.54784 8.75 6.33638C8.96146 6.12492 9.31146 6.12492 9.52292 6.33638L11.5938 8.4145C11.8052 8.62596 11.8052 8.97596 11.5938 9.18742L9.52292 11.2655C9.41354 11.3749 9.275 11.426 9.13646 11.426C8.99792 11.426 8.85938 11.3749 8.75 11.2655C8.53854 11.0541 8.53854 10.7041 8.75 10.4926L9.8875 9.35513H7.21875V15.4291C7.21875 15.7718 7.49583 16.0562 7.84583 16.0562C12.1406 16.0562 15.1375 13.0593 15.1375 8.7645C15.1375 4.46971 12.1333 1.45825 7.84583 1.45825Z" fill="currentColor"/>
+                                <path d="M2.90918 8.25415C2.61022 8.25415 2.3623 8.50207 2.3623 8.80103C2.3623 9.09998 2.61022 9.3479 2.90918 9.3479H7.21126V8.25415H2.90918Z" fill="currentColor"/>
+                            </svg>
+                        </span>
+                        <span class="top-bar-text">LogIn</span>
+                    </a>
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+{% endblock %}

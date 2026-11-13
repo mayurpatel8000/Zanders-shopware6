@@ -1,0 +1,102 @@
+/*
+Footer
+==================================================
+Zanders Footer:
+- Light gray upper section (#F0F0F0) with navigation, contact info & logo
+- Crimson red bottom strip ($primary) with social links & copyright notice
+*/
+
+.footer-main {
+    background-color: transparent !important;
+    padding: 0 !important;
+    border-top: 0 !important;
+}
+
+.footer-top {
+    background-color: #F0F0F0;
+
+    .footer-col-headline {
+        font-size: 22px;
+        line-height: 26px;
+
+        a:hover {
+            color: $primary !important;
+        }
+    }
+
+    .footer-nav-link {
+        font-size: 19px;
+        line-height: 22px;
+        transition: color 0.15s ease;
+
+        &:hover {
+            color: $primary !important;
+        }
+    }
+
+    .footer-contact-item {
+        .footer-contact-link:hover .footer-contact-phone-text {
+            color: $primary !important;
+        }
+
+        .footer-icon-circle {
+            width: 54px;
+            height: 54px;
+            min-width: 54px;
+            border: 2px solid $primary;
+            background-color: transparent;
+            color: $primary;
+            transition: all 0.2s ease;
+
+            svg {
+                width: 27px;
+                height: 27px;
+            }
+        }
+
+        .footer-contact-phone-text,
+        .footer-contact-hours-text {
+            font-size: 19px;
+            line-height: 26px;
+            transition: color 0.15s ease;
+        }
+    }
+
+    .footer-col-logo {
+        .footer-logo-img {
+            max-width: 250px;
+            height: auto;
+
+            @media screen and (min-width: 1400px) {
+                max-width: 385px;
+            }           
+        }
+    }
+}
+
+.footer-bottom-bar {
+    .footer-stay-connected {
+        font-size: 16px;
+    }
+
+    .footer-social-icons {
+        .footer-social-link {
+            transition: opacity 0.2s ease, transform 0.2s ease;
+
+            svg {
+                width: 18px;
+                height: 18px;
+            }
+
+            &:hover {
+                opacity: 0.8;
+                transform: translateY(-1px);
+            }
+        }
+    }
+
+    .footer-copyright-line,
+    .footer-distributor-line {
+        font-size: 16px;
+    }
+}
