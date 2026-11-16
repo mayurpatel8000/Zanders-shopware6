@@ -18,9 +18,14 @@ Zanders Footer:
     .footer-col-headline {
         font-size: 22px;
         line-height: 26px;
+        color: #000000 !important;
 
-        a:hover {
-            color: $primary !important;
+        a {
+            color: #000000 !important;
+
+            &:hover {
+                color: $primary !important;
+            }
         }
     }
 
@@ -35,8 +40,12 @@ Zanders Footer:
     }
 
     .footer-contact-item {
-        .footer-contact-link:hover .footer-contact-phone-text {
-            color: $primary !important;
+        .footer-contact-link {
+            color: #000000 !important;
+
+            &:hover .footer-contact-phone-text {
+                color: $primary !important;
+            }
         }
 
         .footer-icon-circle {
@@ -58,7 +67,15 @@ Zanders Footer:
         .footer-contact-hours-text {
             font-size: 19px;
             line-height: 26px;
+            color: #000000 !important;
             transition: color 0.15s ease;
+        }
+
+        .footer-contact-hours-text {
+            .footer-hours-days,
+            .footer-hours-time {
+                color: #000000 !important;
+            }
         }
     }
 

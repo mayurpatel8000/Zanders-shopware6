@@ -33,7 +33,13 @@
       "available": "Verfügbarkeit",
       "inStock": "Auf Lager",
       "outOfStock": "Nicht vorrätig",
-      "msrp": "UVP"
+      "msrp": "UVP",
+      "map": "MAP",
+      "qty": "Menge",
+      "compare": "Vergleichen",
+      "quickView": "Schnellansicht",
+      "addToCart": "IN DEN WARENKORB",
+      "buyNow": "JETZT KAUFEN"
     },
     "footer": {
       "stayConnected": "Bleiben Sie verbunden",

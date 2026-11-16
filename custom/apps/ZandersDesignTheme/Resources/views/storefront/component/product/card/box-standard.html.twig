@@ -1,6 +1,42 @@
 {% sw_extends '@Storefront/storefront/component/product/card/box-standard.html.twig' %}
 
 {% block component_product_box_content %}
+    {% set lblItemNumber = 'zanders.productCard.itemNumber'|trans %}
+    {% if 'zanders.' in lblItemNumber|lower %}{% set lblItemNumber = 'Item Number' %}{% endif %}
+
+    {% set lblUpc = 'zanders.productCard.upc'|trans %}
+    {% if 'zanders.' in lblUpc|lower %}{% set lblUpc = 'UPC' %}{% endif %}
+
+    {% set lblAvailable = 'zanders.productCard.available'|trans %}
+    {% if 'zanders.' in lblAvailable|lower %}{% set lblAvailable = 'Available' %}{% endif %}
+
+    {% set lblInStock = 'zanders.productCard.inStock'|trans %}
+    {% if 'zanders.' in lblInStock|lower %}{% set lblInStock = 'In stock' %}{% endif %}
+
+    {% set lblOutOfStock = 'zanders.productCard.outOfStock'|trans %}
+    {% if 'zanders.' in lblOutOfStock|lower %}{% set lblOutOfStock = 'Out of stock' %}{% endif %}
+
+    {% set lblQty = 'zanders.productCard.qty'|trans %}
+    {% if 'zanders.' in lblQty|lower %}{% set lblQty = 'Qty' %}{% endif %}
+
+    {% set lblMsrp = 'zanders.productCard.msrp'|trans %}
+    {% if 'zanders.' in lblMsrp|lower %}{% set lblMsrp = 'MSRP' %}{% endif %}
+
+    {% set lblMap = 'zanders.productCard.map'|trans %}
+    {% if 'zanders.' in lblMap|lower %}{% set lblMap = 'MAP' %}{% endif %}
+
+    {% set lblCompare = 'zanders.productCard.compare'|trans %}
+    {% if 'zanders.' in lblCompare|lower %}{% set lblCompare = 'Compare' %}{% endif %}
+
+    {% set lblQuickView = 'zanders.productCard.quickView'|trans %}
+    {% if 'zanders.' in lblQuickView|lower %}{% set lblQuickView = 'Quick View' %}{% endif %}
+
+    {% set btnAddText = 'zanders.productCard.addToCart'|trans %}
+    {% if 'zanders.' in btnAddText|lower %}{% set btnAddText = 'ADD TO CART' %}{% endif %}
+
+    {% set btnBuyText = 'zanders.productCard.buyNow'|trans %}
+    {% if 'zanders.' in btnBuyText|lower %}{% set btnBuyText = 'BUY NOW' %}{% endif %}
+
     <div class="card-body p-4 d-flex flex-column align-items-center justify-content-between text-center h-100">
         {% block component_product_box_badges %}
             {# Badges hidden for clean card design matching reference #}
@@ -57,36 +93,43 @@
                 {% endblock %}
 
                 {% block component_product_box_price %}
-                    <div class="product-card-meta w-100 d-flex flex-column align-items-center text-center gap-1 mb-3">
+                    <div class="product-card-meta w-100 d-flex flex-column align-items-center text-center gap-1 mb-2">
                         {% if sku %}
                             <div class="product-card-meta-item small lh-sm text-dark">
-                                <span class="meta-label text-secondary fw-normal me-1">{{ 'zanders.productCard.itemNumber'|trans }}:</span>
+                                <span class="meta-label text-secondary fw-normal me-1">{{ lblItemNumber }}:</span>
                                 <span class="meta-value fw-bold text-dark">{{ sku }}</span>
                             </div>
                         {% endif %}
 
                         {% if product.ean %}
                             <div class="product-card-meta-item small lh-sm text-dark">
-                                <span class="meta-label text-secondary fw-normal me-1">{{ 'zanders.productCard.upc'|trans }}:</span>
+                                <span class="meta-label text-secondary fw-normal me-1">{{ lblUpc }}:</span>
                                 <span class="meta-value fw-bold text-dark">{{ product.ean }}</span>
                             </div>
                         {% elseif product.translated.customFields.upc or product.translated.customFields.custom_upc %}
                             <div class="product-card-meta-item small lh-sm text-dark">
-                                <span class="meta-label text-secondary fw-normal me-1">{{ 'zanders.productCard.upc'|trans }}:</span>
+                                <span class="meta-label text-secondary fw-normal me-1">{{ lblUpc }}:</span>
                                 <span class="meta-value fw-bold text-dark">{{ product.translated.customFields.upc ?: product.translated.customFields.custom_upc }}</span>
                             </div>
                         {% endif %}
 
                         <div class="product-card-meta-item small lh-sm text-dark">
-                            <span class="meta-label text-secondary fw-normal me-1">{{ 'zanders.productCard.available'|trans }}:</span>
-                            {% set isInStock = product.available and (not product.isCloseout or product.availableStock > 0 or product.stock > 0) %}
-                            <span class="meta-value fw-bold {% if isInStock %}text-dark{% else %}text-muted{% endif %}">
-                                {{ (isInStock ? 'zanders.productCard.inStock' : 'zanders.productCard.outOfStock')|trans }}
-                            </span>
+                            <span class="meta-label text-secondary fw-normal me-1">{{ lblAvailable }}:</span>
+                            {% set availableStock = product.availableStock %}
+                            {% set stock = product.stock %}
+                            {% if availableStock is not null and availableStock > 0 %}
+                                <span class="meta-value fw-bold text-dark">{{ availableStock }}</span>
+                            {% elseif stock is not null and stock > 0 %}
+                                <span class="meta-value fw-bold text-dark">{{ stock }}</span>
+                            {% elseif product.available and not product.isCloseout %}
+                                <span class="meta-value fw-bold text-dark">{{ lblInStock }}</span>
+                            {% else %}
+                                <span class="meta-value text-muted">{{ lblOutOfStock }}</span>
+                            {% endif %}
                         </div>
                     </div>
 
-                    <div class="product-card-msrp w-100 text-center fw-bold text-primary mt-1">
+                    <div class="product-card-price-primary w-100 text-center mb-1">
                         {% set price = product.calculatedPrice %}
                         {% if product.calculatedPrices.count > 0 %}
                             {% set price = product.calculatedPrices.last %}
@@ -95,13 +138,137 @@
                             {% set price = product.calculatedCheapestPrice %}
                         {% endif %}
 
-                        <span class="msrp-label text-primary me-1">{{ 'zanders.productCard.msrp'|trans }}:</span>
-                        <span class="msrp-price text-primary">{{ (price.listPrice ? price.listPrice.price : price.unitPrice)|currency }}</span>
+                        <span class="primary-price-value text-primary fw-bold">{{ price.unitPrice|currency }}</span>
                     </div>
                 {% endblock %}
 
                 {% block component_product_box_action %}
-                    {# Action hidden for clean card design matching reference #}
+                    {% set isAvailable = not product.isCloseout or (product.stock >= product.minPurchase) %}
+                    {% set displayFrom = product.calculatedPrices.count > 1 %}
+                    {% set displayBuyButton = isAvailable and not displayFrom and product.childCount <= 0 %}
+                    {% set detailUrl = seoUrl('frontend.detail.page', routeArguments) %}
+
+                    {% set price = product.calculatedPrice %}
+                    {% if product.calculatedPrices.count > 0 %}
+                        {% set price = product.calculatedPrices.last %}
+                    {% endif %}
+                    {% if product.variantListingConfig.displayParent and product.parentId === null %}
+                        {% set price = product.calculatedCheapestPrice %}
+                    {% endif %}
+
+                    {% set msrpVal = (price.listPrice ? price.listPrice.price : null) %}
+                    {% if not msrpVal and (product.translated.customFields.msrp or product.customFields.msrp) %}
+                        {% set msrpVal = product.translated.customFields.msrp ?: product.customFields.msrp %}
+                    {% endif %}
+                    {% if not msrpVal %}
+                        {% set msrpVal = price.unitPrice %}
+                    {% endif %}
+
+                    {% set mapVal = (product.translated.customFields.map or product.customFields.map) %}
+                    {% if not mapVal %}
+                        {% set mapVal = msrpVal %}
+                    {% endif %}
+
+                    <div class="product-action-wrapper w-100">
+                        <form action="{{ path('frontend.checkout.line-item.add') }}"
+                              method="post"
+                              class="buy-widget product-card-form w-100"
+                              data-add-to-cart="true">
+
+                            <input type="hidden" name="redirectTo" value="frontend.cart.offcanvas" class="js-redirect-to">
+                            <input type="hidden" name="redirectParameters" data-redirect-parameters="true" value="{{ {productId: id}|json_encode }}">
+                            <input type="hidden" name="lineItems[{{ id }}][id]" value="{{ id }}">
+                            <input type="hidden" name="lineItems[{{ id }}][referencedId]" value="{{ id }}">
+                            <input type="hidden" name="lineItems[{{ id }}][type]" value="product">
+                            <input type="hidden" name="lineItems[{{ id }}][stackable]" value="1">
+                            <input type="hidden" name="lineItems[{{ id }}][removable]" value="1">
+                            <input type="hidden" name="product-name" value="{{ name }}">
+
+                            {# Quantity Selector: Qty: [ 00 ] #}
+                            <div class="product-card-qty-row d-flex align-items-center justify-content-center gap-2 mb-2">
+                                <label for="qty-{{ id }}" class="product-card-qty-label small text-secondary fw-normal mb-0">{{ lblQty }}:</label>
+                                <input type="number"
+                                       id="qty-{{ id }}"
+                                       name="lineItems[{{ id }}][quantity]"
+                                       value="{{ product.minPurchase ?: 1 }}"
+                                       min="{{ product.minPurchase ?: 1 }}"
+                                       max="{{ product.maxPurchase ?: (product.availableStock ?: 100) }}"
+                                       step="{{ product.purchaseSteps ?: 1 }}"
+                                       class="form-control form-control-sm product-card-qty-input text-center" />
+                            </div>
+
+                            {# Secondary Prices: MSRP : $899.00 and MAP : $899.00 #}
+                            <div class="product-card-secondary-prices d-flex align-items-center justify-content-between text-primary small fw-semibold mb-2">
+                                <div class="price-col msrp-col">
+                                    <span class="price-label">{{ lblMsrp }} :</span>
+                                    <span class="price-val">{{ msrpVal|currency }}</span>
+                                </div>
+                                <div class="price-col map-col">
+                                    <span class="price-label">{{ lblMap }} :</span>
+                                    <span class="price-val">{{ mapVal|currency }}</span>
+                                </div>
+                            </div>
+
+                            {# Circular Action Icons Row (Wishlist, Compare, Quick View) #}
+                            <div class="product-card-action-icons d-flex align-items-center justify-content-center gap-2 mb-3">
+                                {# Wishlist #}
+                                {% set addToWishlistOptions = {
+                                    productId: id,
+                                    router: {
+                                        add: {
+                                            afterLoginPath: path('frontend.wishlist.add.after.login', { productId: id }),
+                                            path: path('frontend.wishlist.product.add', { productId: id }),
+                                        },
+                                        remove: {
+                                            path: path('frontend.wishlist.product.remove', { productId: id }),
+                                        }
+                                    },
+                                    texts: {
+                                        add: 'listing.addToWishlist'|trans|sw_sanitize,
+                                        remove: 'listing.removeFromWishlist'|trans|sw_sanitize
+                                    },
+                                } %}
+                                <button type="button"
+                                        class="product-card-icon-btn product-wishlist-btn product-wishlist-{{ id }} product-wishlist-not-added"
+                                        title="{{ 'listing.addToWishlist'|trans|sw_sanitize }}"
+                                        data-add-to-wishlist="true"
+                                        data-add-to-wishlist-options="{{ addToWishlistOptions|json_encode }}">
+                                    <svg class="icon icon-heart icon-wishlist-not-added" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+                                    </svg>
+                                    <svg class="icon icon-heart-fill icon-wishlist-added d-none" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+                                    </svg>
+                                </button>
+                            </div>
+
+                            {# Action Buttons: ADD TO CART & BUY NOW #}
+                            <div class="product-card-action-buttons d-flex gap-2 w-100">
+                                {% if displayBuyButton and config('core.listing.allowBuyInListing') %}
+                                    <button type="submit"
+                                            name="redirectTo"
+                                            value="frontend.cart.offcanvas"
+                                            class="btn btn-primary product-card-btn-add flex-fill text-uppercase fw-bold">
+                                        {{ btnAddText }}
+                                    </button>
+                                    <button type="button"
+                                            class="btn btn-primary product-card-btn-buy flex-fill text-uppercase fw-bold"
+                                            onclick="var f=this.closest('form'); if(f){ var r=f.querySelector('input[name=redirectTo]'); if(r) r.value='frontend.checkout.confirm.page'; HTMLFormElement.prototype.submit.call(f); }">
+                                        {{ btnBuyText }}
+                                    </button>
+                                {% else %}
+                                    <a href="{{ detailUrl }}"
+                                       class="btn btn-primary product-card-btn-add flex-fill text-uppercase fw-bold">
+                                        {{ btnAddText }}
+                                    </a>
+                                    <a href="{{ detailUrl }}"
+                                       class="btn btn-primary product-card-btn-buy flex-fill text-uppercase fw-bold">
+                                        {{ btnBuyText }}
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </form>
+                    </div>
                 {% endblock %}
             </div>
         {% endblock %}

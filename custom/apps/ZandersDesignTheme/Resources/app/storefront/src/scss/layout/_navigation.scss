@@ -1,1 +1,348 @@
 // Navigation layout styles.
+.main-navigation-menu {
+    padding: 0;
+
+    .dropdown-toggle {
+        background-color: #6D6D6D;
+        display: flex;
+        align-items: center;
+        padding: 18.5px 24px;
+        flex: 1;
+
+        &::after {
+            display: none !important;
+        }
+
+        .main-navigation-link-text {
+            padding: 0;
+            margin: 0;
+            text-transform: uppercase;
+            color: #fff;
+            border: 0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 16px;
+            line-height: 19px;
+
+            &:hover {
+                color: #fff;
+            }
+
+            &::before {
+                content: "";
+                display: inline-block;
+                width: 24px;
+                height: 24px;
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M18.6699 2H16.7699C14.5899 2 13.4399 3.15 13.4399 5.33V7.23C13.4399 9.41 14.5899 10.56 16.7699 10.56H18.6699C20.8499 10.56 21.9999 9.41 21.9999 7.23V5.33C21.9999 3.15 20.8499 2 18.6699 2Z' fill='white'/%3E%3Cpath d='M7.24 13.4299H5.34C3.15 13.4299 2 14.5799 2 16.7599V18.6599C2 20.8499 3.15 21.9999 5.33 21.9999H7.23C9.41 21.9999 10.56 20.8499 10.56 18.6699V16.7699C10.57 14.5799 9.42 13.4299 7.24 13.4299Z' fill='white'/%3E%3Cpath d='M6.29 10.58C8.6593 10.58 10.58 8.6593 10.58 6.29C10.58 3.9207 8.6593 2 6.29 2C3.9207 2 2 3.9207 2 6.29C2 8.6593 3.9207 10.58 6.29 10.58Z' fill='white'/%3E%3Cpath d='M17.7099 21.9999C20.0792 21.9999 21.9999 20.0792 21.9999 17.7099C21.9999 15.3406 20.0792 13.4199 17.7099 13.4199C15.3406 13.4199 13.4199 15.3406 13.4199 17.7099C13.4199 20.0792 15.3406 21.9999 17.7099 21.9999Z' fill='white'/%3E%3C/svg%3E");
+                background-repeat: no-repeat;
+                background-position: center;
+                background-size: contain;
+            }
+        }
+    }
+
+    .nav-item.dropdown {
+        padding-right: 24px;
+        display: flex;
+        align-items: center;
+    }
+}
+
+@include media-breakpoint-up(lg) {
+    // Only target TOP-LEVEL nav links for the red underline transition
+    .navbar-expand-lg .navbar-nav > .nav-item > .nav-link {
+        position: relative;
+        padding-inline: 12px;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        text-transform: uppercase;
+
+        &::after {
+            content: '';
+            height: 5px;
+            width: 100%;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            background-color: transparent;
+            transition: all 0.3s;
+        }
+
+        &:hover {
+            border-color: $primary;
+
+            &::after {
+                background-color: $primary;
+            }
+        }
+
+        .main-navigation-link-text {
+            padding: 0;
+            border: 0;
+        }
+
+        &.dropdown-toggle {
+            padding-inline: 24px;
+            border-bottom: none;
+
+            &::after {
+                display: none !important;
+            }
+        }
+    }
+
+    // First nav-item is the CATALOG button & vertical dropdown
+    .navbar-nav {
+        > li.dropdown.nav-item:first-of-type {
+            width: 280px;
+            position: relative;
+
+            &:hover,
+            &.show {
+                > .dropdown-menu {
+                    display: block !important;
+                    visibility: visible !important;
+                    opacity: 1 !important;
+                }
+            }
+
+            .dropdown-toggle {
+                width: 100%;
+                justify-content: flex-start;
+            }
+
+            .dropdown-menu {
+                width: 280px;
+                min-width: 280px;
+                max-width: 280px;
+                top: 100%;
+                left: 0;
+                right: auto;
+                padding: 0;
+                margin: 0;
+                border: 0;
+                border-radius: 0;
+                box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+                background-color: #DDDDDD;
+                z-index: 1040;
+                overflow: visible !important; // Critical: allows child categories to fly out to the right
+
+                // Hide default Shopware top close row & "to category"
+                .navigation-flyout-category-link,
+                .navigation-flyout-close,
+                .btn-close {
+                    display: none !important;
+                }
+
+                .row {
+                    margin: 0;
+                    overflow: visible !important;
+
+                    .col,
+                    [class*="col-"] {
+                        padding: 0;
+                        margin: 0;
+                    }
+                }
+
+                .row.navigation-flyout-content {
+                    margin: 0;
+                    padding: 0;
+                    overflow: visible !important;
+                }
+
+                // Vertical category list (Level 0)
+                .navigation-flyout-categories.is-level-0 {
+                    display: flex !important;
+                    flex-direction: column !important;
+                    width: 280px !important;
+                    margin: 0 !important;
+                    padding: 0 !important;
+                    overflow: visible !important;
+
+                    > [class*="col-"],
+                    > div {
+                        width: 100% !important;
+                        max-width: 100% !important;
+                        flex: 0 0 100% !important;
+                        margin: 0 !important;
+                        padding: 0 !important;
+                        position: relative !important;
+                        overflow: visible !important;
+
+                        // Top-level category row
+                        > a.navigation-flyout-link,
+                        > .nav-item.navigation-flyout-link {
+                            display: flex !important;
+                            align-items: center !important;
+                            justify-content: space-between !important;
+                            width: 100% !important;
+                            height: auto !important;
+                            padding: 12px 18px !important;
+                            margin: 0 !important;
+                            border-bottom: 1px solid #CCCCCC !important;
+                            background-color: #DDDDDD !important;
+                            font-size: 13px !important;
+                            line-height: 18px !important;
+                            color: #000000 !important;
+                            font-weight: 500 !important;
+                            text-transform: uppercase !important;
+                            text-decoration: none !important;
+                            position: relative !important;
+                            box-sizing: border-box !important;
+                            transition: background-color 0.15s ease, color 0.15s ease;
+
+                            span {
+                                flex: 1 1 auto;
+                                text-align: left;
+                                color: #000000 !important;
+                            }
+
+                            // Right-pointing arrow (▶) on EVERY category row
+                            &::after {
+                                content: "▶" !important;
+                                display: inline-block !important;
+                                position: static !important;
+                                width: auto !important;
+                                height: auto !important;
+                                background: transparent !important;
+                                font-size: 9px !important;
+                                line-height: 1 !important;
+                                color: #222222 !important;
+                                margin-left: 8px !important;
+                            }
+
+                            &:hover,
+                            &.is-active,
+                            &:focus {
+                                background-color: #FFFFFF !important;
+                                color: #000000 !important;
+
+                                &::after {
+                                    color: $primary !important;
+                                }
+                            }
+                        }
+
+                        // When hovering category row, turn white and reveal child categories
+                        &:hover {
+                            > a.navigation-flyout-link,
+                            > .nav-item.navigation-flyout-link {
+                                background-color: #FFFFFF !important;
+                                color: #000000 !important;
+
+                                &::after {
+                                    color: $primary !important;
+                                }
+                            }
+
+                            > .is-level-1 {
+                                display: flex !important;
+                                visibility: visible !important;
+                                opacity: 1 !important;
+                            }
+                        }
+
+                        // Child categories flyout panel (Level 1)
+                        > .is-level-1 {
+                            display: none !important;
+                            position: absolute !important;
+                            left: 280px !important;
+                            top: 0 !important;
+                            width: 380px !important;
+                            min-height: 180px !important;
+                            max-height: 600px !important;
+                            overflow-y: auto !important;
+                            background-color: #FFFFFF !important;
+                            box-shadow: 6px 6px 20px rgba(0, 0, 0, 0.15) !important;
+                            border: 1px solid #E2E2E2 !important;
+                            padding: 16px 20px !important;
+                            z-index: 1060 !important;
+                            flex-wrap: wrap;
+                            align-content: flex-start;
+                            gap: 8px 16px;
+
+                            .navigation-flyout-col,
+                            > div {
+                                width: calc(50% - 8px) !important;
+                                flex: 0 0 calc(50% - 8px) !important;
+                                max-width: calc(50% - 8px) !important;
+                                margin: 0 0 8px 0 !important;
+                                padding: 0 !important;
+                                position: relative !important;
+                            }
+
+                            a.navigation-flyout-link {
+                                display: block !important;
+                                background: transparent !important;
+                                border: 0 !important;
+                                padding: 4px 0 !important;
+                                font-size: 13px !important;
+                                font-weight: 600 !important;
+                                color: #111111 !important;
+                                text-transform: capitalize !important;
+                                text-decoration: none !important;
+
+                                &::after {
+                                    display: none !important;
+                                }
+
+                                &:hover {
+                                    color: $primary !important;
+                                    background: transparent !important;
+                                }
+                            }
+
+                            // Third level subcategories (Level 2)
+                            .is-level-2 {
+                                display: flex !important;
+                                flex-direction: column !important;
+                                padding-left: 6px !important;
+                                margin-top: 4px !important;
+
+                                > div {
+                                    width: 100% !important;
+                                    margin: 0 !important;
+                                }
+
+                                a.navigation-flyout-link {
+                                    font-size: 12px !important;
+                                    font-weight: 400 !important;
+                                    color: #666666 !important;
+                                    padding: 2px 0 !important;
+
+                                    &:hover {
+                                        color: $primary !important;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // Remove border on last item
+                    > div:last-child {
+                        > a.navigation-flyout-link,
+                        > .nav-item.navigation-flyout-link {
+                            border-bottom: 0 !important;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // Open by default on the Homepage
+    body.is-ctl-index,
+    body.is-act-index,
+    body.is-active-route-frontend-home-page {
+        .navbar-nav > li.dropdown.nav-item:first-of-type {
+            > .dropdown-menu {
+                display: block !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+            }
+        }
+    }
+}

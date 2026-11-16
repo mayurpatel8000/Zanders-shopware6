@@ -33,7 +33,13 @@
       "available": "Available",
       "inStock": "In stock",
       "outOfStock": "Out of stock",
-      "msrp": "MSRP"
+      "msrp": "MSRP",
+      "map": "MAP",
+      "qty": "Qty",
+      "compare": "Compare",
+      "quickView": "Quick View",
+      "addToCart": "ADD TO CART",
+      "buyNow": "BUY NOW"
     },
     "footer": {
       "stayConnected": "Stay connected",

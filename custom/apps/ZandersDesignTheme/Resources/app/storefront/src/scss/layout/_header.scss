@@ -175,12 +175,14 @@
     }
 }
 
-.nav-main {
-    background-color: $secondary;
-}
+@include media-breakpoint-up(lg) {
+    .nav-main {
+        background-color: $secondary;
+    }
 
-.nav-item .nav-link {
-    color: #ffffff;
+    .nav-item .nav-link {
+        color: #ffffff;
+    }
 }
 
 @include media-breakpoint-up(sm) {
