@@ -24,16 +24,25 @@ html.age-verification-modal-open {
     height: 100vh;
     background-color: rgba(0, 0, 0, 0.7);
     z-index: 999999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
     box-sizing: border-box;
     cursor: pointer;
 }
 
 .age-verification-modal {
+    background-color: #ffffff;
     max-width: 640px;
+    width: 100%;
     padding: 44px 40px;
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+    border-radius: 0;
+    text-align: center;
     max-height: 92vh;
     overflow-y: auto;
+    position: relative;
     box-sizing: border-box;
     cursor: default;
 
@@ -42,6 +51,8 @@ html.age-verification-modal-open {
     }
 
     .age-verification-logo-wrap {
+        margin-bottom: 24px;
+
         .age-verification-logo {
             max-width: 210px;
             height: auto;
@@ -50,70 +61,99 @@ html.age-verification-modal-open {
     }
 
     .age-verification-title {
+        font-family: 'Poppins', 'Inter', sans-serif;
+        font-weight: 600;
         font-size: 24px;
         line-height: 1.3;
+        color: #000000;
+        text-transform: uppercase;
         letter-spacing: 0.5px;
+        margin-bottom: 18px;
 
         @media (max-width: 576px) {
             font-size: 20px;
+            margin-bottom: 14px;
         }
     }
 
     .age-verification-desc {
-        font-size: 16px;
+        font-family: 'Poppins', 'Inter', sans-serif;
+        font-weight: 400;
+        font-size: 15px;
         line-height: 1.6;
+        color: #111111;
+        margin-bottom: 24px;
 
         @media (max-width: 576px) {
             font-size: 14px;
+            margin-bottom: 18px;
         }
     }
 
     .age-verification-question {
+        font-family: 'Poppins', 'Inter', sans-serif;
+        font-weight: 600;
         font-size: 16px;
         line-height: 1.4;
+        color: #000000;
+        margin-bottom: 28px;
 
         @media (max-width: 576px) {
             font-size: 15px;
+            margin-bottom: 22px;
         }
     }
 
-    .btn-age-verify {
-        min-width: 150px;
-        padding: 10px 32px;
-        font-size: 15px;
-        letter-spacing: 0.5px;
-        transition: all 0.2s ease-in-out;
-        line-height: 1.5;
+    .age-verification-actions {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
 
-        @media (max-width: 480px) {
-            min-width: 120px;
-            padding: 10px 20px;
-            flex: 1 1 0;
-        }
+        .btn-age-verify {
+            min-width: 150px;
+            padding: 10px 32px;
+            font-family: 'Poppins', 'Inter', sans-serif;
+            font-weight: 700;
+            font-size: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-radius: 0;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            line-height: 1.5;
+            text-decoration: none;
 
-        &.btn-age-yes {
-            background-color: $primary;
-            border: 2px solid $primary;
-            color: #ffffff;
-
-            &:hover,
-            &:focus {
-                background-color: darken($primary, 8%);
-                border-color: darken($primary, 8%);
-                color: #ffffff;
+            @media (max-width: 480px) {
+                min-width: 120px;
+                padding: 10px 20px;
+                flex: 1 1 0;
             }
-        }
 
-        &.btn-age-no {
-            background-color: #ffffff;
-            border: 2px solid $primary;
-            color: $primary;
+            &.btn-age-yes {
+                background-color: #991020;
+                border: 2px solid #991020;
+                color: #ffffff;
 
-            &:hover,
-            &:focus {
-                background-color: #fdf2f4;
-                border-color: darken($primary, 8%);
-                color: darken($primary, 8%);
+                &:hover,
+                &:focus {
+                    background-color: #7b0a17;
+                    border-color: #7b0a17;
+                    color: #ffffff;
+                }
+            }
+
+            &.btn-age-no {
+                background-color: #ffffff;
+                border: 2px solid #991020;
+                color: #991020;
+
+                &:hover,
+                &:focus {
+                    background-color: #991020;
+                    border-color: #991020;
+                    color: #ffffff;
+                }
             }
         }
     }

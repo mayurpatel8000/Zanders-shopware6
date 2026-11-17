@@ -1,276 +1,304 @@
 {% sw_extends '@Storefront/storefront/component/product/card/box-standard.html.twig' %}
 
-{% block component_product_box_content %}
+{% block component_product_box_badges %}
+    {# Badges hidden for clean card design matching reference #}
+{% endblock %}
+
+{% block component_product_box_image %}
+    <div class="product-image-wrapper">
+        <a href="{{ seoUrl('frontend.detail.page', routeArguments) }}"
+           title="{{ name }}"
+           class="product-image-link is-contain">
+            {% if cover.url and cover.isSpatialObject() == false %}
+                {% set attributes = {
+                    class: 'product-image is-contain',
+                    alt: (cover.translated.alt ?: name),
+                    title: (cover.translated.title ?: name),
+                    loading: 'lazy'
+                } %}
+                {% sw_thumbnails 'product-image-thumbnails' with {
+                    media: cover,
+                    sizes: sizes,
+                    attributes: attributes
+                } %}
+            {% else %}
+                <div class="product-image-placeholder">
+                    {% sw_icon 'placeholder' style {
+                        size: 'fluid'
+                    } %}
+                </div>
+            {% endif %}
+        </a>
+    </div>
+{% endblock %}
+
+{% block component_product_box_rating %}
+    {# Rating hidden #}
+{% endblock %}
+
+{% block component_product_box_name %}
+    <a href="{{ seoUrl('frontend.detail.page', routeArguments) }}"
+       title="{{ name }}"
+       class="product-name">
+        {{ name }}
+    </a>
+{% endblock %}
+
+{% block component_product_box_variant_characteristics %}
+    {# Variant characteristics hidden #}
+{% endblock %}
+
+{% block component_product_box_description %}
+    {# Description hidden #}
+{% endblock %}
+
+{% block component_product_box_price %}
     {% set lblItemNumber = 'zanders.productCard.itemNumber'|trans %}
-    {% if 'zanders.' in lblItemNumber|lower %}{% set lblItemNumber = 'Item Number' %}{% endif %}
+    {% if 'zanders.' in lblItemNumber|lower or lblItemNumber == '' %}{% set lblItemNumber = 'Item Number' %}{% endif %}
 
     {% set lblUpc = 'zanders.productCard.upc'|trans %}
-    {% if 'zanders.' in lblUpc|lower %}{% set lblUpc = 'UPC' %}{% endif %}
+    {% if 'zanders.' in lblUpc|lower or lblUpc == '' %}{% set lblUpc = 'UPC' %}{% endif %}
 
     {% set lblAvailable = 'zanders.productCard.available'|trans %}
-    {% if 'zanders.' in lblAvailable|lower %}{% set lblAvailable = 'Available' %}{% endif %}
+    {% if 'zanders.' in lblAvailable|lower or lblAvailable == '' %}{% set lblAvailable = 'Available' %}{% endif %}
 
     {% set lblInStock = 'zanders.productCard.inStock'|trans %}
-    {% if 'zanders.' in lblInStock|lower %}{% set lblInStock = 'In stock' %}{% endif %}
+    {% if 'zanders.' in lblInStock|lower or lblInStock == '' %}{% set lblInStock = 'In stock' %}{% endif %}
 
     {% set lblOutOfStock = 'zanders.productCard.outOfStock'|trans %}
-    {% if 'zanders.' in lblOutOfStock|lower %}{% set lblOutOfStock = 'Out of stock' %}{% endif %}
+    {% if 'zanders.' in lblOutOfStock|lower or lblOutOfStock == '' %}{% set lblOutOfStock = 'Out of stock' %}{% endif %}
+
+    <div class="product-card-meta">
+        {% if sku %}
+            <div class="product-card-meta-item">
+                <span class="meta-label">{{ lblItemNumber }}:</span>
+                <span class="meta-value">{{ sku }}</span>
+            </div>
+        {% endif %}
+
+        {% if product.ean %}
+            <div class="product-card-meta-item">
+                <span class="meta-label">{{ lblUpc }}:</span>
+                <span class="meta-value">{{ product.ean }}</span>
+            </div>
+        {% elseif product.translated.customFields.upc or product.translated.customFields.custom_upc %}
+            <div class="product-card-meta-item">
+                <span class="meta-label">{{ lblUpc }}:</span>
+                <span class="meta-value">{{ product.translated.customFields.upc ?: product.translated.customFields.custom_upc }}</span>
+            </div>
+        {% endif %}
+
+        <div class="product-card-meta-item">
+            <span class="meta-label">{{ lblAvailable }}:</span>
+            {% set availableStock = product.availableStock %}
+            {% set stock = product.stock %}
+            {% if availableStock is not null and availableStock > 0 %}
+                <span class="meta-value">{{ availableStock }}</span>
+            {% elseif stock is not null and stock > 0 %}
+                <span class="meta-value">{{ stock }}</span>
+            {% elseif product.available and not product.isCloseout %}
+                <span class="meta-value">{{ lblInStock }}</span>
+            {% else %}
+                <span class="meta-value text-muted">{{ lblOutOfStock }}</span>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="product-card-price-primary">
+        {% set price = product.calculatedPrice %}
+        {% if product.calculatedPrices.count > 0 %}
+            {% set price = product.calculatedPrices.last %}
+        {% endif %}
+        {% if product.variantListingConfig.displayParent and product.parentId === null %}
+            {% set price = product.calculatedCheapestPrice %}
+        {% endif %}
+
+        <span class="primary-price-value">{{ price.unitPrice|currency }}</span>
+    </div>
+{% endblock %}
+
+{% block component_product_box_action %}
+    {% set isAvailable = not product.isCloseout or (product.stock >= product.minPurchase) %}
+    {% set displayFrom = product.calculatedPrices.count > 1 %}
+    {% set displayBuyButton = isAvailable and not displayFrom and product.childCount <= 0 %}
+    {% set detailUrl = seoUrl('frontend.detail.page', routeArguments) %}
+
+    {% set price = product.calculatedPrice %}
+    {% if product.calculatedPrices.count > 0 %}
+        {% set price = product.calculatedPrices.last %}
+    {% endif %}
+    {% if product.variantListingConfig.displayParent and product.parentId === null %}
+        {% set price = product.calculatedCheapestPrice %}
+    {% endif %}
+
+    {% set msrpVal = (price.listPrice ? price.listPrice.price : null) %}
+    {% if not msrpVal and (product.translated.customFields.msrp or product.customFields.msrp) %}
+        {% set msrpVal = product.translated.customFields.msrp ?: product.customFields.msrp %}
+    {% endif %}
+    {% if not msrpVal %}
+        {% set msrpVal = price.unitPrice %}
+    {% endif %}
+
+    {% set mapVal = (product.translated.customFields.map or product.customFields.map) %}
+    {% if not mapVal %}
+        {% set mapVal = msrpVal %}
+    {% endif %}
 
     {% set lblQty = 'zanders.productCard.qty'|trans %}
-    {% if 'zanders.' in lblQty|lower %}{% set lblQty = 'Qty' %}{% endif %}
+    {% if 'zanders.' in lblQty|lower or lblQty == '' %}{% set lblQty = 'Qty' %}{% endif %}
 
     {% set lblMsrp = 'zanders.productCard.msrp'|trans %}
-    {% if 'zanders.' in lblMsrp|lower %}{% set lblMsrp = 'MSRP' %}{% endif %}
+    {% if 'zanders.' in lblMsrp|lower or lblMsrp == '' %}{% set lblMsrp = 'MSRP' %}{% endif %}
 
     {% set lblMap = 'zanders.productCard.map'|trans %}
-    {% if 'zanders.' in lblMap|lower %}{% set lblMap = 'MAP' %}{% endif %}
+    {% if 'zanders.' in lblMap|lower or lblMap == '' %}{% set lblMap = 'MAP' %}{% endif %}
 
     {% set lblCompare = 'zanders.productCard.compare'|trans %}
-    {% if 'zanders.' in lblCompare|lower %}{% set lblCompare = 'Compare' %}{% endif %}
+    {% if 'zanders.' in lblCompare|lower or lblCompare == '' %}{% set lblCompare = 'Compare' %}{% endif %}
 
     {% set lblQuickView = 'zanders.productCard.quickView'|trans %}
-    {% if 'zanders.' in lblQuickView|lower %}{% set lblQuickView = 'Quick View' %}{% endif %}
+    {% if 'zanders.' in lblQuickView|lower or lblQuickView == '' %}{% set lblQuickView = 'Quick View' %}{% endif %}
 
     {% set btnAddText = 'zanders.productCard.addToCart'|trans %}
-    {% if 'zanders.' in btnAddText|lower %}{% set btnAddText = 'ADD TO CART' %}{% endif %}
+    {% if 'zanders.' in btnAddText|lower or btnAddText == '' %}{% set btnAddText = 'ADD TO CART' %}{% endif %}
 
     {% set btnBuyText = 'zanders.productCard.buyNow'|trans %}
-    {% if 'zanders.' in btnBuyText|lower %}{% set btnBuyText = 'BUY NOW' %}{% endif %}
+    {% if 'zanders.' in btnBuyText|lower or btnBuyText == '' %}{% set btnBuyText = 'BUY NOW' %}{% endif %}
 
-    <div class="card-body p-4 d-flex flex-column align-items-center justify-content-between text-center h-100">
-        {% block component_product_box_badges %}
-            {# Badges hidden for clean card design matching reference #}
-        {% endblock %}
+    <div class="product-action-wrapper">
+        <form action="{{ path('frontend.checkout.line-item.add') }}"
+              method="post"
+              class="buy-widget product-card-form"
+              data-add-to-cart="true">
 
-        {% block component_product_box_image %}
-            <div class="product-image-wrapper w-100 d-flex align-items-center justify-content-center flex-shrink-0 position-relative mb-3">
-                <a href="{{ seoUrl('frontend.detail.page', routeArguments) }}"
-                   title="{{ name }}"
-                   class="product-image-link w-100 h-100 d-flex align-items-center justify-content-center text-decoration-none is-contain">
-                    {% if cover.url and cover.isSpatialObject() == false %}
-                        {% set attributes = {
-                            class: 'product-image img-fluid d-block mx-auto is-contain',
-                            alt: (cover.translated.alt ?: name),
-                            title: (cover.translated.title ?: name),
-                            loading: 'lazy'
-                        } %}
-                        {% sw_thumbnails 'product-image-thumbnails' with {
-                            media: cover,
-                            sizes: sizes,
-                            attributes: attributes
-                        } %}
-                    {% else %}
-                        <div class="product-image-placeholder d-flex align-items-center justify-content-center mx-auto">
-                            {% sw_icon 'placeholder' style {
-                                size: 'fluid'
-                            } %}
-                        </div>
-                    {% endif %}
-                </a>
+            <input type="hidden" name="redirectTo" value="frontend.cart.offcanvas" class="js-redirect-to">
+            <input type="hidden" name="redirectParameters" data-redirect-parameters="true" value="{{ {productId: id}|json_encode }}">
+            <input type="hidden" name="lineItems[{{ id }}][id]" value="{{ id }}">
+            <input type="hidden" name="lineItems[{{ id }}][referencedId]" value="{{ id }}">
+            <input type="hidden" name="lineItems[{{ id }}][type]" value="product">
+            <input type="hidden" name="lineItems[{{ id }}][stackable]" value="1">
+            <input type="hidden" name="lineItems[{{ id }}][removable]" value="1">
+            <input type="hidden" name="product-name" value="{{ name }}">
+
+            {# Quantity Selector: Qty: [ 00 ] #}
+            <div class="product-card-qty-row">
+                <label for="qty-{{ id }}" class="product-card-qty-label">{{ lblQty }}:</label>
+                <input type="number"
+                       id="qty-{{ id }}"
+                       name="lineItems[{{ id }}][quantity]"
+                       value="{{ product.minPurchase ?: 1 }}"
+                       min="{{ product.minPurchase ?: 1 }}"
+                       max="{{ product.maxPurchase ?: (product.availableStock ?: 100) }}"
+                       step="{{ product.purchaseSteps ?: 1 }}"
+                       class="form-control product-card-qty-input" />
             </div>
-        {% endblock %}
 
-        {% block component_product_box_info %}
-            <div class="product-info w-100 d-flex flex-column align-items-center justify-content-end text-center flex-grow-1">
-                {% block component_product_box_rating %}
-                    {# Rating hidden #}
-                {% endblock %}
+            {# Secondary Prices: MSRP : $899.00 and MAP : $899.00 #}
+            <div class="product-card-secondary-prices">
+                <div class="price-col msrp-col">
+                    <span class="price-label">{{ lblMsrp }} :</span>
+                    <span class="price-val">{{ msrpVal|currency }}</span>
+                </div>
+                <div class="price-col map-col">
+                    <span class="price-label">{{ lblMap }} :</span>
+                    <span class="price-val">{{ mapVal|currency }}</span>
+                </div>
+            </div>
 
-                {% block component_product_box_name %}
-                    <a href="{{ seoUrl('frontend.detail.page', routeArguments) }}"
-                       title="{{ name }}"
-                       class="product-name text-dark fw-bold text-uppercase text-decoration-none text-center w-100 mb-3 d-block">
-                        {{ name }}
+            {# Circular Action Icons Row (Wishlist, Compare, Quick View) #}
+            <div class="product-card-action-icons">
+                {# Wishlist #}
+                {% set addToWishlistOptions = {
+                    productId: id,
+                    router: {
+                        add: {
+                            afterLoginPath: path('frontend.wishlist.add.after.login', { productId: id }),
+                            path: path('frontend.wishlist.product.add', { productId: id }),
+                        },
+                        remove: {
+                            path: path('frontend.wishlist.product.remove', { productId: id }),
+                        }
+                    },
+                    texts: {
+                        add: 'listing.addToWishlist'|trans|sw_sanitize,
+                        remove: 'listing.removeFromWishlist'|trans|sw_sanitize
+                    },
+                } %}
+                <button type="button"
+                        class="product-card-icon-btn product-wishlist-btn product-wishlist-{{ id }} product-wishlist-not-added"
+                        title="{{ 'listing.addToWishlist'|trans|sw_sanitize }}"
+                        data-add-to-wishlist="true"
+                        data-product-id="{{ id }}"
+                        data-add-to-wishlist-options="{{ addToWishlistOptions|json_encode }}">
+                    <span class="icon-wishlist-not-added">
+                        <svg class="icon icon-heart" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+                        </svg>
+                    </span>
+                    <span class="icon-wishlist-added">
+                        <svg class="icon icon-heart-fill" width="18" height="18" viewBox="0 0 24 24" fill="#8c1d2f" stroke="#8c1d2f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+                        </svg>
+                    </span>
+                </button>
+
+                {# Compare #}
+                <button type="button"
+                        class="product-card-icon-btn product-compare-btn"
+                        data-product-id="{{ id }}"
+                        data-product-name="{{ product.translated.name }}"
+                        {% if product.cover and product.cover.media %}data-product-img="{{ product.cover.media.url }}"{% endif %}
+                        data-product-compare-btn="true"
+                        title="{{ lblCompare }}">
+                    <svg class="icon icon-scale" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/>
+                        <path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/>
+                        <path d="M7 21h10"/>
+                        <path d="M12 3v18"/>
+                        <path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/>
+                    </svg>
+                </button>
+
+                {# Quick View #}
+                <button type="button"
+                        data-url="{{ path('widgets.quickview.minimal', { productId: id }) }}"
+                        data-product-id="{{ id }}"
+                        data-ajax-modal="true"
+                        data-modal-class="quickview-modal"
+                        class="product-card-icon-btn product-quickview-btn"
+                        title="{{ lblQuickView }}">
+                    <svg class="icon icon-eye" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
+                        <circle cx="12" cy="12" r="3"/>
+                    </svg>
+                </button>
+            </div>
+
+            {# Action Buttons: ADD TO CART & BUY NOW #}
+            <div class="product-card-action-buttons">
+                {% if displayBuyButton and config('core.listing.allowBuyInListing') %}
+                    <button type="submit"
+                            name="redirectTo"
+                            value="frontend.cart.offcanvas"
+                            class="btn btn-primary product-card-btn-add">
+                        {{ btnAddText }}
+                    </button>
+                    <button type="button"
+                            class="btn btn-primary product-card-btn-buy"
+                            onclick="var f=this.closest('form'); if(f){ var r=f.querySelector('input[name=redirectTo]'); if(r) r.value='frontend.checkout.confirm.page'; HTMLFormElement.prototype.submit.call(f); }">
+                        {{ btnBuyText }}
+                    </button>
+                {% else %}
+                    <a href="{{ detailUrl }}"
+                       class="btn btn-primary product-card-btn-add">
+                        {{ btnAddText }}
                     </a>
-                {% endblock %}
-
-                {% block component_product_box_variant_characteristics %}
-                    {# Variant characteristics hidden #}
-                {% endblock %}
-
-                {% block component_product_box_description %}
-                    {# Description hidden #}
-                {% endblock %}
-
-                {% block component_product_box_price %}
-                    <div class="product-card-meta w-100 d-flex flex-column align-items-center text-center gap-1 mb-2">
-                        {% if sku %}
-                            <div class="product-card-meta-item small lh-sm text-dark">
-                                <span class="meta-label text-secondary fw-normal me-1">{{ lblItemNumber }}:</span>
-                                <span class="meta-value fw-bold text-dark">{{ sku }}</span>
-                            </div>
-                        {% endif %}
-
-                        {% if product.ean %}
-                            <div class="product-card-meta-item small lh-sm text-dark">
-                                <span class="meta-label text-secondary fw-normal me-1">{{ lblUpc }}:</span>
-                                <span class="meta-value fw-bold text-dark">{{ product.ean }}</span>
-                            </div>
-                        {% elseif product.translated.customFields.upc or product.translated.customFields.custom_upc %}
-                            <div class="product-card-meta-item small lh-sm text-dark">
-                                <span class="meta-label text-secondary fw-normal me-1">{{ lblUpc }}:</span>
-                                <span class="meta-value fw-bold text-dark">{{ product.translated.customFields.upc ?: product.translated.customFields.custom_upc }}</span>
-                            </div>
-                        {% endif %}
-
-                        <div class="product-card-meta-item small lh-sm text-dark">
-                            <span class="meta-label text-secondary fw-normal me-1">{{ lblAvailable }}:</span>
-                            {% set availableStock = product.availableStock %}
-                            {% set stock = product.stock %}
-                            {% if availableStock is not null and availableStock > 0 %}
-                                <span class="meta-value fw-bold text-dark">{{ availableStock }}</span>
-                            {% elseif stock is not null and stock > 0 %}
-                                <span class="meta-value fw-bold text-dark">{{ stock }}</span>
-                            {% elseif product.available and not product.isCloseout %}
-                                <span class="meta-value fw-bold text-dark">{{ lblInStock }}</span>
-                            {% else %}
-                                <span class="meta-value text-muted">{{ lblOutOfStock }}</span>
-                            {% endif %}
-                        </div>
-                    </div>
-
-                    <div class="product-card-price-primary w-100 text-center mb-1">
-                        {% set price = product.calculatedPrice %}
-                        {% if product.calculatedPrices.count > 0 %}
-                            {% set price = product.calculatedPrices.last %}
-                        {% endif %}
-                        {% if product.variantListingConfig.displayParent and product.parentId === null %}
-                            {% set price = product.calculatedCheapestPrice %}
-                        {% endif %}
-
-                        <span class="primary-price-value text-primary fw-bold">{{ price.unitPrice|currency }}</span>
-                    </div>
-                {% endblock %}
-
-                {% block component_product_box_action %}
-                    {% set isAvailable = not product.isCloseout or (product.stock >= product.minPurchase) %}
-                    {% set displayFrom = product.calculatedPrices.count > 1 %}
-                    {% set displayBuyButton = isAvailable and not displayFrom and product.childCount <= 0 %}
-                    {% set detailUrl = seoUrl('frontend.detail.page', routeArguments) %}
-
-                    {% set price = product.calculatedPrice %}
-                    {% if product.calculatedPrices.count > 0 %}
-                        {% set price = product.calculatedPrices.last %}
-                    {% endif %}
-                    {% if product.variantListingConfig.displayParent and product.parentId === null %}
-                        {% set price = product.calculatedCheapestPrice %}
-                    {% endif %}
-
-                    {% set msrpVal = (price.listPrice ? price.listPrice.price : null) %}
-                    {% if not msrpVal and (product.translated.customFields.msrp or product.customFields.msrp) %}
-                        {% set msrpVal = product.translated.customFields.msrp ?: product.customFields.msrp %}
-                    {% endif %}
-                    {% if not msrpVal %}
-                        {% set msrpVal = price.unitPrice %}
-                    {% endif %}
-
-                    {% set mapVal = (product.translated.customFields.map or product.customFields.map) %}
-                    {% if not mapVal %}
-                        {% set mapVal = msrpVal %}
-                    {% endif %}
-
-                    <div class="product-action-wrapper w-100">
-                        <form action="{{ path('frontend.checkout.line-item.add') }}"
-                              method="post"
-                              class="buy-widget product-card-form w-100"
-                              data-add-to-cart="true">
-
-                            <input type="hidden" name="redirectTo" value="frontend.cart.offcanvas" class="js-redirect-to">
-                            <input type="hidden" name="redirectParameters" data-redirect-parameters="true" value="{{ {productId: id}|json_encode }}">
-                            <input type="hidden" name="lineItems[{{ id }}][id]" value="{{ id }}">
-                            <input type="hidden" name="lineItems[{{ id }}][referencedId]" value="{{ id }}">
-                            <input type="hidden" name="lineItems[{{ id }}][type]" value="product">
-                            <input type="hidden" name="lineItems[{{ id }}][stackable]" value="1">
-                            <input type="hidden" name="lineItems[{{ id }}][removable]" value="1">
-                            <input type="hidden" name="product-name" value="{{ name }}">
-
-                            {# Quantity Selector: Qty: [ 00 ] #}
-                            <div class="product-card-qty-row d-flex align-items-center justify-content-center gap-2 mb-2">
-                                <label for="qty-{{ id }}" class="product-card-qty-label small text-secondary fw-normal mb-0">{{ lblQty }}:</label>
-                                <input type="number"
-                                       id="qty-{{ id }}"
-                                       name="lineItems[{{ id }}][quantity]"
-                                       value="{{ product.minPurchase ?: 1 }}"
-                                       min="{{ product.minPurchase ?: 1 }}"
-                                       max="{{ product.maxPurchase ?: (product.availableStock ?: 100) }}"
-                                       step="{{ product.purchaseSteps ?: 1 }}"
-                                       class="form-control form-control-sm product-card-qty-input text-center" />
-                            </div>
-
-                            {# Secondary Prices: MSRP : $899.00 and MAP : $899.00 #}
-                            <div class="product-card-secondary-prices d-flex align-items-center justify-content-between text-primary small fw-semibold mb-2">
-                                <div class="price-col msrp-col">
-                                    <span class="price-label">{{ lblMsrp }} :</span>
-                                    <span class="price-val">{{ msrpVal|currency }}</span>
-                                </div>
-                                <div class="price-col map-col">
-                                    <span class="price-label">{{ lblMap }} :</span>
-                                    <span class="price-val">{{ mapVal|currency }}</span>
-                                </div>
-                            </div>
-
-                            {# Circular Action Icons Row (Wishlist, Compare, Quick View) #}
-                            <div class="product-card-action-icons d-flex align-items-center justify-content-center gap-2 mb-3">
-                                {# Wishlist #}
-                                {% set addToWishlistOptions = {
-                                    productId: id,
-                                    router: {
-                                        add: {
-                                            afterLoginPath: path('frontend.wishlist.add.after.login', { productId: id }),
-                                            path: path('frontend.wishlist.product.add', { productId: id }),
-                                        },
-                                        remove: {
-                                            path: path('frontend.wishlist.product.remove', { productId: id }),
-                                        }
-                                    },
-                                    texts: {
-                                        add: 'listing.addToWishlist'|trans|sw_sanitize,
-                                        remove: 'listing.removeFromWishlist'|trans|sw_sanitize
-                                    },
-                                } %}
-                                <button type="button"
-                                        class="product-card-icon-btn product-wishlist-btn product-wishlist-{{ id }} product-wishlist-not-added"
-                                        title="{{ 'listing.addToWishlist'|trans|sw_sanitize }}"
-                                        data-add-to-wishlist="true"
-                                        data-add-to-wishlist-options="{{ addToWishlistOptions|json_encode }}">
-                                    <svg class="icon icon-heart icon-wishlist-not-added" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
-                                    </svg>
-                                    <svg class="icon icon-heart-fill icon-wishlist-added d-none" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
-                                    </svg>
-                                </button>
-                            </div>
-
-                            {# Action Buttons: ADD TO CART & BUY NOW #}
-                            <div class="product-card-action-buttons d-flex gap-2 w-100">
-                                {% if displayBuyButton and config('core.listing.allowBuyInListing') %}
-                                    <button type="submit"
-                                            name="redirectTo"
-                                            value="frontend.cart.offcanvas"
-                                            class="btn btn-primary product-card-btn-add flex-fill text-uppercase fw-bold">
-                                        {{ btnAddText }}
-                                    </button>
-                                    <button type="button"
-                                            class="btn btn-primary product-card-btn-buy flex-fill text-uppercase fw-bold"
-                                            onclick="var f=this.closest('form'); if(f){ var r=f.querySelector('input[name=redirectTo]'); if(r) r.value='frontend.checkout.confirm.page'; HTMLFormElement.prototype.submit.call(f); }">
-                                        {{ btnBuyText }}
-                                    </button>
-                                {% else %}
-                                    <a href="{{ detailUrl }}"
-                                       class="btn btn-primary product-card-btn-add flex-fill text-uppercase fw-bold">
-                                        {{ btnAddText }}
-                                    </a>
-                                    <a href="{{ detailUrl }}"
-                                       class="btn btn-primary product-card-btn-buy flex-fill text-uppercase fw-bold">
-                                        {{ btnBuyText }}
-                                    </a>
-                                {% endif %}
-                            </div>
-                        </form>
-                    </div>
-                {% endblock %}
+                    <a href="{{ detailUrl }}"
+                       class="btn btn-primary product-card-btn-buy">
+                        {{ btnBuyText }}
+                    </a>
+                {% endif %}
             </div>
-        {% endblock %}
+        </form>
     </div>
 {% endblock %}

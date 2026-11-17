@@ -1,0 +1,323 @@
+{% sw_extends '@Storefront/storefront/base.html.twig' %}
+
+{% block base_scroll_up %}
+    {{ parent() }}
+    {% sw_include '@ZandersProductCompare/storefront/component/compare/compare-bar.html.twig' %}
+{% endblock %}
+
+{% block base_body_script %}
+    {{ parent() }}
+
+    {% set msgAdded = 'zanders.compare.productAdded'|trans %}
+    {% if 'zanders.' in msgAdded|lower or msgAdded == '' %}{% set msgAdded = 'Product added to comparison' %}{% endif %}
+
+    {% set msgRemoved = 'zanders.compare.productRemoved'|trans %}
+    {% if 'zanders.' in msgRemoved|lower or msgRemoved == '' %}{% set msgRemoved = 'Product removed from comparison' %}{% endif %}
+
+    {% set msgMax = 'zanders.compare.maxProductsReached'|trans %}
+    {% if 'zanders.' in msgMax|lower or msgMax == '' %}{% set msgMax = 'You can compare a maximum of 4 products' %}{% endif %}
+
+    {% set emptyTitle = 'zanders.compare.emptyTitle'|trans %}
+    {% if 'zanders.' in emptyTitle|lower or emptyTitle == '' %}{% set emptyTitle = 'No Products to Compare' %}{% endif %}
+
+    {% set emptyText = 'zanders.compare.emptyText'|trans %}
+    {% if 'zanders.' in emptyText|lower or emptyText == '' %}{% set emptyText = 'You have not added any products to compare yet.' %}{% endif %}
+
+    {% set backToShop = 'zanders.compare.backToShop'|trans %}
+    {% if 'zanders.' in backToShop|lower or backToShop == '' %}{% set backToShop = 'Back to Shopping' %}{% endif %}
+
+    <script>
+    (function() {
+        var MAX_COMPARE_ITEMS = 4;
+        var msgAdded = {{ msgAdded|json_encode|raw }};
+        var msgRemoved = {{ msgRemoved|json_encode|raw }};
+        var msgMax = {{ msgMax|json_encode|raw }};
+        var emptyTitle = {{ emptyTitle|json_encode|raw }};
+        var emptyText = {{ emptyText|json_encode|raw }};
+        var backToShop = {{ backToShop|json_encode|raw }};
+        var compareUrl = {{ path('frontend.compare.page')|json_encode|raw }};
+        var compareContentUrl = {{ path('frontend.compare.content')|json_encode|raw }};
+
+        function getStorageKey() {
+            return 'zanders_compare_' + (window.salesChannelId || 'default');
+        }
+
+        function getCompareList() {
+            try {
+                var raw = localStorage.getItem(getStorageKey());
+                return raw ? JSON.parse(raw) : [];
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function saveCompareList(list) {
+            try {
+                if (!list || list.length === 0) {
+                    localStorage.removeItem(getStorageKey());
+                } else {
+                    localStorage.setItem(getStorageKey(), JSON.stringify(list));
+                }
+            } catch (e) {}
+        }
+
+        function showToast(msg, alertType) {
+            var container = document.getElementById('zanders-toast-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'zanders-toast-container';
+                container.className = 'zanders-toast-container';
+                document.body.appendChild(container);
+            }
+
+            var alertEl = document.createElement('div');
+            alertEl.className = 'alert alert-' + (alertType || 'info') + ' alert-dismissible fade show d-flex align-items-center shadow zanders-compare-alert';
+            alertEl.setAttribute('role', 'alert');
+            alertEl.innerHTML = '<div class="alert-content flex-grow-1">' + msg + '</div>' +
+                '<button type="button" class="btn-close ms-2" aria-label="Close"></button>';
+
+            var closeBtn = alertEl.querySelector('.btn-close');
+            if (closeBtn) {
+                closeBtn.addEventListener('click', function() {
+                    alertEl.remove();
+                });
+            }
+
+            container.appendChild(alertEl);
+            setTimeout(function() {
+                alertEl.classList.remove('show');
+                setTimeout(function() { alertEl.remove(); }, 300);
+            }, 3000);
+        }
+
+        function updateCompareUI() {
+            var list = getCompareList();
+            var count = list.length;
+
+            // 1. Update button states on product cards
+            var allBtns = document.querySelectorAll('.product-compare-btn, [data-product-compare-btn]');
+            allBtns.forEach(function(btn) {
+                var pId = btn.getAttribute('data-product-id');
+                var exists = list.some(function(item) { return item.id === pId; });
+                if (exists) {
+                    btn.classList.add('is-active');
+                    btn.setAttribute('aria-pressed', 'true');
+                } else {
+                    btn.classList.remove('is-active');
+                    btn.setAttribute('aria-pressed', 'false');
+                }
+            });
+
+            // 2. Update sticky compare bar
+            var bar = document.getElementById('zandersCompareBar');
+            var countEl = document.getElementById('compareBarCount');
+            var thumbsEl = document.getElementById('compareBarThumbnails');
+            var compareLink = document.getElementById('compareBarCompareBtn');
+
+            if (bar && countEl && thumbsEl) {
+                countEl.textContent = count + '/' + MAX_COMPARE_ITEMS;
+
+                if (count > 0) {
+                    bar.style.display = 'block';
+
+                    // Build thumbnails
+                    var thumbsHtml = '';
+                    list.forEach(function(item) {
+                        thumbsHtml += '<div class="compare-thumb-item" title="' + (item.name || '') + '">' +
+                            (item.img ? '<img src="' + item.img + '" alt="">' : '<span class="small text-muted">Item</span>') +
+                            '<button type="button" class="compare-thumb-remove" data-remove-id="' + item.id + '" title="Remove">×</button>' +
+                        '</div>';
+                    });
+                    thumbsEl.innerHTML = thumbsHtml;
+
+                    // Bind thumb remove buttons
+                    thumbsEl.querySelectorAll('.compare-thumb-remove').forEach(function(btn) {
+                        btn.addEventListener('click', function(e) {
+                            e.stopPropagation();
+                            var rmId = this.getAttribute('data-remove-id');
+                            removeProduct(rmId);
+                        });
+                    });
+
+                    // Update link href to include products param
+                    var ids = list.map(function(item) { return item.id; });
+                    if (compareLink) {
+                        compareLink.href = compareUrl + '?products=' + ids.join(',');
+                    }
+                } else {
+                    bar.style.display = 'none';
+                    thumbsEl.innerHTML = '';
+                }
+            }
+
+            // 3. Update comparison page if currently viewing /compare
+            var container = document.getElementById('compareContentContainer');
+            if (container && window.location.pathname.indexOf('/compare') !== -1) {
+                var currentTable = container.querySelector('[data-compare-table]');
+                if (currentTable) {
+                    var renderedIds = Array.from(currentTable.querySelectorAll('[data-product-id]')).map(function(el) {
+                        return el.getAttribute('data-product-id');
+                    });
+                    var storageIds = list.map(function(item) { return item.id; });
+
+                    // Check if rendered table matches storage list
+                    if (renderedIds.sort().join(',') !== storageIds.sort().join(',')) {
+                        reloadCompareContent(storageIds);
+                    }
+                }
+            }
+        }
+
+        function reloadCompareContent(ids) {
+            var container = document.getElementById('compareContentContainer');
+            if (!container) return;
+
+            if (ids.length === 0) {
+                container.innerHTML = '<div class="compare-empty-state text-center py-5">' +
+                    '<h3 class="compare-empty-title">' + emptyTitle + '</h3>' +
+                    '<p class="compare-empty-text text-muted mx-auto" style="max-width: 540px;">' +
+                    emptyText + '</p>' +
+                    '<a href="{{ path('frontend.home.page') }}" class="btn btn-primary mt-3">' +
+                    backToShop + '</a></div>';
+                return;
+            }
+
+            container.classList.add('opacity-50');
+            fetch(compareContentUrl + '?products=' + ids.join(','), {
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            })
+            .then(function(res) { return res.text(); })
+            .then(function(html) {
+                container.innerHTML = html;
+                container.classList.remove('opacity-50');
+                bindCompareTableEvents();
+            })
+            .catch(function() {
+                container.classList.remove('opacity-50');
+            });
+        }
+
+        function toggleProduct(productId, productData) {
+            if (!productId) return;
+            var list = getCompareList();
+            var index = list.findIndex(function(item) { return item.id === productId; });
+
+            if (index !== -1) {
+                list.splice(index, 1);
+                saveCompareList(list);
+                showToast(msgRemoved, 'info');
+            } else {
+                if (list.length >= MAX_COMPARE_ITEMS) {
+                    showToast(msgMax, 'warning');
+                    return;
+                }
+                list.push({
+                    id: productId,
+                    name: productData.name || '',
+                    img: productData.img || ''
+                });
+                saveCompareList(list);
+                showToast(msgAdded, 'success');
+            }
+
+            updateCompareUI();
+        }
+
+        function removeProduct(productId) {
+            var list = getCompareList();
+            list = list.filter(function(item) { return item.id !== productId; });
+            saveCompareList(list);
+            showToast(msgRemoved, 'info');
+            updateCompareUI();
+        }
+
+        function clearAll() {
+            saveCompareList([]);
+            updateCompareUI();
+        }
+
+        function bindCompareTableEvents() {
+            // Remove buttons in table header
+            document.querySelectorAll('[data-compare-remove]').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    var id = this.getAttribute('data-compare-remove');
+                    removeProduct(id);
+                });
+            });
+
+            // Clear all button
+            document.querySelectorAll('[data-compare-clear-all]').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    clearAll();
+                });
+            });
+
+            // Highlight differences toggle
+            var diffCheckbox = document.querySelector('[data-highlight-diff]');
+            if (diffCheckbox) {
+                diffCheckbox.addEventListener('change', function() {
+                    var table = document.querySelector('[data-compare-table]');
+                    if (table) {
+                        if (this.checked) {
+                            table.classList.add('highlight-diff');
+                        } else {
+                            table.classList.remove('highlight-diff');
+                        }
+                    }
+                });
+            }
+        }
+
+        // Global DOM click delegate for compare buttons
+        document.addEventListener('click', function(e) {
+            var btn = e.target.closest('.product-compare-btn, [data-product-compare-btn]');
+            if (btn) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                var productId = btn.getAttribute('data-product-id');
+                var card = btn.closest('.card, .product-box, .product-card-inner') || btn.parentElement;
+
+                var name = btn.getAttribute('data-product-name');
+                if (!name && card) {
+                    var titleEl = card.querySelector('.product-title, .product-name, [title]');
+                    name = titleEl ? (titleEl.getAttribute('title') || titleEl.textContent.trim()) : '';
+                }
+
+                var img = btn.getAttribute('data-product-img');
+                if (!img && card) {
+                    var imgEl = card.querySelector('img.product-image, .product-image-link img, img');
+                    img = imgEl ? (imgEl.src || imgEl.getAttribute('data-src')) : '';
+                }
+
+                toggleProduct(productId, { name: name, img: img });
+            }
+
+            // Clear all on sticky bar
+            if (e.target.closest('#compareBarClearAll')) {
+                e.preventDefault();
+                clearAll();
+            }
+        });
+
+        // Initialize on DOM ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function() {
+                updateCompareUI();
+                bindCompareTableEvents();
+            });
+        } else {
+            updateCompareUI();
+            bindCompareTableEvents();
+        }
+
+        window.zandersCompare = {
+            get: getCompareList,
+            toggle: toggleProduct,
+            remove: removeProduct,
+            clear: clearAll,
+            update: updateCompareUI
+        };
+    })();
+    </script>
+{% endblock %}

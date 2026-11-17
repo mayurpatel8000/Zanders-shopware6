@@ -1,0 +1,153 @@
+{% block component_account_login %}
+    {% set lblRegTitle = 'zanders.accountPage.registeredCustomersTitle'|trans %}
+    {% if 'zanders.' in lblRegTitle|lower or lblRegTitle == '' %}{% set lblRegTitle = 'REGISTERED CUSTOMERS' %}{% endif %}
+
+    {% set lblRegSubtitle = 'zanders.accountPage.registeredCustomersSubtitle'|trans %}
+    {% if 'zanders.' in lblRegSubtitle|lower or lblRegSubtitle == '' %}{% set lblRegSubtitle = 'If You Have An Account With Us, Please Log In.' %}{% endif %}
+
+    {% set lblRememberMe = 'zanders.accountPage.rememberMe'|trans %}
+    {% if 'zanders.' in lblRememberMe|lower or lblRememberMe == '' %}{% set lblRememberMe = 'Remember Me' %}{% endif %}
+
+    {% set lblWhatsThis = 'zanders.accountPage.whatsThis'|trans %}
+    {% if 'zanders.' in lblWhatsThis|lower or lblWhatsThis == '' %}{% set lblWhatsThis = "What's This?" %}{% endif %}
+
+    {% set lblRequiredFields = 'zanders.accountPage.requiredFields'|trans %}
+    {% if 'zanders.' in lblRequiredFields|lower or lblRequiredFields == '' %}{% set lblRequiredFields = '* Required Fields' %}{% endif %}
+
+    {% set lblLoginButton = 'zanders.accountPage.loginButton'|trans %}
+    {% if 'zanders.' in lblLoginButton|lower or lblLoginButton == '' %}{% set lblLoginButton = 'LOGIN' %}{% endif %}
+
+    {% set lblForgotPassword = 'zanders.accountPage.forgotPassword'|trans %}
+    {% if 'zanders.' in lblForgotPassword|lower or lblForgotPassword == '' %}{% set lblForgotPassword = 'Forgot Your Password?' %}{% endif %}
+
+    {% set lblMail = 'account.loginMailLabel'|trans %}
+    {% if 'account.' in lblMail|lower or lblMail == '' %}{% set lblMail = 'Your email address' %}{% endif %}
+
+    {% set lblPass = 'account.loginPasswordLabel'|trans %}
+    {% if 'account.' in lblPass|lower or lblPass == '' %}{% set lblPass = 'Your password' %}{% endif %}
+
+    <div class="zanders-login-box">
+        {% block component_account_login_header %}
+            <h2 class="zanders-registered-title text-uppercase fw-bold mb-2">
+                {{ lblRegTitle }}
+            </h2>
+            <div class="zanders-title-underline-dark mb-3"></div>
+
+            <p class="zanders-registered-subtitle text-muted mb-4">
+                {{ lblRegSubtitle }}
+            </p>
+        {% endblock %}
+
+        {% block component_account_login_form %}
+            <form class="login-form"
+                  action="{{ path('frontend.account.login') }}"
+                  method="post"
+                  data-form-handler="true">
+                {% block component_account_login_form_redirect %}
+                    <input type="hidden"
+                           name="redirectTo"
+                           value="{{ redirectTo }}">
+
+                    <input type="hidden"
+                           name="redirectParameters"
+                           value="{{ redirectParameters is iterable ? redirectParameters|json_encode : redirectParameters }}">
+                {% endblock %}
+
+                {% block component_account_login_form_error %}
+                    {% if loginError %}
+                        <div class="mb-3">
+                            {% if errorSnippet != null %}
+                                {% sw_include '@Storefront/storefront/utilities/alert.html.twig' with {
+                                    type: 'danger',
+                                    content: errorSnippet|trans|sw_sanitize({}, true),
+                                    announceOnLoad: true,
+                                    ariaLive: 'assertive'
+                                } %}
+                            {% elseif waitTime != null %}
+                                {% sw_include '@Storefront/storefront/utilities/alert.html.twig' with {
+                                    type: 'info',
+                                    content: 'account.loginThrottled'|trans({'%seconds%': waitTime|number_format})|sw_sanitize,
+                                    announceOnLoad: true
+                                } %}
+                            {% else %}
+                                {% sw_include '@Storefront/storefront/utilities/alert.html.twig' with {
+                                    type: 'danger',
+                                    content: 'account.loginBadCredentials'|trans|sw_sanitize,
+                                    announceOnLoad: true,
+                                    ariaLive: 'assertive'
+                                } %}
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                {% endblock %}
+
+                {% block component_account_login_form_fields %}
+                    {# Email Address #}
+                    <div class="mb-3">
+                        <label for="loginMail" class="form-label zanders-form-label">
+                            {{ lblMail }} <span class="text-danger">*</span>
+                        </label>
+                        <input type="email"
+                                class="form-control zanders-form-input{% if loginError %} is-invalid{% endif %}"
+                                id="loginMail"
+                                name="username"
+                                placeholder="{{ lblMail }}"
+                                autocomplete="username webauthn"
+                                required="required" />
+                    </div>
+
+                    {# Password #}
+                    <div class="mb-3">
+                        <label for="loginPassword" class="form-label zanders-form-label">
+                            {{ lblPass }} <span class="text-danger">*</span>
+                        </label>
+                        <input type="password"
+                                class="form-control zanders-form-input{% if loginError %} is-invalid{% endif %}"
+                                id="loginPassword"
+                                name="password"
+                                placeholder="{{ lblPass }}"
+                                autocomplete="current-password"
+                                required="required" />
+                    </div>
+
+                    {# Remember Me Checkbox #}
+                    <div class="form-check zanders-form-check mb-2">
+                        <input type="checkbox"
+                                class="form-check-input zanders-check-input"
+                                id="loginRememberMe"
+                                name="remember_me"
+                                checked="checked" />
+                        <label class="form-check-label zanders-check-label" for="loginRememberMe">
+                            {{ lblRememberMe }}
+                            <span class="text-muted small ms-1" title="Keeps you logged in on this browser">{{ lblWhatsThis }}</span>
+                        </label>
+                    </div>
+
+                    {# Required Fields Note #}
+                    <div class="zanders-required-note text-muted small mb-4">
+                        {{ lblRequiredFields }}
+                    </div>
+                {% endblock %}
+
+                {# Submit Button & Recover Password #}
+                {% block component_account_login_submit %}
+                    <div class="text-center d-flex flex-column align-items-center gap-3">
+                        <button type="submit"
+                                class="btn btn-primary zanders-btn-login">
+                            {{ lblLoginButton }}
+                        </button>
+
+                        {% block component_account_login_password_recover %}
+                            <div class="login-password-recover">
+                                <a href="{{ seoUrl('frontend.account.recover.page') }}"
+                                   class="zanders-link-recover">
+                                    {{ lblForgotPassword }}
+                                </a>
+                            </div>
+                        {% endblock %}
+                    </div>
+                {% endblock %}
+            </form>
+        {% endblock %}
+    </div>
+{% endblock %}

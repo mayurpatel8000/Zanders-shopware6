@@ -1,16 +1,30 @@
 /*
-Override variable defaults
+Shopware 6 & Bootstrap 5 SCSS Variable Overrides
 ==================================================
-This file is used to override default SCSS variables from the Shopware Storefront or Bootstrap.
-
-Because of the !default flags, theme variable overrides have to be declared beforehand.
+Reference:
+https://developer.shopware.com/docs/guides/plugins/plugins/storefront/customize-templates.html
 https://getbootstrap.com/docs/5.3/customize/sass/#variable-defaults
 */
 
-// Grid & Container Max Width
-$container-max-widths: (
-    xs: 1456px,
+// Custom responsive breakpoints
+$grid-breakpoints: (
+    xs: 0,
+    sm: 480px,
+    md: 768px,
+    mb: 991px,
+    lg: 1024px,
+    xl: 1280px,
+    xxl: 1440px,
+    custom: 1600px
 );
+
+// Container configuration
+$container-max-widths: (
+    xs: 1440px,
+) !default;
+
+$container-padding-x: 28px !default;
+$grid-gutter-width: 28px !default;
 
 // Colors - Brand / Primary
 $sw-color-brand-primary: #991020;
@@ -19,5 +33,15 @@ $sw-color-buy-button: #991020;
 $buy-btn-bg: #991020;
 
 // Typography - Custom Font Family
-$font-family-base: 'Roboto', -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
-$headings-font-family: 'Roboto', -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+$sw-font-family-base: 'Poppins',
+    'Roboto',
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    "Helvetica Neue",
+    Arial,
+    sans-serif !default;
+$font-family-base: $sw-font-family-base !default;
+$font-family-sans-serif: $sw-font-family-base !default;
+$headings-font-family: $sw-font-family-base !default;

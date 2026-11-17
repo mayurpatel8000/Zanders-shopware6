@@ -1,0 +1,278 @@
+/*
+Cart Drawer / Offcanvas Design
+==================================================
+Matches Zanders design:
+- Header: Bold "My Cart" on left, Close "×" on right
+- Line Item Cards: Clean white card with soft shadow
+- Product image contained on left
+- Uppercase title, 1 X $price
+- Circular action buttons (dark edit, crimson remove)
+- Light grey summary container (Subtotal, Free Shipping threshold)
+- Full-width dark crimson GO TO CART button
+*/
+
+.offcanvas.cart-offcanvas,
+.offcanvas.offcanvas-end.cart-offcanvas {
+    max-width: 420px;
+    width: 100%;
+    font-family: 'Poppins', sans-serif;
+    background-color: #fcfcfc;
+    box-shadow: -8px 0 32px rgba(0, 0, 0, 0.12);
+    border-left: none;
+
+    .offcanvas-header {
+        background-color: #ffffff;
+        border-bottom: 1px solid #f0f0f0;
+        padding: 18px 24px;
+
+        .offcanvas-cart-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: #111111;
+            margin: 0;
+        }
+
+        .btn-close {
+            margin: 0;
+            padding: 8px;
+            opacity: 0.65;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+
+            &:hover {
+                opacity: 1;
+                transform: scale(1.1);
+            }
+        }
+    }
+
+    .offcanvas-body {
+        padding: 20px 24px;
+        display: flex;
+        flex-direction: column;
+        background-color: #fafafa;
+
+        .offcanvas-cart {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            min-height: 100%;
+        }
+    }
+}
+
+/* Line Item Cards */
+.cart-offcanvas .zanders-cart-item-card,
+.zanders-cart-item-card {
+    background-color: #ffffff;
+    border: 1px solid #ededed;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    padding: 16px;
+    margin-bottom: 14px;
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+
+    &:hover {
+        border-color: #e0e0e0;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.07);
+    }
+
+    .zanders-cart-item-img-wrapper {
+        width: 84px;
+        height: 64px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        background-color: #ffffff;
+
+        .zanders-cart-item-img {
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            display: block;
+        }
+
+        .zanders-cart-item-placeholder {
+            max-width: 40px;
+            opacity: 0.3;
+        }
+    }
+
+    .zanders-cart-item-info {
+        min-width: 0;
+
+        .zanders-cart-item-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            line-height: 1.35;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+
+            a {
+                color: #1a2530;
+                text-decoration: none;
+                transition: color 0.15s ease;
+
+                &:hover {
+                    color: #8c1d2f;
+                }
+            }
+        }
+
+        .zanders-cart-item-price-qty {
+            font-size: 13px;
+            font-weight: 500;
+            color: #777777;
+            margin-bottom: 8px;
+        }
+
+        /* Circular Action Buttons */
+        button.zanders-cart-btn-edit,
+        .zanders-cart-btn-edit {
+            width: 28px;
+            height: 28px;
+            min-width: 28px;
+            border-radius: 50%;
+            background-color: #333333;
+            color: #ffffff;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.15s ease;
+
+            svg {
+                width: 13px;
+                height: 13px;
+                stroke: #ffffff;
+            }
+
+            &:hover {
+                background-color: #111111;
+                transform: scale(1.08);
+            }
+        }
+
+        button.zanders-cart-btn-remove,
+        .zanders-cart-btn-remove {
+            width: 28px;
+            height: 28px;
+            min-width: 28px;
+            border-radius: 50%;
+            background-color: #8c1d2f;
+            color: #ffffff;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.15s ease;
+
+            svg {
+                width: 12px;
+                height: 12px;
+                stroke: #ffffff;
+            }
+
+            &:hover {
+                background-color: #6e1322;
+                transform: scale(1.08);
+            }
+        }
+
+        .zanders-cart-qty-group {
+            max-width: 130px;
+
+            .zanders-cart-qty-step {
+                width: 30px;
+                height: 30px;
+                padding: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: 600;
+                font-size: 14px;
+            }
+
+            .zanders-cart-qty-val {
+                height: 30px;
+                font-size: 13px;
+                font-weight: 600;
+                padding: 0 4px;
+                -moz-appearance: textfield;
+
+                &::-webkit-inner-spin-button,
+                &::-webkit-outer-spin-button {
+                    -webkit-appearance: none;
+                    margin: 0;
+                }
+            }
+        }
+    }
+}
+
+/* Summary Box */
+.cart-offcanvas .zanders-cart-summary-box,
+.zanders-cart-summary-box {
+    background-color: #ededed;
+    border: 1px solid #e2e2e2;
+    border-radius: 3px;
+    padding: 14px 16px;
+    margin-bottom: 14px;
+    text-align: center;
+
+    .zanders-cart-subtotal-text {
+        font-family: 'Poppins', sans-serif;
+        font-size: 14px;
+        font-weight: 700;
+        color: #111111;
+        margin-bottom: 3px;
+    }
+
+    .zanders-free-shipping-text {
+        font-family: 'Poppins', sans-serif;
+        font-size: 13px;
+        color: #111111;
+
+        .zanders-free-shipping-amount {
+            color: #8c1d2f;
+            font-weight: 700;
+        }
+
+        .zanders-free-shipping-label {
+            color: #111111;
+            font-weight: 600;
+        }
+    }
+}
+
+/* Action Button: GO TO CART */
+.cart-offcanvas a.btn.zanders-btn-go-to-cart,
+a.btn.zanders-btn-go-to-cart,
+.zanders-btn-go-to-cart {
+    background-color: #8c1d2f;
+    border-color: #8c1d2f;
+    color: #ffffff;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-radius: 2px;
+    padding: 12px 16px;
+    text-align: center;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+
+    &:hover,
+    &:focus {
+        background-color: #6e1322;
+        border-color: #6e1322;
+        color: #ffffff;
+        box-shadow: none;
+    }
+}

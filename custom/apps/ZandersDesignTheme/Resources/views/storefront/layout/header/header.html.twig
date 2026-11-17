@@ -1,7 +1,29 @@
 {% sw_extends '@Storefront/storefront/layout/header/header.html.twig' %}
 
-{# Suppress default inner top-bar since it is rendered full-width at base_header_inner level #}
-{% block layout_top_bar %}{% endblock %}
+{% block layout_header %}
+<div class="zanders-custom-header">
+    {% block layout_header_navigation %}
+    <div class="row align-items-center header-row">
+        {% block layout_header_logo %}
+        {{ parent() }}
+        {% endblock %}
 
-{# Suppress default account icon next to search/cart #}
-{% block layout_header_actions_account %}{% endblock %}
+        {% block layout_header_search %}
+        {{ parent() }}
+        {% endblock %}
+
+        {% block layout_header_actions %}
+        {{ parent() }}
+        {% endblock %}
+    </div>
+    {% endblock %}
+</div>
+{% endblock %}
+
+{% block layout_top_bar %}
+{# Rendered above header container in storefront/layout/header.html.twig #}
+{% endblock %}
+
+{% block layout_header_actions_account %}
+{# Moved to top-bar #}
+{% endblock %}

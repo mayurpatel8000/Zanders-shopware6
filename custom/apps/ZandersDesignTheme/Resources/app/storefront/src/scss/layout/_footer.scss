@@ -2,49 +2,90 @@
 Footer
 ==================================================
 Zanders Footer:
-- Light gray upper section (#F0F0F0) with navigation, contact info & logo
-- Crimson red bottom strip ($primary) with social links & copyright notice
+- Light gray upper section (#F2F2F2)
+- Navigation columns (COMPANY, RESOURCES)
+- Contact items with red circular icons
+- Zanders brand logo on right
+- Crimson red bottom strip ($primary) with social icons and copyright
 */
 
+footer.footer-main,
 .footer-main {
-    background-color: transparent !important;
-    padding: 0 !important;
-    border-top: 0 !important;
+    background-color: transparent;
+    padding: 0;
+    border-top: 0;
 }
 
 .footer-top {
     background-color: #F0F0F0;
+    padding-block: 48px;
+
+    .footer-main-row {
+        row-gap: 32px;
+    }
 
     .footer-col-headline {
         font-size: 22px;
         line-height: 26px;
-        color: #000000 !important;
+        font-weight: 500;
+        color: #000000;
+        text-transform: uppercase;
+        margin-bottom: 24px;
 
         a {
-            color: #000000 !important;
+            color: #000000;
+            text-decoration: none;
 
             &:hover {
-                color: $primary !important;
+                color: $primary;
             }
         }
     }
 
-    .footer-nav-link {
-        font-size: 19px;
-        line-height: 22px;
-        transition: color 0.15s ease;
+    .footer-nav-list {
+        margin: 0;
+        padding: 0;
 
-        &:hover {
-            color: $primary !important;
+        .footer-nav-item {
+            margin-bottom: 16px;
+
+            &:last-child {
+                margin-bottom: 0;
+            }
+
+            .footer-nav-link {
+                font-size: 19px;
+                line-height: 22px;
+                font-weight: 400;
+                color: #787878;
+                text-decoration: none;
+                transition: color 0.15s ease;
+
+                &:hover {
+                    color: $primary;
+                }
+            }
         }
     }
 
+    .footer-contact-items {
+        display: flex;
+        flex-direction: column;
+        gap: 22px;
+    }
+
     .footer-contact-item {
+        display: flex;
+        align-items: center;
+
         .footer-contact-link {
-            color: #000000 !important;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: inherit;
 
             &:hover .footer-contact-phone-text {
-                color: $primary !important;
+                color: $primary;
             }
         }
 
@@ -52,10 +93,15 @@ Zanders Footer:
             width: 54px;
             height: 54px;
             min-width: 54px;
+            border-radius: 50%;
             border: 2px solid $primary;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             background-color: transparent;
             color: $primary;
             transition: all 0.2s ease;
+            margin-right: 18px;
 
             svg {
                 width: 27px;
@@ -63,19 +109,21 @@ Zanders Footer:
             }
         }
 
-        .footer-contact-phone-text,
-        .footer-contact-hours-text {
+        .footer-contact-phone-text {
             font-size: 19px;
             line-height: 26px;
-            color: #000000 !important;
+            font-weight: 400;
+            color: #000000;
             transition: color 0.15s ease;
         }
 
         .footer-contact-hours-text {
-            .footer-hours-days,
-            .footer-hours-time {
-                color: #000000 !important;
-            }
+            display: flex;
+            flex-direction: column;
+            font-size: 19px;
+            line-height: 26px;
+            font-weight: 400;
+            color: #000000;
         }
     }
 
@@ -83,26 +131,35 @@ Zanders Footer:
         .footer-logo-img {
             max-width: 250px;
             height: auto;
-
-            @media screen and (min-width: 1400px) {
-                max-width: 385px;
-            }           
+            display: inline-block;
         }
     }
 }
 
 .footer-bottom-bar {
+    background-color: $primary;
+    color: #ffffff;
+    padding: 16px 0;
+
     .footer-stay-connected {
         font-size: 16px;
+        font-weight: 500;
+        margin-right: 14px;
+        color: #ffffff;
     }
 
     .footer-social-icons {
         .footer-social-link {
+            color: #ffffff;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
             transition: opacity 0.2s ease, transform 0.2s ease;
 
             svg {
                 width: 18px;
                 height: 18px;
+                fill: currentColor;
             }
 
             &:hover {
@@ -112,8 +169,17 @@ Zanders Footer:
         }
     }
 
-    .footer-copyright-line,
+    .footer-copyright-line {
+        font-size: 16px;
+        font-weight: 400;
+        color: #ffffff;
+        margin-bottom: 2px;
+    }
+
     .footer-distributor-line {
         font-size: 16px;
+        font-weight: 400;
+        color: #ffffff;
+        opacity: 0.95;
     }
 }

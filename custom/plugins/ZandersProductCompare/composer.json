@@ -1,0 +1,33 @@
+{
+    "name": "zanders/product-compare",
+    "description": "Product Compare plugin for Zanders Sporting Goods",
+    "version": "1.0.0",
+    "type": "shopware-platform-plugin",
+    "license": "proprietary",
+    "authors": [
+        {
+            "name": "Zanders Team"
+        }
+    ],
+    "require": {
+        "shopware/core": "~6.6.0 || ~6.7.0",
+        "shopware/storefront": "~6.6.0 || ~6.7.0"
+    },
+    "extra": {
+        "shopware-plugin-class": "Zanders\\ProductCompare\\ZandersProductCompare",
+        "label": {
+            "de-DE": "Zanders Produktvergleich",
+            "en-GB": "Zanders Product Compare"
+        },
+        "description": {
+            "de-DE": "Vergleichen Sie bis zu 4 Produkte nebeneinander mit detaillierten Spezifikationen und Attributen.",
+            "en-GB": "Compare up to 4 products side-by-side with detailed technical specifications and attributes."
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Zanders\\ProductCompare\\": "src/"
+        }
+    }
+}
+

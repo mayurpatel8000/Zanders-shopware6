@@ -36,15 +36,36 @@
       "msrp": "MSRP",
       "map": "MAP",
       "qty": "Qty",
+      "addToCart": "ADD TO CART",
+      "buyNow": "BUY NOW",
       "compare": "Compare",
       "quickView": "Quick View",
-      "addToCart": "ADD TO CART",
-      "buyNow": "BUY NOW"
+      "selectOptions": "SELECT OPTIONS"
     },
     "footer": {
       "stayConnected": "Stay connected",
       "copyrightNotice": "© 1996-%year% Zanders Sporting Goods",
       "distributorNotice": "Zanders Sporting Goods is a wholesale firearms distributor selling only to federally licensed dealers"
+    },
+    "cart": {
+      "myCart": "My Cart",
+      "goToCart": "GO TO CART",
+      "cartSubtotal": "Cart Subtotal",
+      "awayFromFreeShipping": "away from Free Shipping",
+      "freeShippingQualified": "You qualify for Free Shipping!"
+    },
+    "accountPage": {
+      "header": "LOGIN OR CREATE AN ACCOUNT",
+      "newDealersTitle": "NEW DEALERS",
+      "newDealersText": "To Qualify As A Zanders Sporting Goods Dealer Is Simple. We Require A Signed Copy Of Your Federal Firearms License, A Copy Of Your Retail Merchant's License, And A Copy Of Any State License Your State May Require For Retail Gun Sales. For More Information Please Contact Us By Phone At 1-800-851-4373 Or Use The Contact Us Button Below.",
+      "newDealerSignUp": "NEW DEALER SIGN-UP",
+      "registeredCustomersTitle": "REGISTERED CUSTOMERS",
+      "registeredCustomersSubtitle": "If You Have An Account With Us, Please Log In.",
+      "rememberMe": "Remember Me",
+      "whatsThis": "What's This?",
+      "requiredFields": "* Required Fields",
+      "loginButton": "LOGIN",
+      "forgotPassword": "Forgot Your Password?"
     }
   }
 }

@@ -1,0 +1,34 @@
+{
+    "zanders": {
+        "compare": {
+            "title": "Produktvergleich",
+            "subtitle": "Vergleichen Sie technische Daten, Preise und Verfügbarkeit nebeneinander.",
+            "emptyTitle": "Keine Produkte zum Vergleich ausgewählt",
+            "emptyText": "Sie haben noch keine Produkte ausgewählt. Stöbern Sie in unserem Katalog und klicken Sie auf das Vergleichs-Symbol.",
+            "backToShop": "Weiter einkaufen",
+            "clearAll": "Alle löschen",
+            "maxProductsReached": "Sie können maximal 4 Produkte gleichzeitig vergleichen.",
+            "productAdded": "Produkt zum Vergleich hinzugefügt.",
+            "productRemoved": "Produkt aus dem Vergleich entfernt.",
+            "compareNow": "Jetzt vergleichen",
+            "itemsSelected": "%count% von 4 Artikeln ausgewählt",
+            "stickyBarTitle": "Produktvergleich",
+            "generalSpecs": "Allgemeine Informationen",
+            "techSpecs": "Technische Daten",
+            "brand": "Hersteller",
+            "sku": "Artikelnummer",
+            "upc": "UPC",
+            "availability": "Verfügbarkeit",
+            "inStock": "Auf Lager",
+            "outOfStock": "Nicht vorrätig",
+            "price": "Preis",
+            "msrp": "UVP",
+            "map": "MAP",
+            "addToCart": "In den Warenkorb",
+            "highlightDifferences": "Unterschiede hervorheben",
+            "hideSimilarities": "Nur Unterschiede anzeigen",
+            "remove": "Entfernen"
+        }
+    }
+}
+

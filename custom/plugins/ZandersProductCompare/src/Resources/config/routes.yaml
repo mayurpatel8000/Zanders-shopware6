@@ -1,0 +1,4 @@
+zanders_product_compare.storefront:
+    resource: ../../Storefront/**/*Controller.php
+    type: attribute
+

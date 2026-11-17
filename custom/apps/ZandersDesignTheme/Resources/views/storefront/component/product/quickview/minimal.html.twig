@@ -1,0 +1,389 @@
+{% sw_extends '@Storefront/storefront/component/product/quickview/minimal.html.twig' %}
+
+{% block component_product_quickview_minimal %}
+    {% set isStandalone = not app.request.xmlHttpRequest %}
+    {% set product = page.product %}
+    {% set name = product.translated.name %}
+    {% set manufacturer = product.manufacturer %}
+    {% set id = product.id %}
+    {% set sku = product.productNumber %}
+    {% set detailUrl = seoUrl('frontend.detail.page', { productId: id }) %}
+
+    {% set price = product.calculatedPrice %}
+    {% if product.calculatedPrices.count > 0 %}
+        {% set price = product.calculatedPrices.last %}
+    {% endif %}
+    {% if product.variantListingConfig.displayParent and product.parentId === null %}
+        {% set price = product.calculatedCheapestPrice %}
+    {% endif %}
+
+    {% set msrpVal = (price.listPrice ? price.listPrice.price : null) %}
+    {% if not msrpVal and (product.translated.customFields.msrp or product.customFields.msrp) %}
+        {% set msrpVal = product.translated.customFields.msrp ?: product.customFields.msrp %}
+    {% endif %}
+    {% if not msrpVal %}
+        {% set msrpVal = price.unitPrice %}
+    {% endif %}
+
+    {% set mapVal = (product.translated.customFields.map or product.customFields.map) %}
+    {% if not mapVal %}
+        {% set mapVal = msrpVal %}
+    {% endif %}
+
+    {% set isAvailable = not product.isCloseout or (product.stock >= product.minPurchase) %}
+    {% set displayBuyButton = isAvailable and product.childCount <= 0 %}
+
+    {% set lblItemNumber = 'zanders.productCard.itemNumber'|trans %}
+    {% if 'zanders.' in lblItemNumber|lower or lblItemNumber == '' %}{% set lblItemNumber = 'Item Number' %}{% endif %}
+
+    {% set lblUpc = 'zanders.productCard.upc'|trans %}
+    {% if 'zanders.' in lblUpc|lower or lblUpc == '' %}{% set lblUpc = 'UPC' %}{% endif %}
+
+    {% set lblAvailable = 'zanders.productCard.available'|trans %}
+    {% if 'zanders.' in lblAvailable|lower or lblAvailable == '' %}{% set lblAvailable = 'Available' %}{% endif %}
+
+    {% set lblInStock = 'zanders.productCard.inStock'|trans %}
+    {% if 'zanders.' in lblInStock|lower or lblInStock == '' %}{% set lblInStock = 'In stock' %}{% endif %}
+
+    {% set lblOutOfStock = 'zanders.productCard.outOfStock'|trans %}
+    {% if 'zanders.' in lblOutOfStock|lower or lblOutOfStock == '' %}{% set lblOutOfStock = 'Out of stock' %}{% endif %}
+
+    {% set lblQty = 'zanders.productCard.qty'|trans %}
+    {% if 'zanders.' in lblQty|lower or lblQty == '' %}{% set lblQty = 'Qty' %}{% endif %}
+
+    {% set lblMsrp = 'zanders.productCard.msrp'|trans %}
+    {% if 'zanders.' in lblMsrp|lower or lblMsrp == '' %}{% set lblMsrp = 'MSRP' %}{% endif %}
+
+    {% set lblMap = 'zanders.productCard.map'|trans %}
+    {% if 'zanders.' in lblMap|lower or lblMap == '' %}{% set lblMap = 'MAP' %}{% endif %}
+
+    {% set lblQuickView = 'zanders.productCard.quickView'|trans %}
+    {% if 'zanders.' in lblQuickView|lower or lblQuickView == '' %}{% set lblQuickView = 'Quick View' %}{% endif %}
+
+    {% set btnAddText = 'zanders.productCard.addToCart'|trans %}
+    {% if 'zanders.' in btnAddText|lower or btnAddText == '' %}{% set btnAddText = 'ADD TO CART' %}{% endif %}
+
+    {% set btnBuyText = 'zanders.productCard.buyNow'|trans %}
+    {% if 'zanders.' in btnBuyText|lower or btnBuyText == '' %}{% set btnBuyText = 'BUY NOW' %}{% endif %}
+
+    {% if isStandalone %}
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <title>{{ name }} | {{ lblQuickView }}</title>
+            <link rel="preconnect" href="https://fonts.googleapis.com">
+            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+            <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+            {% set assets = theme_config('assets.css') ?? [] %}
+            {% for file in assets %}
+                <link rel="stylesheet" href="{{ asset(file, 'theme') }}">
+            {% endfor %}
+            <style>
+                body {
+                    background-color: #f2f4f7;
+                    font-family: 'Poppins', sans-serif;
+                    min-height: 100vh;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 24px 16px;
+                    margin: 0;
+                }
+                .standalone-quickview-frame {
+                    max-width: 860px;
+                    width: 100%;
+                    background: #ffffff;
+                    border-radius: 4px;
+                    box-shadow: 0 12px 48px rgba(0, 0, 0, 0.15);
+                    overflow: hidden;
+                }
+                .standalone-quickview-header {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    padding: 14px 24px;
+                    border-bottom: 1px solid #f0f0f0;
+                    background: #ffffff;
+                }
+                .standalone-quickview-body {
+                    padding: 24px 28px 28px;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="standalone-quickview-frame quickview-modal">
+                <div class="standalone-quickview-header">
+                    <span class="quickview-modal-header-badge">{{ lblQuickView }}</span>
+                    <a href="{{ detailUrl }}" class="btn-close" aria-label="Close"></a>
+                </div>
+                <div class="standalone-quickview-body">
+    {% endif %}
+
+    <div class="js-pseudo-modal-template-title-element d-none">
+        <span class="quickview-modal-header-badge">{{ lblQuickView }}</span>
+    </div>
+
+    <div class="zanders-quickview-container" data-product-id="{{ id }}">
+        {# Quick View Top Row: Image & Details #}
+        <div class="row g-4 align-items-start">
+            {# Left Column: Gallery / Product Media #}
+            <div class="col-12 col-md-6 quickview-media-col">
+                <div class="quickview-main-image-wrapper">
+                    {% if product.cover.media %}
+                        <img src="{{ product.cover.media.url }}"
+                             alt="{{ product.cover.translated.alt ?: name }}"
+                             class="quickview-main-image"
+                             id="qv-main-image-{{ id }}" />
+                    {% else %}
+                        <div class="quickview-placeholder">
+                            {% sw_icon 'placeholder' style { size: 'fluid' } %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                {# Thumbnail gallery if product has multiple images #}
+                {% if product.media and product.media.count > 1 %}
+                    <div class="quickview-thumbnails-row">
+                        {% for mediaItem in product.media %}
+                            <button type="button"
+                                    class="qv-thumb-btn{% if loop.first %} is-active{% endif %}"
+                                    onclick="var m=document.getElementById('qv-main-image-{{ id }}'); if(m){ m.src='{{ mediaItem.media.url }}'; var b=this.parentElement.querySelectorAll('.qv-thumb-btn'); b.forEach(function(el){ el.classList.remove('is-active'); }); this.classList.add('is-active'); }">
+                                <img src="{{ mediaItem.media.url }}" alt="{{ name }}" />
+                            </button>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            {# Right Column: Product Information & Purchase Action #}
+            <div class="col-12 col-md-6 quickview-details-col">
+                {% if manufacturer %}
+                    <div class="quickview-brand">
+                        {{ manufacturer.translated.name }}
+                    </div>
+                {% endif %}
+
+                <h3 class="quickview-title">
+                    <a href="{{ detailUrl }}" title="{{ name }}">
+                        {{ name }}
+                    </a>
+                </h3>
+
+                {# Metadata Block (matching product card style) #}
+                <div class="quickview-meta">
+                    {% if sku %}
+                        <div class="quickview-meta-row">
+                            <span class="meta-label">{{ lblItemNumber }}:</span>
+                            <span class="meta-val">{{ sku }}</span>
+                        </div>
+                    {% endif %}
+
+                    {% if product.ean %}
+                        <div class="quickview-meta-row">
+                            <span class="meta-label">{{ lblUpc }}:</span>
+                            <span class="meta-val">{{ product.ean }}</span>
+                        </div>
+                    {% elseif product.translated.customFields.upc or product.translated.customFields.custom_upc %}
+                        <div class="quickview-meta-row">
+                            <span class="meta-label">{{ lblUpc }}:</span>
+                            <span class="meta-val">{{ product.translated.customFields.upc ?: product.translated.customFields.custom_upc }}</span>
+                        </div>
+                    {% endif %}
+
+                    <div class="quickview-meta-row">
+                        <span class="meta-label">{{ lblAvailable }}:</span>
+                        {% set availableStock = product.availableStock %}
+                        {% set stock = product.stock %}
+                        {% if availableStock is not null and availableStock > 0 %}
+                            <span class="meta-val stock-in">{{ availableStock }}</span>
+                        {% elseif stock is not null and stock > 0 %}
+                            <span class="meta-val stock-in">{{ stock }}</span>
+                        {% elseif product.available and not product.isCloseout %}
+                            <span class="meta-val stock-in">{{ lblInStock }}</span>
+                        {% else %}
+                            <span class="meta-val stock-out">{{ lblOutOfStock }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                {# Price Section #}
+                <div class="quickview-price-section">
+                    <div class="quickview-price-primary">
+                        {{ price.unitPrice|currency }}
+                    </div>
+
+                    <div class="quickview-price-secondary">
+                        <span class="price-item">
+                            <span class="price-lbl">{{ lblMsrp }} :</span>
+                            <span class="price-amt">{{ msrpVal|currency }}</span>
+                        </span>
+                        <span class="price-item">
+                            <span class="price-lbl">{{ lblMap }} :</span>
+                            <span class="price-amt">{{ mapVal|currency }}</span>
+                        </span>
+                    </div>
+                </div>
+
+                {# Short Description summary #}
+                {% if product.translated.description %}
+                    <div class="quickview-short-desc">
+                        {{ product.translated.description|striptags|slice(0, 180) }}...
+                    </div>
+                {% endif %}
+
+                {# Buy & Quantity Form #}
+                <form action="{{ path('frontend.checkout.line-item.add') }}"
+                      method="post"
+                      class="buy-widget quickview-buy-form"
+                      data-add-to-cart="true">
+
+                    <input type="hidden" name="redirectTo" value="frontend.cart.offcanvas">
+                    <input type="hidden" name="redirectParameters" data-redirect-parameters="true" value="{{ {productId: id}|json_encode }}">
+                    <input type="hidden" name="lineItems[{{ id }}][id]" value="{{ id }}">
+                    <input type="hidden" name="lineItems[{{ id }}][referencedId]" value="{{ id }}">
+                    <input type="hidden" name="lineItems[{{ id }}][type]" value="product">
+                    <input type="hidden" name="lineItems[{{ id }}][stackable]" value="1">
+                    <input type="hidden" name="lineItems[{{ id }}][removable]" value="1">
+                    <input type="hidden" name="product-name" value="{{ name }}">
+
+                    <div class="quickview-qty-row">
+                        <label for="qv-qty-{{ id }}" class="quickview-qty-label">{{ lblQty }}:</label>
+                        <div class="quickview-qty-control">
+                            <button type="button" class="qv-qty-btn qv-qty-minus" onclick="var i=document.getElementById('qv-qty-{{ id }}'); var v=parseInt(i.value,10)||1; if(v>1){ i.value=v-1; }">-</button>
+                            <input type="number"
+                                   id="qv-qty-{{ id }}"
+                                   name="lineItems[{{ id }}][quantity]"
+                                   value="{{ product.minPurchase ?: 1 }}"
+                                   min="{{ product.minPurchase ?: 1 }}"
+                                   max="{{ product.maxPurchase ?: (product.availableStock ?: 100) }}"
+                                   step="{{ product.purchaseSteps ?: 1 }}"
+                                   class="form-control quickview-qty-input" />
+                            <button type="button" class="qv-qty-btn qv-qty-plus" onclick="var i=document.getElementById('qv-qty-{{ id }}'); var v=parseInt(i.value,10)||1; var max=parseInt(i.max,10)||100; if(v<max){ i.value=v+1; }">+</button>
+                        </div>
+                    </div>
+
+                    <div class="quickview-action-buttons">
+                        {% if displayBuyButton and config('core.listing.allowBuyInListing') %}
+                            <button type="submit"
+                                    name="redirectTo"
+                                    value="frontend.cart.offcanvas"
+                                    class="btn btn-primary qv-btn-add">
+                                {{ btnAddText }}
+                            </button>
+                            <button type="button"
+                                    class="btn btn-primary qv-btn-buy"
+                                    onclick="var f=this.closest('form'); if(f){ var r=f.querySelector('input[name=redirectTo]'); if(r) r.value='frontend.checkout.confirm.page'; HTMLFormElement.prototype.submit.call(f); }">
+                                {{ btnBuyText }}
+                            </button>
+                        {% else %}
+                            <a href="{{ detailUrl }}" class="btn btn-primary qv-btn-add">
+                                {{ btnAddText }}
+                            </a>
+                            <a href="{{ detailUrl }}" class="btn btn-primary qv-btn-buy">
+                                {{ btnBuyText }}
+                            </a>
+                        {% endif %}
+                    </div>
+                </form>
+
+                {# Secondary Actions: Wishlist and Full Details link #}
+                <div class="quickview-secondary-actions">
+                    {% set addToWishlistOptions = {
+                        productId: id,
+                        router: {
+                            add: {
+                                afterLoginPath: path('frontend.wishlist.add.after.login', { productId: id }),
+                                path: path('frontend.wishlist.product.add', { productId: id }),
+                            },
+                            remove: {
+                                path: path('frontend.wishlist.product.remove', { productId: id }),
+                            }
+                        },
+                        texts: {
+                            add: 'listing.addToWishlist'|trans|sw_sanitize,
+                            remove: 'listing.removeFromWishlist'|trans|sw_sanitize
+                        },
+                    } %}
+                    <button type="button"
+                            class="qv-wishlist-action-btn product-wishlist-btn product-wishlist-{{ id }} product-wishlist-not-added"
+                            data-add-to-wishlist="true"
+                            data-product-id="{{ id }}"
+                            data-add-to-wishlist-options="{{ addToWishlistOptions|json_encode }}">
+                        <span class="icon-wishlist-not-added">
+                            <svg class="icon icon-heart" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+                        </span>
+                        <span class="icon-wishlist-added">
+                            <svg class="icon icon-heart-fill" width="16" height="16" viewBox="0 0 24 24" fill="#8c1d2f" stroke="#8c1d2f" stroke-width="2"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+                        </svg>
+                        </span>
+                        <span class="qv-wishlist-text">{{ 'listing.addToWishlist'|trans|sw_sanitize }}</span>
+                    </button>
+
+                    <a href="{{ detailUrl }}" class="qv-view-detail-link">
+                        {{ 'listing.boxProductDetails'|trans|default('View Full Details') }} &rarr;
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        {# Specifications Section (if properties exist) #}
+        {% if product.properties and product.properties.count > 0 %}
+            <div class="quickview-properties-section mt-4 pt-3 border-top">
+                <h5 class="quickview-section-heading">Specifications</h5>
+                <div class="row row-cols-1 row-cols-sm-2 g-2 quickview-properties-grid">
+                    {% for property in product.properties %}
+                        <div class="col">
+                            <div class="qv-prop-item">
+                                <span class="qv-prop-label">{{ property.group.translated.name }}:</span>
+                                <span class="qv-prop-val">{{ property.translated.name }}</span>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    {% set lblItemNumber = 'zanders.productCard.itemNumber'|trans %}
+    {% if 'zanders.' in lblItemNumber|lower or lblItemNumber == '' %}{% set lblItemNumber = 'Item Number' %}{% endif %}
+
+    {% set lblUpc = 'zanders.productCard.upc'|trans %}
+    {% if 'zanders.' in lblUpc|lower or lblUpc == '' %}{% set lblUpc = 'UPC' %}{% endif %}
+
+    {% set lblAvailable = 'zanders.productCard.available'|trans %}
+    {% if 'zanders.' in lblAvailable|lower or lblAvailable == '' %}{% set lblAvailable = 'Available' %}{% endif %}
+
+    {% set lblInStock = 'zanders.productCard.inStock'|trans %}
+    {% if 'zanders.' in lblInStock|lower or lblInStock == '' %}{% set lblInStock = 'In stock' %}{% endif %}
+
+    {% set lblOutOfStock = 'zanders.productCard.outOfStock'|trans %}
+    {% if 'zanders.' in lblOutOfStock|lower or lblOutOfStock == '' %}{% set lblOutOfStock = 'Out of stock' %}{% endif %}
+
+    {% set lblQty = 'zanders.productCard.qty'|trans %}
+    {% if 'zanders.' in lblQty|lower or lblQty == '' %}{% set lblQty = 'Qty' %}{% endif %}
+
+    {% set lblMsrp = 'zanders.productCard.msrp'|trans %}
+    {% if 'zanders.' in lblMsrp|lower or lblMsrp == '' %}{% set lblMsrp = 'MSRP' %}{% endif %}
+
+    {% set lblMap = 'zanders.productCard.map'|trans %}
+    {% if 'zanders.' in lblMap|lower or lblMap == '' %}{% set lblMap = 'MAP' %}{% endif %}
+
+    {% set lblQuickView = 'zanders.productCard.quickView'|trans %}
+    {% if 'zanders.' in lblQuickView|lower or lblQuickView == '' %}{% set lblQuickView = 'Quick View' %}{% endif %}
+
+    {% set btnAddText = 'zanders.productCard.addToCart'|trans %}
+    {% if 'zanders.' in btnAddText|lower or btnAddText == '' %}{% set btnAddText = 'ADD TO CART' %}{% endif %}
+
+    {% set btnBuyText = 'zanders.productCard.buyNow'|trans %}
+    {% if 'zanders.' in btnBuyText|lower or btnBuyText == '' %}{% set btnBuyText = 'BUY NOW' %}{% endif %}
+
+    {% if isStandalone %}
+                </div>
+            </div>
+        </body>
+        </html>
+    {% endif %}
+{% endblock %}
+

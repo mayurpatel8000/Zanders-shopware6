@@ -1,0 +1,34 @@
+{
+    "zanders": {
+        "compare": {
+            "title": "Compare Products",
+            "subtitle": "Compare technical specifications, pricing, and availability side-by-side.",
+            "emptyTitle": "No Products Selected for Comparison",
+            "emptyText": "You have not selected any products to compare yet. Browse our catalog and click the compare icon on any product card.",
+            "backToShop": "Continue Shopping",
+            "clearAll": "Clear All",
+            "maxProductsReached": "You can compare up to 4 products at a time.",
+            "productAdded": "Product added to comparison.",
+            "productRemoved": "Product removed from comparison.",
+            "compareNow": "Compare Now",
+            "itemsSelected": "%count% of 4 items selected",
+            "stickyBarTitle": "Product Comparison",
+            "generalSpecs": "General Information",
+            "techSpecs": "Technical Specifications",
+            "brand": "Manufacturer",
+            "sku": "Item Number",
+            "upc": "UPC",
+            "availability": "Availability",
+            "inStock": "In Stock",
+            "outOfStock": "Out of Stock",
+            "price": "Price",
+            "msrp": "MSRP",
+            "map": "MAP",
+            "addToCart": "Add to Cart",
+            "highlightDifferences": "Highlight Differences",
+            "hideSimilarities": "Show Only Differences",
+            "remove": "Remove"
+        }
+    }
+}
+

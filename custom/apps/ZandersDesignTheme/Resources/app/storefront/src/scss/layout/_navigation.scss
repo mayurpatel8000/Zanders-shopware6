@@ -180,14 +180,14 @@
                             justify-content: space-between !important;
                             width: 100% !important;
                             height: auto !important;
-                            padding: 12px 18px !important;
+                            padding: 18px 18px !important;
                             margin: 0 !important;
-                            border-bottom: 1px solid #CCCCCC !important;
+                            border-bottom: 1px solid #000000 !important;
                             background-color: #DDDDDD !important;
-                            font-size: 13px !important;
+                            font-size: 14px !important;
                             line-height: 18px !important;
                             color: #000000 !important;
-                            font-weight: 500 !important;
+                            font-weight: 400 !important;
                             text-transform: uppercase !important;
                             text-decoration: none !important;
                             position: relative !important;
@@ -251,27 +251,28 @@
                             position: absolute !important;
                             left: 280px !important;
                             top: 0 !important;
-                            width: 380px !important;
+                            width: 100% !important;
                             min-height: 180px !important;
-                            max-height: 600px !important;
+                            max-height: 372px !important;
                             overflow-y: auto !important;
-                            background-color: #FFFFFF !important;
+                            background-color: #DDDDDD !important;
                             box-shadow: 6px 6px 20px rgba(0, 0, 0, 0.15) !important;
-                            border: 1px solid #E2E2E2 !important;
-                            padding: 16px 20px !important;
+                            border: 0 !important;
+                            padding: 0 !important;
                             z-index: 1060 !important;
                             flex-wrap: wrap;
                             align-content: flex-start;
-                            gap: 8px 16px;
+                            gap: 0;
 
                             .navigation-flyout-col,
                             > div {
-                                width: calc(50% - 8px) !important;
-                                flex: 0 0 calc(50% - 8px) !important;
-                                max-width: calc(50% - 8px) !important;
-                                margin: 0 0 8px 0 !important;
+                                width: 100% !important;
+                                flex: 0 0 100% !important;
+                                max-width: 100% !important;
+                                margin: 0 0 0 0 !important;
                                 padding: 0 !important;
                                 position: relative !important;
+                                border-bottom: 1px solid #000000;
                             }
 
                             a.navigation-flyout-link {
@@ -279,8 +280,8 @@
                                 background: transparent !important;
                                 border: 0 !important;
                                 padding: 4px 0 !important;
-                                font-size: 13px !important;
-                                font-weight: 600 !important;
+                                font-size: 14px !important;
+                                font-weight: 400 !important;
                                 color: #111111 !important;
                                 text-transform: capitalize !important;
                                 text-decoration: none !important;
@@ -335,7 +336,7 @@
 
     // Open by default on the Homepage
     body.is-ctl-index,
-    body.is-act-index,
+    body.is-active-route-frontend-detail-page,
     body.is-active-route-frontend-home-page {
         .navbar-nav > li.dropdown.nav-item:first-of-type {
             > .dropdown-menu {

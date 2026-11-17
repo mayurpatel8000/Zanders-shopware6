@@ -41,7 +41,7 @@
         height: 100%;
     }
     .cms-section-default {
-        padding-left: 320px;
+        padding-left: 320px;       
     }
     .cms-block.pos-0 {
         .cms-block-container {
@@ -131,9 +131,35 @@
             margin-bottom: 28px;
         }
     } 
+    
+}
+.is-act-home {
+    .cms-element-product-slider {
+        .cms-element-title {
+            font-weight: 500;
+            font-size: 49px;
+            line-height: 1.2;
+            color: $primary;
+            text-transform: uppercase;
+            border-bottom: 4px solid $primary;
+            margin-bottom: 40px;
+        }
+        p {
+            margin-bottom: 0;
+        }
+    }     
 }
 
-
+@media screen and (max-width: 1024px) { 
+    .is-act-home {
+        .home-hero-section {
+            .cms-section-default {
+                padding-left: 14px;
+            }
+            min-height: fit-content;
+        }        
+    }   
+}
 
 
 

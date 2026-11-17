@@ -1,9 +1,24 @@
 {% block component_age_verification_modal %}
-<div class="age-verification-backdrop d-flex align-items-center justify-content-center p-3" id="ageVerificationModal" role="dialog" aria-modal="true" aria-labelledby="ageVerificationTitle" aria-describedby="ageVerificationDesc">
-    <div class="age-verification-modal bg-white w-100 rounded-0 text-center position-relative">
+{% set lblTitle = 'zanders.ageVerification.title'|trans %}
+{% if 'zanders.' in lblTitle|lower or lblTitle == '' %}{% set lblTitle = 'VERIFY YOUR AGE' %}{% endif %}
+
+{% set lblDesc = 'zanders.ageVerification.description'|trans %}
+{% if 'zanders.' in lblDesc|lower or lblDesc == '' %}{% set lblDesc = "Certain states prohibit advertising or marketing of firearms, ammunition, and related firearm components to minors. We'd like to ensure that you're 18 years of age or older before allowing you to shop our site." %}{% endif %}
+
+{% set lblQuestion = 'zanders.ageVerification.question'|trans %}
+{% if 'zanders.' in lblQuestion|lower or lblQuestion == '' %}{% set lblQuestion = 'Are you 18 years of age or older?' %}{% endif %}
+
+{% set lblYes = 'zanders.ageVerification.btnYes'|trans %}
+{% if 'zanders.' in lblYes|lower or lblYes == '' %}{% set lblYes = 'YES' %}{% endif %}
+
+{% set lblNo = 'zanders.ageVerification.btnNo'|trans %}
+{% if 'zanders.' in lblNo|lower or lblNo == '' %}{% set lblNo = 'NO' %}{% endif %}
+
+<div class="age-verification-backdrop" id="ageVerificationModal" role="dialog" aria-modal="true" aria-labelledby="ageVerificationTitle" aria-describedby="ageVerificationDesc">
+    <div class="age-verification-modal">
         {% block component_age_verification_modal_logo %}
             {% if theme_config('sw-logo-desktop') %}
-                <div class="age-verification-logo-wrap text-center mb-3 mb-md-4">
+                <div class="age-verification-logo-wrap text-center mb-3">
                     <img src="{{ theme_config('sw-logo-desktop')|sw_encode_url }}"
                          alt="{{ 'header.logoLink'|trans|striptags }}"
                          class="img-fluid age-verification-logo">
@@ -12,30 +27,30 @@
         {% endblock %}
 
         {% block component_age_verification_modal_title %}
-            <h2 class="age-verification-title text-dark text-uppercase fw-medium mb-3" id="ageVerificationTitle">
-                {{ 'zanders.ageVerification.title'|trans|sw_sanitize }}
+            <h2 class="age-verification-title" id="ageVerificationTitle">
+                {{ lblTitle }}
             </h2>
         {% endblock %}
 
         {% block component_age_verification_modal_description %}
-            <p class="age-verification-desc text-secondary mb-3 mb-md-4" id="ageVerificationDesc">
-                {{ 'zanders.ageVerification.description'|trans|sw_sanitize }}
+            <p class="age-verification-desc" id="ageVerificationDesc">
+                {{ lblDesc }}
             </p>
         {% endblock %}
 
         {% block component_age_verification_modal_question %}
-            <p class="age-verification-question text-dark fw-medium mb-4">
-                {{ 'zanders.ageVerification.question'|trans|sw_sanitize }}
+            <p class="age-verification-question">
+                {{ lblQuestion }}
             </p>
         {% endblock %}
 
         {% block component_age_verification_modal_actions %}
-            <div class="age-verification-actions d-flex align-items-center justify-content-center gap-3 gap-sm-4">
-                <button type="button" class="btn btn-age-verify btn-age-yes rounded-0 text-uppercase fw-bold" id="ageVerificationYes">
-                    {{ 'zanders.ageVerification.btnYes'|trans|sw_sanitize }}
+            <div class="age-verification-actions">
+                <button type="button" class="btn btn-age-verify btn-age-yes" id="ageVerificationYes">
+                    {{ lblYes }}
                 </button>
-                <button type="button" class="btn btn-age-verify btn-age-no rounded-0 text-uppercase fw-bold" id="ageVerificationNo">
-                    {{ 'zanders.ageVerification.btnNo'|trans|sw_sanitize }}
+                <button type="button" class="btn btn-age-verify btn-age-no" id="ageVerificationNo">
+                    {{ lblNo }}
                 </button>
             </div>
         {% endblock %}
@@ -145,4 +160,3 @@
     })();
 </script>
 {% endblock %}
-

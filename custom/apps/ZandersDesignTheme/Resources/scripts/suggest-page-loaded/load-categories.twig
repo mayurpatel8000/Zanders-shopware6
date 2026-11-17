@@ -1,0 +1,53 @@
+{% set products = hook.page.searchResult.entities %}
+{% set categoryIds = [] %}
+{% for product in products %}
+    {% if product.categoryTree %}
+        {% for catId in product.categoryTree %}
+            {% if catId not in categoryIds %}
+                {% set categoryIds = categoryIds|merge([catId]) %}
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+{% endfor %}
+
+{% if categoryIds|length > 0 %}
+    {% set categories = services.repository.search('category', {
+        'ids': categoryIds
+    }) %}
+    
+    {% set catMap = {} %}
+    {% set catLevels = {} %}
+    {% for cat in categories %}
+        {% set catMap = catMap|merge({(cat.id): cat.translated.name}) %}
+        {% set catLevels = catLevels|merge({(cat.id): cat.level}) %}
+    {% endfor %}
+    
+    {# Build breadcrumbs for each product #}
+    {% set productCategories = {} %}
+    {% for product in products %}
+        {% set crumbs = [] %}
+        {% if product.categoryTree %}
+            {% for catId in product.categoryTree %}
+                {% set lvl = catLevels[catId] ?? 0 %}
+                {% set name = catMap[catId] ?? null %}
+                {# Filter out root navigation categories (level 1 or name = 'zanders' / 'Catalog') if deeper categories exist #}
+                {% if name and lvl > 2 %}
+                    {% set crumbs = crumbs|merge([name]) %}
+                {% endif %}
+            {% endfor %}
+            {# If crumbs is empty (no level > 2), fallback to level 2 (e.g. Zanders Exclusive, On Sale) #}
+            {% if crumbs|length == 0 %}
+                {% for catId in product.categoryTree %}
+                    {% set lvl = catLevels[catId] ?? 0 %}
+                    {% set name = catMap[catId] ?? null %}
+                    {% if name and lvl > 1 and name != 'Catalog' %}
+                        {% set crumbs = crumbs|merge([name]) %}
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        {% endif %}
+        {% set productCategories = productCategories|merge({(product.id): crumbs}) %}
+    {% endfor %}
+    
+    {% do hook.page.addArrayExtension('productCategories', productCategories) %}
+{% endif %}

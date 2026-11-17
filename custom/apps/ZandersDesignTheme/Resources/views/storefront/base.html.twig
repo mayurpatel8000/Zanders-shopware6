@@ -1,9 +1,360 @@
 {% sw_extends '@Storefront/storefront/base.html.twig' %}
 
-{% block base_pseudo_modal %}
+{% block base_body_inner %}
+    <script>
+        (function() {
+            try {
+                var verified = localStorage.getItem('zanders_age_verified') === 'true';
+                if (!verified) {
+                    var cookies = document.cookie.split(';');
+                    for (var i = 0; i < cookies.length; i++) {
+                        if (cookies[i].trim().indexOf('zanders_age_verified=true') === 0) {
+                            verified = true;
+                            break;
+                        }
+                    }
+                }
+                if (verified) {
+                    document.documentElement.classList.add('zanders-age-verified');
+                } else {
+                    document.documentElement.classList.add('age-verification-modal-open');
+                }
+            } catch (e) {}
+        })();
+    </script>
+
     {{ parent() }}
 
-    {% block base_age_verification_modal %}
-        {% sw_include '@Storefront/storefront/component/age-verification-modal.html.twig' %}
-    {% endblock %}
+    {% sw_include '@Storefront/storefront/component/age-verification-modal.html.twig' %}
+{% endblock %}
+
+{% block base_body_script %}
+    {{ parent() }}
+
+    <script>
+    (function() {
+        var msgAdded = {{ 'wishlist.itemAddedSuccess'|trans|json_encode|raw }};
+        var msgRemoved = {{ 'wishlist.itemDeleteSuccess'|trans|json_encode|raw }};
+
+        function getWishlistStorageKey() {
+            return 'wishlist-' + (window.salesChannelId || '');
+        }
+
+        function getLocalWishlist() {
+            try {
+                var raw = localStorage.getItem(getWishlistStorageKey());
+                return raw ? JSON.parse(raw) : {};
+            } catch (e) {
+                return {};
+            }
+        }
+
+        function saveLocalWishlist(products) {
+            try {
+                if (!products || Object.keys(products).length === 0) {
+                    localStorage.removeItem(getWishlistStorageKey());
+                } else {
+                    localStorage.setItem(getWishlistStorageKey(), JSON.stringify(products));
+                }
+            } catch (e) {}
+        }
+
+        function updateBadge(count) {
+            var badges = document.querySelectorAll('#wishlist-basket, .header-wishlist-badge');
+            badges.forEach(function(badge) {
+                badge.innerHTML = count > 0 ? count : '';
+            });
+            var liveArea = document.querySelector('#wishlist-basket-live-area');
+            if (liveArea) {
+                var tmpl = liveArea.getAttribute('data-wishlist-live-area-text') || 'You have %counter% wishlist items';
+                liveArea.innerHTML = '<p>' + tmpl.replace('%counter%', count) + '</p>';
+            }
+        }
+
+        function showWishlistNotification(isAdded) {
+            var msg = isAdded ? msgAdded : msgRemoved;
+            var alertType = isAdded ? 'success' : 'info';
+
+            // 1. Fixed floating toast container
+            var toastContainer = document.getElementById('zanders-toast-container');
+            if (!toastContainer) {
+                toastContainer = document.createElement('div');
+                toastContainer.id = 'zanders-toast-container';
+                toastContainer.className = 'zanders-toast-container';
+                document.body.appendChild(toastContainer);
+            }
+
+            var alertEl = document.createElement('div');
+            alertEl.className = 'alert alert-' + alertType + ' alert-dismissible fade show d-flex align-items-center shadow zanders-wishlist-alert';
+            alertEl.setAttribute('role', 'alert');
+            alertEl.setAttribute('aria-live', 'polite');
+
+            var iconHtml = isAdded
+                ? '<span class="alert-icon me-2 flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg></span>'
+                : '<span class="alert-icon me-2 flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg></span>';
+
+            alertEl.innerHTML = iconHtml +
+                '<div class="alert-content-container flex-grow-1">' + msg + '</div>' +
+                '<button type="button" class="btn-close ms-2" aria-label="Close"></button>';
+
+            var closeBtn = alertEl.querySelector('.btn-close');
+            if (closeBtn) {
+                closeBtn.addEventListener('click', function() {
+                    alertEl.classList.remove('show');
+                    setTimeout(function() { alertEl.remove(); }, 250);
+                });
+            }
+
+            toastContainer.appendChild(alertEl);
+
+            // 2. Also inject into standard Shopware .flashbags if present
+            var flashbags = document.querySelector('.flashbags');
+            if (flashbags) {
+                var flashEl = alertEl.cloneNode(true);
+                var fClose = flashEl.querySelector('.btn-close');
+                if (fClose) {
+                    fClose.addEventListener('click', function() {
+                        flashEl.classList.remove('show');
+                        setTimeout(function() { flashEl.remove(); }, 250);
+                    });
+                }
+                flashbags.appendChild(flashEl);
+                setTimeout(function() {
+                    if (flashEl.parentNode) {
+                        flashEl.classList.remove('show');
+                        setTimeout(function() { flashEl.remove(); }, 250);
+                    }
+                }, 4000);
+            }
+
+            // Auto dismiss toast after 4s
+            setTimeout(function() {
+                if (alertEl.parentNode) {
+                    alertEl.classList.remove('show');
+                    setTimeout(function() { alertEl.remove(); }, 250);
+                }
+            }, 4000);
+        }
+
+        function syncButtonState(btn, isAdded) {
+            btn.classList.toggle('product-wishlist-added', isAdded);
+            btn.classList.toggle('is-wishlist', isAdded);
+            btn.classList.toggle('product-wishlist-not-added', !isAdded);
+            btn.classList.remove('product-wishlist-loading');
+        }
+
+        function syncAllButtons() {
+            var products = getLocalWishlist();
+            var buttons = document.querySelectorAll('.product-wishlist-btn');
+            buttons.forEach(function(btn) {
+                var pid = btn.getAttribute('data-product-id');
+                if (!pid) {
+                    var cls = btn.className.match(/product-wishlist-([a-f0-9]{32})/);
+                    if (cls) pid = cls[1];
+                }
+                if (pid) {
+                    var isAdded = Boolean(products[pid]);
+                    syncButtonState(btn, isAdded);
+                }
+            });
+            updateBadge(Object.keys(products).length);
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', syncAllButtons);
+        } else {
+            syncAllButtons();
+        }
+
+        document.addEventListener('click', function(e) {
+            var btn = e.target.closest('.product-wishlist-btn');
+            if (!btn) return;
+
+            var pid = btn.getAttribute('data-product-id');
+            if (!pid) {
+                var cls = btn.className.match(/product-wishlist-([a-f0-9]{32})/);
+                if (cls) pid = cls[1];
+            }
+            if (!pid) return;
+
+            e.preventDefault();
+            e.stopPropagation();
+
+            var products = getLocalWishlist();
+            var wasAdded = Boolean(products[pid]);
+            var willBeAdded = !wasAdded;
+
+            if (willBeAdded) {
+                products[pid] = new Date().toISOString();
+            } else {
+                delete products[pid];
+            }
+
+            saveLocalWishlist(products);
+
+            var matchingBtns = document.querySelectorAll('.product-wishlist-' + pid + ', [data-product-id="' + pid + '"].product-wishlist-btn');
+            matchingBtns.forEach(function(b) {
+                syncButtonState(b, willBeAdded);
+            });
+
+            var count = Object.keys(products).length;
+            updateBadge(count);
+
+            // Display Shopware default notification
+            showWishlistNotification(willBeAdded);
+
+            if (window.customerLoggedInState) {
+                var optStr = btn.getAttribute('data-add-to-wishlist-options');
+                var opt = optStr ? JSON.parse(optStr) : null;
+                if (opt && opt.router) {
+                    var url = willBeAdded ? opt.router.add.path : opt.router.remove.path;
+                    fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Content-Type': 'application/json'
+                        }
+                    }).catch(function() {});
+                }
+            }
+
+            try {
+                var basket = document.querySelector('#wishlist-basket');
+                if (basket && window.PluginManager) {
+                    var storage = window.PluginManager.getPluginInstanceFromElement(basket, 'WishlistStorage');
+                    if (storage && storage.$emitter) {
+                        storage.$emitter.publish(willBeAdded ? 'Wishlist/onProductAdded' : 'Wishlist/onProductRemoved', {
+                            products: products,
+                            productId: pid
+                        });
+                    }
+                }
+            } catch (err) {}
+        }, true);
+
+        window.addEventListener('storage', function(e) {
+            if (e.key === getWishlistStorageKey()) {
+                syncAllButtons();
+            }
+        });
+
+        /* =========================================================
+           Quick View Modal Launcher & Dynamic Loader
+           ========================================================= */
+        {% set qvTitle = 'zanders.productCard.quickView'|trans %}
+        {% if 'zanders.' in qvTitle|lower or qvTitle == '' %}{% set qvTitle = 'Quick View' %}{% endif %}
+        var qvTitleText = {{ qvTitle|json_encode|raw }};
+
+        function getOrCreateQuickviewModal() {
+            var modalEl = document.getElementById('zanders-quickview-modal');
+            if (modalEl) return modalEl;
+
+            modalEl = document.createElement('div');
+            modalEl.id = 'zanders-quickview-modal';
+            modalEl.className = 'modal fade quickview-modal';
+            modalEl.setAttribute('tabindex', '-1');
+            modalEl.setAttribute('aria-hidden', 'true');
+            modalEl.innerHTML = 
+                '<div class="modal-dialog modal-dialog-centered modal-lg">' +
+                    '<div class="modal-content">' +
+                        '<div class="modal-header">' +
+                            '<span class="quickview-modal-header-badge">' + qvTitleText + '</span>' +
+                            '<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>' +
+                        '</div>' +
+                        '<div class="modal-body position-relative p-0">' +
+                            '<div class="quickview-loading-spinner text-center py-5">' +
+                                '<div class="spinner-border text-danger" style="color: #8c1d2f !important; width: 3rem; height: 3rem;" role="status">' +
+                                    '<span class="visually-hidden">Loading...</span>' +
+                                '</div>' +
+                            '</div>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>';
+            document.body.appendChild(modalEl);
+
+            // Close on submit of add-to-cart when offcanvas opens
+            modalEl.addEventListener('submit', function(ev) {
+                var form = ev.target.closest('.quickview-buy-form');
+                if (!form) return;
+                var r = form.querySelector('input[name=redirectTo]');
+                if (r && r.value === 'frontend.cart.offcanvas') {
+                    setTimeout(function() {
+                        var bs = window.bootstrap && window.bootstrap.Modal
+                            ? window.bootstrap.Modal.getInstance(modalEl)
+                            : null;
+                        if (bs) bs.hide();
+                    }, 400);
+                }
+            });
+
+            return modalEl;
+        }
+
+        document.addEventListener('click', function(e) {
+            var btn = e.target.closest('.product-quickview-btn');
+            if (!btn) return;
+
+            e.preventDefault();
+            e.stopPropagation();
+
+            var url = btn.getAttribute('data-url') || btn.getAttribute('href');
+            if (!url) {
+                var pid = btn.getAttribute('data-product-id');
+                if (pid) {
+                    url = '/quickview/' + pid;
+                }
+            }
+            if (!url) return;
+
+            var modalEl = getOrCreateQuickviewModal();
+            var modalBody = modalEl.querySelector('.modal-body');
+            modalBody.innerHTML = 
+                '<div class="quickview-loading-spinner text-center py-5">' +
+                    '<div class="spinner-border text-danger" style="color: #8c1d2f !important; width: 3rem; height: 3rem;" role="status">' +
+                        '<span class="visually-hidden">Loading...</span>' +
+                    '</div>' +
+                '</div>';
+
+            var bsModal = window.bootstrap && window.bootstrap.Modal
+                ? window.bootstrap.Modal.getOrCreateInstance(modalEl)
+                : null;
+            if (bsModal) {
+                bsModal.show();
+            } else {
+                modalEl.classList.add('show');
+                modalEl.style.display = 'block';
+            }
+
+            fetch(url, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(function(res) {
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                return res.text();
+            })
+            .then(function(html) {
+                var doc = new DOMParser().parseFromString(html, 'text/html');
+                var container = doc.querySelector('.zanders-quickview-container');
+                modalBody.innerHTML = container ? container.outerHTML : html;
+                if (window.PluginManager) {
+                    window.PluginManager.initializePluginsInParentElement(modalBody);
+                }
+                syncAllButtons();
+            })
+            .catch(function(err) {
+                modalBody.innerHTML = '<div class="alert alert-danger m-3">Unable to load product preview. Please try again.</div>';
+            });
+        }, true);
+
+        var observer = new MutationObserver(function() {
+            syncAllButtons();
+        });
+        var target = document.querySelector('main') || document.body;
+        if (target) {
+            observer.observe(target, { childList: true, subtree: true });
+        }
+    })();
+    </script>
 {% endblock %}

@@ -4,6 +4,7 @@
   "views": [
      "@Storefront",
      "@Plugins",
+     "@ZandersProductCompare",
      "@ZandersDesignTheme"
   ],
   "style": [

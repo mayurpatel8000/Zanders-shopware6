@@ -1,0 +1,235 @@
+{% set products = page.products %}
+{% set matrix = page.propertyMatrix %}
+
+{% set lblEmptyTitle = 'zanders.compare.emptyTitle'|trans %}
+{% if 'zanders.' in lblEmptyTitle|lower or lblEmptyTitle == '' %}{% set lblEmptyTitle = 'No Products to Compare' %}{% endif %}
+
+{% set lblEmptyText = 'zanders.compare.emptyText'|trans %}
+{% if 'zanders.' in lblEmptyText|lower or lblEmptyText == '' %}{% set lblEmptyText = 'You have not added any products to compare yet.' %}{% endif %}
+
+{% set lblBackToShop = 'zanders.compare.backToShop'|trans %}
+{% if 'zanders.' in lblBackToShop|lower or lblBackToShop == '' %}{% set lblBackToShop = 'Back to Shopping' %}{% endif %}
+
+{% set lblHighlightDiff = 'zanders.compare.highlightDifferences'|trans %}
+{% if 'zanders.' in lblHighlightDiff|lower or lblHighlightDiff == '' %}{% set lblHighlightDiff = 'Highlight differences' %}{% endif %}
+
+{% set lblClearAll = 'zanders.compare.clearAll'|trans %}
+{% if 'zanders.' in lblClearAll|lower or lblClearAll == '' %}{% set lblClearAll = 'Clear All' %}{% endif %}
+
+{% set lblRemove = 'zanders.compare.remove'|trans %}
+{% if 'zanders.' in lblRemove|lower or lblRemove == '' %}{% set lblRemove = 'Remove' %}{% endif %}
+
+{% set lblAddToCart = 'zanders.compare.addToCart'|trans %}
+{% if 'zanders.' in lblAddToCart|lower or lblAddToCart == '' %}{% set lblAddToCart = 'Add to Cart' %}{% endif %}
+
+{% set lblGeneralSpecs = 'zanders.compare.generalSpecs'|trans %}
+{% if 'zanders.' in lblGeneralSpecs|lower or lblGeneralSpecs == '' %}{% set lblGeneralSpecs = 'General Information' %}{% endif %}
+
+{% set lblBrand = 'zanders.compare.brand'|trans %}
+{% if 'zanders.' in lblBrand|lower or lblBrand == '' %}{% set lblBrand = 'Brand' %}{% endif %}
+
+{% set lblSku = 'zanders.compare.sku'|trans %}
+{% if 'zanders.' in lblSku|lower or lblSku == '' %}{% set lblSku = 'Item Number' %}{% endif %}
+
+{% set lblUpc = 'zanders.compare.upc'|trans %}
+{% if 'zanders.' in lblUpc|lower or lblUpc == '' %}{% set lblUpc = 'UPC' %}{% endif %}
+
+{% set lblAvailability = 'zanders.compare.availability'|trans %}
+{% if 'zanders.' in lblAvailability|lower or lblAvailability == '' %}{% set lblAvailability = 'Availability' %}{% endif %}
+
+{% set lblInStock = 'zanders.compare.inStock'|trans %}
+{% if 'zanders.' in lblInStock|lower or lblInStock == '' %}{% set lblInStock = 'In Stock' %}{% endif %}
+
+{% set lblOutOfStock = 'zanders.compare.outOfStock'|trans %}
+{% if 'zanders.' in lblOutOfStock|lower or lblOutOfStock == '' %}{% set lblOutOfStock = 'Out of Stock' %}{% endif %}
+
+{% set lblTechSpecs = 'zanders.compare.techSpecs'|trans %}
+{% if 'zanders.' in lblTechSpecs|lower or lblTechSpecs == '' %}{% set lblTechSpecs = 'Technical Specifications' %}{% endif %}
+
+{% if products is empty or products.count == 0 %}
+    <div class="compare-empty-state text-center py-5">
+        <div class="compare-empty-icon mb-3">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#991020" stroke-width="1.5">
+                <path d="M16 16v1a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v1"></path>
+                <path d="M18 8h4a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-4"></path>
+                <circle cx="8" cy="12" r="2"></circle>
+                <path d="M12 2v4"></path>
+                <path d="M12 18v4"></path>
+            </svg>
+        </div>
+        <h3 class="compare-empty-title">{{ lblEmptyTitle }}</h3>
+        <p class="compare-empty-text text-muted mx-auto" style="max-width: 540px;">
+            {{ lblEmptyText }}
+        </p>
+        <a href="{{ path('frontend.home.page') }}" class="btn btn-primary mt-3">
+            {{ lblBackToShop }}
+        </a>
+    </div>
+{% else %}
+    {% set countProducts = products.count %}
+    {% set lblSelected = 'zanders.compare.itemsSelected'|trans({'%count%': countProducts}) %}
+    {% if 'zanders.' in lblSelected|lower or lblSelected == '' %}{% set lblSelected = countProducts ~ ' / 4 Products Selected' %}{% endif %}
+
+    <div class="compare-table-wrapper table-responsive">
+        <table class="table compare-table align-middle" data-compare-table="true">
+            <thead>
+                <tr class="compare-row compare-row-products">
+                    <th class="compare-col-label compare-col-sticky">
+                        <div class="compare-header-actions">
+                            <span class="compare-count-badge badge bg-secondary">
+                                {{ lblSelected }}
+                            </span>
+                            <div class="form-check mt-3">
+                                <input class="form-check-input" type="checkbox" id="highlightDiffCheckbox" data-highlight-diff="true">
+                                <label class="form-check-label small" for="highlightDiffCheckbox">
+                                    {{ lblHighlightDiff }}
+                                </label>
+                            </div>
+                            <button type="button" class="btn btn-outline-danger btn-sm mt-3 w-100" data-compare-clear-all="true">
+                                {{ lblClearAll }}
+                            </button>
+                        </div>
+                    </th>
+                    {% for product in products %}
+                        <th class="compare-col-product text-center" data-product-id="{{ product.id }}">
+                            <div class="compare-product-header position-relative">
+                                <button type="button" 
+                                        class="btn-close compare-remove-btn position-absolute top-0 end-0" 
+                                        aria-label="{{ lblRemove }}"
+                                        data-compare-remove="{{ product.id }}"
+                                        title="{{ lblRemove }}">
+                                </button>
+                                
+                                <div class="compare-product-img-wrap mb-2">
+                                    <a href="{{ seoUrl('frontend.detail.page', {'productId': product.id}) }}" title="{{ product.translated.name }}">
+                                        {% if product.cover and product.cover.media %}
+                                            <img src="{{ product.cover.media.url }}" 
+                                                 alt="{{ product.cover.media.translated.alt ?: product.translated.name }}" 
+                                                 class="img-fluid compare-product-img" />
+                                        {% else %}
+                                            <div class="compare-no-img d-flex align-items-center justify-content-center">
+                                                <span class="text-muted small">No Image</span>
+                                            </div>
+                                        {% endif %}
+                                    </a>
+                                </div>
+
+                                <h4 class="compare-product-title">
+                                    <a href="{{ seoUrl('frontend.detail.page', {'productId': product.id}) }}" class="text-dark text-decoration-none">
+                                        {{ product.translated.name }}
+                                    </a>
+                                </h4>
+
+                                <div class="compare-product-pricing my-2">
+                                    {% if product.calculatedPrice %}
+                                        <div class="compare-price-val fw-bold text-danger fs-5">
+                                            {{ product.calculatedPrice.unitPrice|currency }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="compare-product-cart-action mt-2">
+                                    {% if product.available and product.childCount == 0 %}
+                                        <form action="{{ path('frontend.checkout.line-item.add') }}"
+                                              method="post"
+                                              class="buy-widget"
+                                              data-add-to-cart="true">
+                                            <input type="hidden" name="redirectTo" value="frontend.cart.offcanvas">
+                                            <input type="hidden" name="lineItems[{{ product.id }}][id]" value="{{ product.id }}">
+                                            <input type="hidden" name="lineItems[{{ product.id }}][type]" value="product">
+                                            <input type="hidden" name="lineItems[{{ product.id }}][referencedId]" value="{{ product.id }}">
+                                            <input type="hidden" name="lineItems[{{ product.id }}][stackable]" value="1">
+                                            <input type="hidden" name="lineItems[{{ product.id }}][quantity]" value="1">
+                                            <button type="submit" class="btn btn-primary btn-sm w-100 compare-add-to-cart-btn">
+                                                {{ lblAddToCart }}
+                                            </button>
+                                        </form>
+                                    {% else %}
+                                        <a href="{{ seoUrl('frontend.detail.page', {'productId': product.id}) }}" class="btn btn-outline-secondary btn-sm w-100">
+                                            View Details
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {# Section: General Info #}
+                <tr class="compare-section-header">
+                    <td colspan="{{ products.count + 1 }}" class="fw-bold bg-light text-uppercase small py-2 px-3">
+                        {{ lblGeneralSpecs }}
+                    </td>
+                </tr>
+
+                {# Manufacturer #}
+                <tr class="compare-row">
+                    <td class="compare-label-cell fw-semibold text-muted">{{ lblBrand }}</td>
+                    {% for product in products %}
+                        <td class="compare-val-cell text-center">
+                            {{ product.manufacturer ? product.manufacturer.translated.name : '—' }}
+                        </td>
+                    {% endfor %}
+                </tr>
+
+                {# Item Number #}
+                <tr class="compare-row">
+                    <td class="compare-label-cell fw-semibold text-muted">{{ lblSku }}</td>
+                    {% for product in products %}
+                        <td class="compare-val-cell text-center">
+                            {{ product.productNumber ?: '—' }}
+                        </td>
+                    {% endfor %}
+                </tr>
+
+                {# UPC #}
+                <tr class="compare-row">
+                    <td class="compare-label-cell fw-semibold text-muted">{{ lblUpc }}</td>
+                    {% for product in products %}
+                        <td class="compare-val-cell text-center">
+                            {{ product.ean ?: (product.customFields.zanders_upc ?? '—') }}
+                        </td>
+                    {% endfor %}
+                </tr>
+
+                {# Availability #}
+                <tr class="compare-row">
+                    <td class="compare-label-cell fw-semibold text-muted">{{ lblAvailability }}</td>
+                    {% for product in products %}
+                        <td class="compare-val-cell text-center">
+                            {% if product.available %}
+                                <span class="badge bg-success">{{ lblInStock }}</span>
+                            {% else %}
+                                <span class="badge bg-danger">{{ lblOutOfStock }}</span>
+                            {% endif %}
+                        </td>
+                    {% endfor %}
+                </tr>
+
+                {# Section: Technical Specifications (Properties) #}
+                {% if matrix|length > 0 %}
+                    <tr class="compare-section-header">
+                        <td colspan="{{ products.count + 1 }}" class="fw-bold bg-light text-uppercase small py-2 px-3">
+                            {{ lblTechSpecs }}
+                        </td>
+                    </tr>
+
+                    {% for groupRow in matrix %}
+                        <tr class="compare-row {% if groupRow.hasDifference %}row-has-difference{% endif %}">
+                            <td class="compare-label-cell fw-semibold text-muted">
+                                {{ groupRow.name }}
+                            </td>
+                            {% for product in products %}
+                                <td class="compare-val-cell text-center">
+                                    {{ groupRow.values[product.id] ?? '—' }}
+                                </td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+{% endif %}
+

@@ -1,0 +1,82 @@
+{% sw_extends '@Storefront/storefront/page/account/register/index.html.twig' %}
+
+{% block page_account_register_header %}
+    {% set lblHeader = 'zanders.accountPage.header'|trans %}
+    {% if 'zanders.' in lblHeader|lower or lblHeader == '' %}{% set lblHeader = 'LOGIN OR CREATE AN ACCOUNT' %}{% endif %}
+
+    <div class="zanders-account-header mb-4 pt-3">
+        <h1 class="zanders-account-title text-uppercase fw-bold m-0 pb-2">
+            {{ lblHeader }}
+        </h1>
+        <div class="zanders-account-title-rule"></div>
+    </div>
+{% endblock %}
+
+{% block page_account_register_inner %}
+    {% set hasRegisterErrors = formViolations is defined and formViolations is not empty %}
+    {% set showRegister = hasRegisterErrors or app.request.query.get('register') == '1' %}
+
+    {% set lblNewDealersTitle = 'zanders.accountPage.newDealersTitle'|trans %}
+    {% if 'zanders.' in lblNewDealersTitle|lower or lblNewDealersTitle == '' %}{% set lblNewDealersTitle = 'NEW DEALERS' %}{% endif %}
+
+    {% set lblNewDealersText = 'zanders.accountPage.newDealersText'|trans %}
+    {% if 'zanders.' in lblNewDealersText|lower or lblNewDealersText == '' %}{% set lblNewDealersText = "To Qualify As A Zanders Sporting Goods Dealer Is Simple. We Require A Signed Copy Of Your Federal Firearms License, A Copy Of Your Retail Merchant's License, And A Copy Of Any State License Your State May Require For Retail Gun Sales. For More Information Please Contact Us By Phone At 1-800-851-4373 Or Use The Contact Us Button Below." %}{% endif %}
+
+    {% set lblNewDealerSignUp = 'zanders.accountPage.newDealerSignUp'|trans %}
+    {% if 'zanders.' in lblNewDealerSignUp|lower or lblNewDealerSignUp == '' %}{% set lblNewDealerSignUp = 'NEW DEALER SIGN-UP' %}{% endif %}
+
+    <div class="row g-4 align-items-stretch mb-5 zanders-account-login-row">
+        {# Left Column: NEW DEALERS #}
+        <div class="col-12 col-lg-6">
+            <div class="card border-0 zanders-new-dealers-card h-100 p-4 p-md-5 d-flex flex-column justify-content-between align-items-center text-center">
+                <div class="w-100">
+                    <h2 class="zanders-new-dealers-title text-uppercase fw-bold mb-2">
+                        {{ lblNewDealersTitle }}
+                    </h2>
+                    <div class="zanders-title-underline-red mb-4 mx-auto"></div>
+
+                    <p class="zanders-new-dealers-desc mb-4">
+                        {{ lblNewDealersText }}
+                    </p>
+                </div>
+
+                <div class="mt-auto pt-3">
+                    <button type="button"
+                            class="btn btn-primary zanders-btn-new-dealer"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#dealer-register-collapse"
+                            aria-expanded="{{ showRegister ? 'true' : 'false' }}"
+                            aria-controls="dealer-register-collapse"
+                            onclick="setTimeout(function(){ var el=document.getElementById('dealer-register-collapse'); if(el){ el.scrollIntoView({behavior: 'smooth', block: 'start'}); } }, 150);">
+                        {{ lblNewDealerSignUp }}
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        {# Right Column: REGISTERED CUSTOMERS #}
+        <div class="col-12 col-lg-6">
+            <div class="card zanders-registered-customers-card h-100 p-4 p-md-5">
+                {% sw_include '@Storefront/storefront/component/account/login.html.twig' %}
+            </div>
+        </div>
+    </div>
+
+    {# Collapsible Registration Section for New Dealers #}
+    <div class="collapse{% if showRegister %} show{% endif %} mt-4 pt-4 border-top zanders-register-collapse-wrapper" id="dealer-register-collapse">
+        <div class="zanders-registration-wrapper">
+            <div class="d-flex align-items-center justify-content-between mb-4">
+                <h3 class="text-uppercase fw-bold m-0" style="color: #8c1d2f;">
+                    {{ 'account.registerPersonalHeader'|trans|sw_sanitize }}
+                </h3>
+                <button type="button"
+                        class="btn-close"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#dealer-register-collapse"
+                        aria-label="Close"></button>
+            </div>
+
+            {% sw_include '@Storefront/storefront/component/account/register.html.twig' %}
+        </div>
+    </div>
+{% endblock %}

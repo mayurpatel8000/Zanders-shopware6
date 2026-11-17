@@ -1,0 +1,41 @@
+{% sw_extends '@Storefront/storefront/base.html.twig' %}
+
+{% block base_content %}
+    {% set lblTitle = 'zanders.compare.title'|trans %}
+    {% if 'zanders.' in lblTitle|lower or lblTitle == '' %}{% set lblTitle = 'Product Comparison' %}{% endif %}
+
+    {% set lblSubtitle = 'zanders.compare.subtitle'|trans %}
+    {% if 'zanders.' in lblSubtitle|lower or lblSubtitle == '' %}{% set lblSubtitle = 'Compare specifications, features, and prices across selected products.' %}{% endif %}
+
+    <div class="compare-page py-4">
+        <div class="container">
+            {# Breadcrumb #}
+            <nav aria-label="breadcrumb" class="mb-3">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item">
+                        <a href="{{ path('frontend.home.page') }}" class="text-decoration-none text-muted">Home</a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">
+                        {{ lblTitle }}
+                    </li>
+                </ol>
+            </nav>
+
+            {# Page Header #}
+            <div class="compare-page-header pb-3 mb-4 border-bottom">
+                <h1 class="compare-page-title fs-2 fw-bold text-dark mb-1">
+                    {{ lblTitle }}
+                </h1>
+                <p class="compare-page-subtitle text-muted mb-0">
+                    {{ lblSubtitle }}
+                </p>
+            </div>
+
+            {# Comparison Table Container #}
+            <div id="compareContentContainer" data-compare-container="true">
+                {% sw_include '@ZandersProductCompare/storefront/component/compare/compare-table.html.twig' %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

@@ -1,0 +1,565 @@
+/*
+Quick View Modal Design
+==================================================
+Zanders-styled Quick View modal for previewing products:
+- Responsive 2-column modal layout (Media on left, details on right)
+- Clean image frame with interactive multi-image thumbnail strip
+- Prominent uppercase title & metadata block matching the product card
+- Crimson primary & secondary pricing (MSRP & MAP)
+- Quantity control with -/+ stepper
+- Side-by-side solid dark crimson action buttons (ADD TO CART & BUY NOW)
+- Wishlist integration & full details link
+- Specifications grid for firearm / product attributes
+*/
+
+.modal.quickview-modal,
+#zanders-quickview-modal {
+    .modal-dialog {
+        max-width: 860px;
+        margin: 1.75rem auto;
+
+        @media (max-width: 575.98px) {
+            margin: 0.5rem;
+            max-width: 100%;
+        }
+    }
+
+    .modal-content {
+        background-color: #ffffff;
+        border: none;
+        border-radius: 4px;
+        box-shadow: 0 12px 48px rgba(0, 0, 0, 0.18);
+        overflow: hidden;
+    }
+
+    .modal-header {
+        background-color: #ffffff;
+        border-bottom: 1px solid #f0f0f0;
+        padding: 14px 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        .quickview-modal-header-badge {
+            font-family: 'Poppins', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            color: #8c1d2f;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+        }
+
+        .btn-close {
+            margin: 0;
+            padding: 8px;
+            opacity: 0.65;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+
+            &:hover {
+                opacity: 1;
+                transform: scale(1.1);
+            }
+        }
+    }
+
+    .modal-body {
+        padding: 24px 28px 28px;
+
+        @media (max-width: 575.98px) {
+            padding: 16px;
+        }
+    }
+}
+
+.zanders-quickview-container {
+    font-family: 'Poppins', sans-serif;
+
+    /* Left Column: Media */
+    .quickview-media-col {
+        .quickview-main-image-wrapper {
+            background-color: #fbfbfb;
+            border: 1px solid #ebebeb;
+            border-radius: 4px;
+            height: 320px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            overflow: hidden;
+
+            @media (max-width: 767.98px) {
+                height: 240px;
+            }
+
+            .quickview-main-image {
+                max-height: 100%;
+                max-width: 100%;
+                width: auto;
+                height: auto;
+                object-fit: contain;
+                display: block;
+                transition: transform 0.2s ease;
+            }
+
+            .quickview-placeholder {
+                max-width: 140px;
+                opacity: 0.4;
+            }
+        }
+
+        .quickview-thumbnails-row {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+
+            .qv-thumb-btn {
+                width: 54px;
+                height: 54px;
+                border: 1px solid #e0e0e0;
+                border-radius: 3px;
+                background-color: #ffffff;
+                padding: 3px;
+                cursor: pointer;
+                flex-shrink: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+                img {
+                    max-width: 100%;
+                    max-height: 100%;
+                    object-fit: contain;
+                }
+
+                &:hover,
+                &.is-active {
+                    border-color: #8c1d2f;
+                    box-shadow: 0 0 0 1px #8c1d2f;
+                }
+            }
+        }
+    }
+
+    /* Right Column: Details */
+    .quickview-details-col {
+        display: flex;
+        flex-direction: column;
+
+        .quickview-brand {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            color: #777777;
+            margin-bottom: 4px;
+        }
+
+        .quickview-title {
+            font-size: 18px;
+            font-weight: 700;
+            line-height: 1.35;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+
+            a {
+                color: #1a2530;
+                text-decoration: none;
+                transition: color 0.2s ease;
+
+                &:hover {
+                    color: #8c1d2f;
+                }
+            }
+        }
+
+        /* Metadata Block */
+        .quickview-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #f0f0f0;
+
+            .quickview-meta-row {
+                font-size: 13px;
+                line-height: 1.45;
+                color: #222222;
+
+                .meta-label {
+                    color: #777777;
+                    font-weight: 400;
+                    margin-right: 4px;
+                }
+
+                .meta-val {
+                    color: #1a2530;
+                    font-weight: 700;
+
+                    &.stock-in {
+                        color: #1a2530;
+                    }
+
+                    &.stock-out {
+                        color: #c20017;
+                    }
+                }
+            }
+        }
+
+        /* Pricing */
+        .quickview-price-section {
+            margin-bottom: 12px;
+
+            .quickview-price-primary {
+                font-size: 24px;
+                font-weight: 700;
+                color: #8c1d2f;
+                line-height: 1.2;
+                margin-bottom: 4px;
+            }
+
+            .quickview-price-secondary {
+                display: flex;
+                gap: 16px;
+                font-size: 13px;
+                font-weight: 600;
+                color: #8c1d2f;
+
+                .price-item {
+                    display: inline-flex;
+                    gap: 4px;
+
+                    .price-lbl {
+                        color: #8c1d2f;
+                    }
+
+                    .price-amt {
+                        color: #8c1d2f;
+                    }
+                }
+            }
+        }
+
+        /* Short Description */
+        .quickview-short-desc {
+            font-size: 13px;
+            line-height: 1.55;
+            color: #555555;
+            margin-bottom: 16px;
+        }
+
+        /* Buy & Quantity Form */
+        .quickview-buy-form {
+            width: 100%;
+            margin-bottom: 14px;
+        }
+
+        /* Quantity row */
+        .quickview-qty-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 14px;
+
+            .quickview-qty-label {
+                font-size: 14px;
+                font-weight: 500;
+                color: #495057;
+                margin: 0;
+            }
+
+            .quickview-qty-control {
+                display: inline-flex;
+                align-items: center;
+                border: 1px solid #d2d6dc;
+                border-radius: 3px;
+                overflow: hidden;
+                background-color: #ffffff;
+
+                .qv-qty-btn {
+                    width: 32px;
+                    height: 34px;
+                    background-color: #f4f6f8;
+                    border: none;
+                    font-size: 15px;
+                    font-weight: 600;
+                    color: #333333;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    transition: background-color 0.15s ease;
+
+                    &:hover {
+                        background-color: #e5e8ec;
+                    }
+                }
+
+                .quickview-qty-input {
+                    width: 50px;
+                    height: 34px;
+                    border: none;
+                    border-left: 1px solid #e0e4e8;
+                    border-right: 1px solid #e0e4e8;
+                    border-radius: 0;
+                    text-align: center;
+                    font-size: 14px;
+                    font-weight: 600;
+                    color: #212529;
+                    padding: 0;
+                    box-shadow: none;
+                    -moz-appearance: textfield;
+
+                    &::-webkit-inner-spin-button,
+                    &::-webkit-outer-spin-button {
+                        -webkit-appearance: none;
+                        margin: 0;
+                    }
+
+                    &:focus {
+                        outline: none;
+                        box-shadow: none;
+                    }
+                }
+            }
+        }
+
+        /* Action buttons row */
+        .quickview-action-buttons {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+
+            .qv-btn-add,
+            .qv-btn-buy {
+                flex: 1 1 0;
+                background-color: #8c1d2f;
+                border: 1px solid #8c1d2f;
+                color: #ffffff;
+                font-family: 'Poppins', sans-serif;
+                font-size: 13px;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 0.3px;
+                border-radius: 2px;
+                padding: 10px 6px;
+                line-height: 1.2;
+                text-align: center;
+                white-space: nowrap;
+                box-shadow: none;
+                text-decoration: none;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                transition: background-color 0.2s ease, border-color 0.2s ease;
+
+                &:hover,
+                &:focus {
+                    background-color: #6e1322;
+                    border-color: #6e1322;
+                    color: #ffffff;
+                    text-decoration: none;
+                }
+            }
+        }
+
+        /* Secondary actions */
+        .quickview-secondary-actions {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 10px;
+            border-top: 1px solid #f0f0f0;
+
+            button.qv-wishlist-action-btn,
+            .qv-wishlist-action-btn {
+                background: none;
+                border: none;
+                padding: 4px 0;
+                font-size: 13px;
+                font-weight: 500;
+                color: #666666;
+                cursor: pointer;
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                text-decoration: none;
+                transition: color 0.2s ease;
+
+                svg {
+                    width: 16px;
+                    height: 16px;
+                    stroke: currentColor;
+                    fill: none;
+                    pointer-events: none;
+                    transition: transform 0.2s ease, fill 0.2s ease;
+                }
+
+                .icon-wishlist-added {
+                    display: none;
+                }
+
+                .icon-wishlist-not-added {
+                    display: inline-flex;
+                }
+
+                &:hover {
+                    color: #8c1d2f;
+
+                    svg {
+                        transform: scale(1.15);
+                    }
+                }
+
+                &.product-wishlist-added,
+                &.is-wishlist,
+                &.is-active {
+                    color: #8c1d2f;
+                    font-weight: 600;
+
+                    .icon-wishlist-not-added {
+                        display: none;
+                    }
+
+                    .icon-wishlist-added {
+                        display: inline-flex;
+
+                        svg {
+                            fill: #8c1d2f;
+                            stroke: #8c1d2f;
+                        }
+                    }
+                }
+            }
+
+            .qv-view-detail-link {
+                font-size: 13px;
+                font-weight: 600;
+                color: #8c1d2f;
+                text-decoration: none;
+                transition: color 0.2s ease;
+
+                &:hover {
+                    color: #6e1322;
+                    text-decoration: underline;
+                }
+            }
+        }
+    }
+
+    /* Specifications section */
+    .quickview-properties-section {
+        .quickview-section-heading {
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #1a2530;
+            margin-bottom: 10px;
+        }
+
+        .quickview-properties-grid {
+            .qv-prop-item {
+                background-color: #fbfbfb;
+                border: 1px solid #f0f0f0;
+                border-radius: 3px;
+                padding: 6px 12px;
+                font-size: 12px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+
+                .qv-prop-label {
+                    color: #777777;
+                    font-weight: 400;
+                    margin-right: 8px;
+                }
+
+                .qv-prop-val {
+                    color: #1a2530;
+                    font-weight: 600;
+                    text-align: right;
+                }
+            }
+        }
+    }
+}
+
+
+/*
+Wishlist Notification Toast
+==================================================
+Default Shopware-style notification for adding/removing items to wishlist
+*/
+.zanders-toast-container {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    z-index: 1070;
+    max-width: 440px;
+    width: calc(100% - 48px);
+    pointer-events: none;
+
+    .alert.zanders-wishlist-alert,
+    .zanders-wishlist-alert {
+        pointer-events: auto;
+        margin-bottom: 10px;
+        background-color: #d1e7dd;
+        border: 1px solid #badbcc;
+        color: #0f5132;
+        border-radius: 4px;
+        padding: 12px 16px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        animation: toastSlideIn 0.3s ease-out;
+
+        &.alert-info {
+            background-color: #cff4fc;
+            border-color: #b6effb;
+            color: #055160;
+        }
+
+        .alert-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: currentColor;
+
+            svg {
+                width: 20px;
+                height: 20px;
+            }
+        }
+
+        .alert-content-container {
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            line-height: 1.4;
+        }
+
+        .btn-close {
+            padding: 10px;
+            font-size: 11px;
+            opacity: 0.7;
+
+            &:hover {
+                opacity: 1;
+            }
+        }
+    }
+}
+
+@keyframes toastSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-16px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

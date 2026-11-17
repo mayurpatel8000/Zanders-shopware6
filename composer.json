@@ -40,8 +40,14 @@
         }
     ],
     "prefer-stable": true,
+    "autoload": {
+        "psr-4": {
+            "Zanders\\ProductCompare\\": "custom/plugins/ZandersProductCompare/src/"
+        }
+    },
     "config": {
         "allow-plugins": {
+            "php-http/discovery": false,
             "symfony/flex": true,
             "symfony/runtime": true
         },

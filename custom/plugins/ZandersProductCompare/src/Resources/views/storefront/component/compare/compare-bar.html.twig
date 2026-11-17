@@ -1,0 +1,36 @@
+{% set lblBarTitle = 'zanders.compare.stickyBarTitle'|trans %}
+{% if 'zanders.' in lblBarTitle|lower or lblBarTitle == '' %}{% set lblBarTitle = 'Compare Products' %}{% endif %}
+
+{% set lblClearAll = 'zanders.compare.clearAll'|trans %}
+{% if 'zanders.' in lblClearAll|lower or lblClearAll == '' %}{% set lblClearAll = 'Clear All' %}{% endif %}
+
+{% set lblCompareNow = 'zanders.compare.compareNow'|trans %}
+{% if 'zanders.' in lblCompareNow|lower or lblCompareNow == '' %}{% set lblCompareNow = 'Compare Now' %}{% endif %}
+
+<div class="zanders-compare-bar" id="zandersCompareBar" data-zanders-compare-bar="true" style="display: none;">
+    <div class="container">
+        <div class="compare-bar-inner d-flex flex-wrap align-items-center justify-content-between py-2 px-3">
+            <div class="compare-bar-left d-flex align-items-center gap-3">
+                <div class="compare-bar-title-wrap">
+                    <span class="compare-bar-title fw-bold text-dark">
+                        {{ lblBarTitle }}
+                    </span>
+                    <span class="compare-bar-counter badge bg-danger ms-2" id="compareBarCount">0/4</span>
+                </div>
+                <div class="compare-bar-items d-flex align-items-center gap-2" id="compareBarThumbnails">
+                    {# Populated dynamically by Storefront JS #}
+                </div>
+            </div>
+
+            <div class="compare-bar-actions d-flex align-items-center gap-2 mt-2 mt-md-0">
+                <button type="button" class="btn btn-outline-secondary btn-sm" id="compareBarClearAll">
+                    {{ lblClearAll }}
+                </button>
+                <a href="{{ path('frontend.compare.page') }}" class="btn btn-primary btn-sm px-3" id="compareBarCompareBtn">
+                    {{ lblCompareNow }}
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+

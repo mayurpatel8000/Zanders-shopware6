@@ -36,15 +36,36 @@
       "msrp": "UVP",
       "map": "MAP",
       "qty": "Menge",
+      "addToCart": "IN DEN WARENKORB",
+      "buyNow": "JETZT KAUFEN",
       "compare": "Vergleichen",
       "quickView": "Schnellansicht",
-      "addToCart": "IN DEN WARENKORB",
-      "buyNow": "JETZT KAUFEN"
+      "selectOptions": "OPTIONEN WÄHLEN"
     },
     "footer": {
       "stayConnected": "Bleiben Sie verbunden",
       "copyrightNotice": "© 1996-%year% Zanders Sporting Goods",
       "distributorNotice": "Zanders Sporting Goods ist ein Großhändler für Schusswaffen, der ausschließlich an bundesweit lizenzierte Händler verkauft"
+    },
+    "cart": {
+      "myCart": "Mein Warenkorb",
+      "goToCart": "ZUM WARENKORB",
+      "cartSubtotal": "Zwischensumme",
+      "awayFromFreeShipping": "bis zum kostenlosen Versand",
+      "freeShippingQualified": "Sie haben Anspruch auf kostenlosen Versand!"
+    },
+    "accountPage": {
+      "header": "ANMELDEN ODER KONTO ERSTELLEN",
+      "newDealersTitle": "NEUE HÄNDLER",
+      "newDealersText": "Die Qualifizierung als Zanders Sporting Goods-Händler ist einfach. Wir benötigen eine unterschriebene Kopie Ihrer FFL, Ihrer Händlerlizenz und etwaiger staatlicher Lizenzen. Für weitere Informationen rufen Sie uns bitte unter 1-800-851-4373 an oder nutzen Sie den Button unten.",
+      "newDealerSignUp": "NEUE HÄNDLERREGISTRIERUNG",
+      "registeredCustomersTitle": "REGISTRIERTE KUNDEN",
+      "registeredCustomersSubtitle": "Wenn Sie bereits ein Konto bei uns haben, melden Sie sich bitte an.",
+      "rememberMe": "Angemeldet bleiben",
+      "whatsThis": "Was ist das?",
+      "requiredFields": "* Pflichtfelder",
+      "loginButton": "ANMELDEN",
+      "forgotPassword": "Passwort vergessen?"
     }
   }
 }

@@ -1,0 +1,1 @@
+(()=>{"use strict";let a=window.PluginManager;a&&a.register("ZandersProductComparePlugin",class{init(){}},"[data-zanders-compare]")})();
