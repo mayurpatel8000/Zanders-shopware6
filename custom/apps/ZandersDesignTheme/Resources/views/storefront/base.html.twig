@@ -26,13 +26,108 @@
     {{ parent() }}
 
     {% sw_include '@Storefront/storefront/component/age-verification-modal.html.twig' %}
+    {% sw_include '@Storefront/storefront/component/product-finder/product-finder.html.twig' %}
 {% endblock %}
 
 {% block base_body_script %}
     {{ parent() }}
 
+    {# Hidden native Shopware alert templates for JavaScript use across Storefront #}
+    <div id="zanders-alert-templates" style="display: none;" aria-hidden="true">
+        <div data-alert-template="success">
+            {% sw_include '@Storefront/storefront/utilities/alert.html.twig' with {
+                type: 'success',
+                content: '__MESSAGE__',
+                dismissible: true
+            } %}
+        </div>
+        <div data-alert-template="info">
+            {% sw_include '@Storefront/storefront/utilities/alert.html.twig' with {
+                type: 'info',
+                content: '__MESSAGE__',
+                dismissible: true
+            } %}
+        </div>
+        <div data-alert-template="warning">
+            {% sw_include '@Storefront/storefront/utilities/alert.html.twig' with {
+                type: 'warning',
+                content: '__MESSAGE__',
+                dismissible: true
+            } %}
+        </div>
+        <div data-alert-template="danger">
+            {% sw_include '@Storefront/storefront/utilities/alert.html.twig' with {
+                type: 'danger',
+                content: '__MESSAGE__',
+                dismissible: true
+            } %}
+        </div>
+    </div>
+
     <script>
     (function() {
+        // Global reusable function for native Shopware .flashbags messages
+        window.showStorefrontAlert = function(msg, alertType) {
+            alertType = alertType || 'info';
+
+            // 1. Locate default Shopware .flashbags container
+            var flashbags = document.querySelector('.flashbags');
+            if (!flashbags) {
+                var main = document.getElementById('content-main') || document.querySelector('main.content-main') || document.querySelector('.container-main');
+                if (main) {
+                    flashbags = document.createElement('div');
+                    flashbags.className = 'flashbags container';
+                    main.prepend(flashbags);
+                } else {
+                    return;
+                }
+            }
+
+            // 2. Remove any existing dynamic alerts to prevent stacking clutter
+            var existing = flashbags.querySelectorAll('.zanders-dynamic-alert');
+            existing.forEach(function(el) { el.remove(); });
+
+            // 3. Clone template from hidden templates
+            var tplWrap = document.querySelector('#zanders-alert-templates [data-alert-template="' + alertType + '"]');
+            var alertEl = null;
+
+            if (tplWrap && tplWrap.firstElementChild) {
+                alertEl = tplWrap.firstElementChild.cloneNode(true);
+                alertEl.classList.add('zanders-dynamic-alert');
+                var contentEl = alertEl.querySelector('.alert-content-container');
+                if (contentEl) {
+                    contentEl.textContent = msg;
+                }
+            } else {
+                alertEl = document.createElement('div');
+                alertEl.className = 'alert alert-' + alertType + ' alert-dismissible fade show d-flex align-items-center zanders-dynamic-alert';
+                alertEl.setAttribute('role', 'alert');
+                alertEl.innerHTML = '<div class="alert-content-container flex-grow-1">' + msg + '</div>' +
+                    '<button type="button" class="btn-close ms-2" data-bs-dismiss="alert" aria-label="Close"></button>';
+            }
+
+            // 4. Bind close button
+            var closeBtn = alertEl.querySelector('.btn-close');
+            if (closeBtn) {
+                closeBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    alertEl.classList.remove('show');
+                    setTimeout(function() { alertEl.remove(); }, 250);
+                });
+            }
+
+            // 5. Append to default Shopware .flashbags container
+            flashbags.appendChild(alertEl);
+
+            // 6. Auto-dismiss after 4 seconds
+            setTimeout(function() {
+                if (alertEl.parentNode) {
+                    alertEl.classList.remove('show');
+                    setTimeout(function() { alertEl.remove(); }, 250);
+                }
+            }, 4000);
+        };
+
         var msgAdded = {{ 'wishlist.itemAddedSuccess'|trans|json_encode|raw }};
         var msgRemoved = {{ 'wishlist.itemDeleteSuccess'|trans|json_encode|raw }};
 
@@ -74,66 +169,7 @@
         function showWishlistNotification(isAdded) {
             var msg = isAdded ? msgAdded : msgRemoved;
             var alertType = isAdded ? 'success' : 'info';
-
-            // 1. Fixed floating toast container
-            var toastContainer = document.getElementById('zanders-toast-container');
-            if (!toastContainer) {
-                toastContainer = document.createElement('div');
-                toastContainer.id = 'zanders-toast-container';
-                toastContainer.className = 'zanders-toast-container';
-                document.body.appendChild(toastContainer);
-            }
-
-            var alertEl = document.createElement('div');
-            alertEl.className = 'alert alert-' + alertType + ' alert-dismissible fade show d-flex align-items-center shadow zanders-wishlist-alert';
-            alertEl.setAttribute('role', 'alert');
-            alertEl.setAttribute('aria-live', 'polite');
-
-            var iconHtml = isAdded
-                ? '<span class="alert-icon me-2 flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg></span>'
-                : '<span class="alert-icon me-2 flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg></span>';
-
-            alertEl.innerHTML = iconHtml +
-                '<div class="alert-content-container flex-grow-1">' + msg + '</div>' +
-                '<button type="button" class="btn-close ms-2" aria-label="Close"></button>';
-
-            var closeBtn = alertEl.querySelector('.btn-close');
-            if (closeBtn) {
-                closeBtn.addEventListener('click', function() {
-                    alertEl.classList.remove('show');
-                    setTimeout(function() { alertEl.remove(); }, 250);
-                });
-            }
-
-            toastContainer.appendChild(alertEl);
-
-            // 2. Also inject into standard Shopware .flashbags if present
-            var flashbags = document.querySelector('.flashbags');
-            if (flashbags) {
-                var flashEl = alertEl.cloneNode(true);
-                var fClose = flashEl.querySelector('.btn-close');
-                if (fClose) {
-                    fClose.addEventListener('click', function() {
-                        flashEl.classList.remove('show');
-                        setTimeout(function() { flashEl.remove(); }, 250);
-                    });
-                }
-                flashbags.appendChild(flashEl);
-                setTimeout(function() {
-                    if (flashEl.parentNode) {
-                        flashEl.classList.remove('show');
-                        setTimeout(function() { flashEl.remove(); }, 250);
-                    }
-                }, 4000);
-            }
-
-            // Auto dismiss toast after 4s
-            setTimeout(function() {
-                if (alertEl.parentNode) {
-                    alertEl.classList.remove('show');
-                    setTimeout(function() { alertEl.remove(); }, 250);
-                }
-            }, 4000);
+            window.showStorefrontAlert(msg, alertType);
         }
 
         function syncButtonState(btn, isAdded) {

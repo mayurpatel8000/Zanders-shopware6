@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<custom-fields xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/shopware/shopware/trunk/src/Core/System/CustomField/Schema/custom-fields-1.0.xsd">
+    <custom-field-set>
+        <name>custom_zanders_product</name>
+        <label>Product Custom Attributes</label>
+        <label lang="de-DE">Produkt-Attribute</label>
+        <related-entities>
+            <product/>
+        </related-entities>
+        <fields>
+            <text name="upc">
+                <label>UPC</label>
+                <label lang="de-DE">UPC</label>
+                <placeholder>Enter UPC (e.g. 747115436491)</placeholder>
+                <placeholder lang="de-DE">UPC eingeben</placeholder>
+                <help-text>Universal Product Code (UPC / Barcode) for this product</help-text>
+                <help-text lang="de-DE">Universal Product Code (UPC / Barcode) für dieses Produkt</help-text>
+                <position>1</position>
+                <include-in-search>true</include-in-search>
+            </text>
+            <float name="msrp">
+                <label>MSRP</label>
+                <label lang="de-DE">UVP (MSRP)</label>
+                <placeholder>e.g. 899.00</placeholder>
+                <placeholder lang="de-DE">z.B. 899.00</placeholder>
+                <help-text>Manufacturer's Suggested Retail Price</help-text>
+                <help-text lang="de-DE">Unverbindliche Preisempfehlung des Herstellers</help-text>
+                <position>2</position>
+            </float>
+            <float name="map">
+                <label>MAP</label>
+                <label lang="de-DE">MAP</label>
+                <placeholder>e.g. 899.00</placeholder>
+                <placeholder lang="de-DE">z.B. 899.00</placeholder>
+                <help-text>Minimum Advertised Price</help-text>
+                <help-text lang="de-DE">Minimaler Angebotspreis (Minimum Advertised Price)</help-text>
+                <position>3</position>
+            </float>
+        </fields>
+    </custom-field-set>
+</custom-fields>

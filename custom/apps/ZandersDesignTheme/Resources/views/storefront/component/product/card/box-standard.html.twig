@@ -246,7 +246,7 @@
                 <button type="button"
                         class="product-card-icon-btn product-compare-btn"
                         data-product-id="{{ id }}"
-                        data-product-name="{{ product.translated.name }}"
+                        data-product-name="{{ product.translated.name|escape('html_attr') }}"
                         {% if product.cover and product.cover.media %}data-product-img="{{ product.cover.media.url }}"{% endif %}
                         data-product-compare-btn="true"
                         title="{{ lblCompare }}">

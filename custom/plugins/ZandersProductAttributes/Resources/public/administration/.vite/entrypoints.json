@@ -1,0 +1,23 @@
+{
+  "base": "/bundles/zandersproductattributes/administration/",
+  "entryPoints": {
+    "zanders-product-attributes": {
+      "css": [],
+      "dynamic": [],
+      "js": [
+        "/bundles/zandersproductattributes/administration/assets/zanders-product-attributes-DR3eeXL0.js"
+      ],
+      "legacy": false,
+      "preload": []
+    }
+  },
+  "legacy": false,
+  "metadatas": {},
+  "version": [
+    "7.1.0",
+    7,
+    1,
+    0
+  ],
+  "viteServer": null
+}

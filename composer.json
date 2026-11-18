@@ -42,7 +42,8 @@
     "prefer-stable": true,
     "autoload": {
         "psr-4": {
-            "Zanders\\ProductCompare\\": "custom/plugins/ZandersProductCompare/src/"
+            "Zanders\\ProductCompare\\": "custom/plugins/ZandersProductCompare/src/",
+            "Zanders\\ProductAttributes\\": "custom/plugins/ZandersProductAttributes/src/"
         }
     },
     "config": {

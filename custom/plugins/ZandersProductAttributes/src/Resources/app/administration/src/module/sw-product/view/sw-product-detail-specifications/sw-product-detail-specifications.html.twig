@@ -1,0 +1,96 @@
+{% block sw_product_detail_specifications_measurement %}
+    <mt-card
+        class="sw-product-detail-specification__custom-attributes"
+        position-identifier="sw-product-detail-specifications-custom-attributes"
+        :title="$t('zanders-product-attributes.cardTitle')"
+    >
+        <p class="text-muted mb-4" style="color: #52667a; font-size: 14px; line-height: 1.5; margin-bottom: 24px;">
+            {{ $t('zanders-product-attributes.description') }}
+        </p>
+
+        <sw-container columns="1fr" gap="20px">
+            {# UPC (Universal Product Code) Field #}
+            <sw-inherit-wrapper
+                v-if="product.customFields"
+                v-model:value="product.customFields.upc"
+                :has-parent="!!parentProduct.id"
+                :inherited-value="parentProduct.customFields ? parentProduct.customFields.upc : null"
+            >
+                <template #content="props">
+                    <mt-text-field
+                        name="zanders-custom-field-upc"
+                        :label="$t('zanders-product-attributes.labelUpc')"
+                        :placeholder="$t('zanders-product-attributes.placeholderUpc')"
+                        :help-text="$t('zanders-product-attributes.helpTextUpc')"
+                        :is-inheritance-field="props.isInheritField"
+                        :is-inherited="props.isInherited"
+                        :disabled="props.isInherited || !acl.can('product.editor')"
+                        :model-value="props.currentValue"
+                        @update:model-value="props.updateCurrentValue"
+                        @inheritance-restore="props.restoreInheritance"
+                        @inheritance-remove="props.removeInheritance"
+                    />
+                </template>
+            </sw-inherit-wrapper>
+
+            {# MSRP (Manufacturer Suggested Retail Price) Field #}
+            <sw-inherit-wrapper
+                v-if="product.customFields"
+                v-model:value="product.customFields.msrp"
+                :has-parent="!!parentProduct.id"
+                :inherited-value="parentProduct.customFields ? parentProduct.customFields.msrp : null"
+            >
+                <template #content="props">
+                    <mt-number-field
+                        name="zanders-custom-field-msrp"
+                        number-type="float"
+                        :digits="2"
+                        :min="0"
+                        allow-empty
+                        :label="$t('zanders-product-attributes.labelMsrp')"
+                        :placeholder="$t('zanders-product-attributes.placeholderMsrp')"
+                        :help-text="$t('zanders-product-attributes.helpTextMsrp')"
+                        :is-inheritance-field="props.isInheritField"
+                        :is-inherited="props.isInherited"
+                        :disabled="props.isInherited || !acl.can('product.editor')"
+                        :model-value="props.currentValue"
+                        @update:model-value="props.updateCurrentValue"
+                        @inheritance-restore="props.restoreInheritance"
+                        @inheritance-remove="props.removeInheritance"
+                    />
+                </template>
+            </sw-inherit-wrapper>
+
+            {# MAP (Minimum Advertised Price) Field #}
+            <sw-inherit-wrapper
+                v-if="product.customFields"
+                v-model:value="product.customFields.map"
+                :has-parent="!!parentProduct.id"
+                :inherited-value="parentProduct.customFields ? parentProduct.customFields.map : null"
+            >
+                <template #content="props">
+                    <mt-number-field
+                        name="zanders-custom-field-map"
+                        number-type="float"
+                        :digits="2"
+                        :min="0"
+                        allow-empty
+                        :label="$t('zanders-product-attributes.labelMap')"
+                        :placeholder="$t('zanders-product-attributes.placeholderMap')"
+                        :help-text="$t('zanders-product-attributes.helpTextMap')"
+                        :is-inheritance-field="props.isInheritField"
+                        :is-inherited="props.isInherited"
+                        :disabled="props.isInherited || !acl.can('product.editor')"
+                        :model-value="props.currentValue"
+                        @update:model-value="props.updateCurrentValue"
+                        @inheritance-restore="props.restoreInheritance"
+                        @inheritance-remove="props.removeInheritance"
+                    />
+                </template>
+            </sw-inherit-wrapper>
+        </sw-container>
+    </mt-card>
+
+    {# Keep standard measurements card below #}
+    {% parent %}
+{% endblock %}

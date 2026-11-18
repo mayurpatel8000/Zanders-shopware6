@@ -1,0 +1,168 @@
+{# Slide-out Drawer: Ammo Finder #}
+<div class="zanders-finder-drawer zanders-finder-drawer-ammo"
+     id="ammoFinderDrawer"
+     role="dialog"
+     aria-modal="true"
+     aria-labelledby="ammoFinderTitle"
+     aria-hidden="true">
+    
+    {# Close Button (Flush top-right square) #}
+    <div class="finder-drawer-close" data-finder-close aria-label="Close Ammo Finder">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+    </div>
+
+    {# Drawer Content Container #}
+    <div class="finder-drawer-content">
+        <h2 class="finder-drawer-title" id="ammoFinderTitle">Ammo Finder</h2>
+
+        {# Form Body #}
+        <form class="finder-drawer-body" id="ammoFinderForm" action="{{ seoUrl('frontend.navigation.page', { navigationId: '01a1aaf7f9bf73778aed252a546231af' }) }}" method="GET">
+            {# 1. Manufacturer #}
+            <div class="finder-select-group">
+                <select class="finder-select" name="manufacturer">
+                    <option value="">Select Manufacturer (47 options)</option>
+                    <option value="federal">Federal Premium</option>
+                    <option value="hornady">Hornady</option>
+                    <option value="winchester">Winchester Ammunition</option>
+                    <option value="cci">CCI</option>
+                    <option value="remington">Remington</option>
+                    <option value="fiocchi">Fiocchi</option>
+                    <option value="pmc">PMC</option>
+                    <option value="aguila">Aguila</option>
+                    <option value="magtech">Magtech</option>
+                    <option value="speer">Speer</option>
+                    <option value="barnes">Barnes</option>
+                    <option value="black-hills">Black Hills</option>
+                    <option value="norma">Norma</option>
+                    <option value="sellier-bellot">Sellier & Bellot</option>
+                    <option value="armscor">Armscor</option>
+                </select>
+            </div>
+
+            {# 2. Caliber #}
+            <div class="finder-select-group">
+                <select class="finder-select" name="caliber">
+                    <option value="">Select CALIBER (203 options)</option>
+                    <option value="9mm">9mm Luger</option>
+                    <option value="22lr">.22 LR</option>
+                    <option value="223rem">.223 Rem / 5.56 NATO</option>
+                    <option value="308win">.308 Win / 7.62 NATO</option>
+                    <option value="45acp">.45 ACP</option>
+                    <option value="380acp">.380 ACP</option>
+                    <option value="65creed">6.5 Creedmoor</option>
+                    <option value="12ga">12 Gauge</option>
+                    <option value="300blk">.300 Blackout</option>
+                    <option value="40sw">.40 S&W</option>
+                    <option value="357mag">.357 Magnum</option>
+                    <option value="38spl">.38 Special</option>
+                    <option value="44mag">.44 Magnum</option>
+                    <option value="10mm">10mm Auto</option>
+                    <option value="20ga">20 Gauge</option>
+                    <option value="30-06">.30-06 Springfield</option>
+                </select>
+            </div>
+
+            {# 3. Bullet Weight In Grains #}
+            <div class="finder-select-group">
+                <select class="finder-select" name="bullet_weight">
+                    <option value="">Select BULLET WEIGHT IN GRAINS (options)</option>
+                    <option value="55gr">55 Grain</option>
+                    <option value="115gr">115 Grain</option>
+                    <option value="124gr">124 Grain</option>
+                    <option value="147gr">147 Grain</option>
+                    <option value="40gr">40 Grain</option>
+                    <option value="62gr">62 Grain</option>
+                    <option value="168gr">168 Grain</option>
+                    <option value="175gr">175 Grain</option>
+                    <option value="230gr">230 Grain</option>
+                    <option value="180gr">180 Grain</option>
+                    <option value="150gr">150 Grain</option>
+                </select>
+            </div>
+
+            {# 4. Bullet Type #}
+            <div class="finder-select-group">
+                <select class="finder-select" name="bullet_type">
+                    <option value="">Select BULLET TYPE (27 options)</option>
+                    <option value="fmj">Full Metal Jacket (FMJ)</option>
+                    <option value="jhp">Jacketed Hollow Point (JHP)</option>
+                    <option value="sp">Soft Point (SP)</option>
+                    <option value="otm">Open Tip Match (OTM)</option>
+                    <option value="ballistic-tip">Ballistic Tip</option>
+                    <option value="solid-copper">Solid Copper</option>
+                    <option value="frangible">Frangible</option>
+                    <option value="lrn">Lead Round Nose (LRN)</option>
+                    <option value="wadcutter">Wadcutter</option>
+                </select>
+            </div>
+
+            {# 5. Gauge #}
+            <div class="finder-select-group">
+                <select class="finder-select" name="gauge">
+                    <option value="">Select GAUGE (6 options)</option>
+                    <option value="12ga">12 Gauge</option>
+                    <option value="20ga">20 Gauge</option>
+                    <option value="28ga">28 Gauge</option>
+                    <option value="410bore">.410 Bore</option>
+                    <option value="16ga">16 Gauge</option>
+                    <option value="10ga">10 Gauge</option>
+                </select>
+            </div>
+
+            {# 6. Shot Size #}
+            <div class="finder-select-group">
+                <select class="finder-select" name="shot_size">
+                    <option value="">Select SHOT SIZE (33 options)</option>
+                    <option value="00buck">#00 Buckshot</option>
+                    <option value="4buck">#4 Buckshot</option>
+                    <option value="75shot">#7.5 Shot</option>
+                    <option value="8shot">#8 Shot</option>
+                    <option value="9shot">#9 Shot</option>
+                    <option value="6shot">#6 Shot</option>
+                    <option value="4shot">#4 Shot</option>
+                    <option value="2shot">#2 Shot</option>
+                    <option value="bb">BB</option>
+                    <option value="slug">Rifled Slug</option>
+                </select>
+            </div>
+
+            {# 7. Length in Inches #}
+            <div class="finder-select-group">
+                <select class="finder-select" name="length_inches">
+                    <option value="">Select LENGTH IN INCHES (5 options)</option>
+                    <option value="2-34">2-3/4"</option>
+                    <option value="3">3"</option>
+                    <option value="3-12">3-1/2"</option>
+                    <option value="2-12">2-1/2"</option>
+                    <option value="1-34">1-3/4"</option>
+                </select>
+            </div>
+
+            {# 8. Shot Material #}
+            <div class="finder-select-group">
+                <select class="finder-select" name="shot_material">
+                    <option value="">Select SHOT MATERIAL (2 options)</option>
+                    <option value="lead">Lead</option>
+                    <option value="steel">Steel / Non-Toxic</option>
+                    <option value="bismuth">Bismuth</option>
+                    <option value="tungsten">Tungsten (TSS)</option>
+                </select>
+            </div>
+
+            {# Matching Items Counter #}
+            <div class="finder-matching-container">
+                <label class="mb-0">Matching Items: </label>
+                <span class="finder-matching-count" data-initial-count="3060">3060</span>
+            </div>
+
+            {# Actions #}
+            <div class="finder-drawer-actions">
+                <button type="submit" class="btn btn-finder-action btn-finder-search" id="finder-search">Search</button>
+                <button type="button" class="btn btn-finder-action btn-finder-reset" id="finder-reset-all" data-finder-reset>Reset All</button>
+            </div>
+        </form>
+    </div>
+</div>

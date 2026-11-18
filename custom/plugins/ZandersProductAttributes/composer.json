@@ -1,0 +1,28 @@
+{
+  "name": "zanders/product-attributes",
+  "description": "Zanders Product Custom Attributes (UPC, MSRP, MAP) for Administration Specifications tab",
+  "version": "1.0.0",
+  "type": "shopware-platform-plugin",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Zanders"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Zanders\\ProductAttributes\\": "src/"
+    }
+  },
+  "extra": {
+    "shopware-plugin-class": "Zanders\\ProductAttributes\\ZandersProductAttributes",
+    "label": {
+      "en-GB": "Zanders Product Custom Attributes",
+      "de-DE": "Zanders Produkt-Attribute"
+    },
+    "description": {
+      "en-GB": "Adds Product Custom Attributes (UPC, MSRP, MAP) to the Specifications tab in product admin.",
+      "de-DE": "Fügt Produkt-Attribute (UPC, MSRP, MAP) zum Reiter Spezifikationen in der Produkt-Administration hinzu."
+    }
+  }
+}

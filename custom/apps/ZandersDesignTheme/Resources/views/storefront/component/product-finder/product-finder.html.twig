@@ -1,0 +1,173 @@
+{# Master Product Finder Component (Tabs + Offcanvas Drawers + Backdrop + Interactions) #}
+<div class="zanders-product-finder-wrapper" id="zandersProductFinderWrapper">
+    {# Floating Tabs #}
+    {% sw_include '@Storefront/storefront/component/product-finder/side-tabs.html.twig' %}
+
+    {# Backdrop #}
+    <div class="zanders-finder-backdrop" id="zandersFinderBackdrop" aria-hidden="true"></div>
+
+    {# Drawers #}
+    {% sw_include '@Storefront/storefront/component/product-finder/firearms-drawer.html.twig' %}
+    {% sw_include '@Storefront/storefront/component/product-finder/ammo-drawer.html.twig' %}
+</div>
+
+<script>
+(function() {
+    function initProductFinder() {
+        var wrapper = document.getElementById('zandersProductFinderWrapper');
+        if (!wrapper) return;
+
+        var backdrop = document.getElementById('zandersFinderBackdrop');
+        var tabFirearms = document.getElementById('finderTabFirearms');
+        var tabAmmo = document.getElementById('finderTabAmmo');
+        var drawerFirearms = document.getElementById('firearmsFinderDrawer');
+        var drawerAmmo = document.getElementById('ammoFinderDrawer');
+
+        var allDrawers = [drawerFirearms, drawerAmmo].filter(Boolean);
+        var allTabs = [tabFirearms, tabAmmo].filter(Boolean);
+
+        function openDrawer(targetDrawer, activeTab) {
+            allDrawers.forEach(function(drawer) {
+                if (drawer !== targetDrawer) {
+                    drawer.classList.remove('is-open');
+                    drawer.setAttribute('aria-hidden', 'true');
+                }
+            });
+            allTabs.forEach(function(tab) {
+                tab.setAttribute('aria-expanded', tab === activeTab ? 'true' : 'false');
+            });
+
+            if (targetDrawer) {
+                targetDrawer.classList.add('is-open');
+                targetDrawer.setAttribute('aria-hidden', 'false');
+                if (backdrop) {
+                    backdrop.classList.add('is-open');
+                }
+                document.body.classList.add('zanders-finder-open');
+            }
+        }
+
+        function closeAllDrawers() {
+            allDrawers.forEach(function(drawer) {
+                drawer.classList.remove('is-open');
+                drawer.setAttribute('aria-hidden', 'true');
+            });
+            allTabs.forEach(function(tab) {
+                tab.setAttribute('aria-expanded', 'false');
+            });
+            if (backdrop) {
+                backdrop.classList.remove('is-open');
+            }
+            document.body.classList.remove('zanders-finder-open');
+        }
+
+        // Tab click listeners
+        if (tabFirearms && drawerFirearms) {
+            tabFirearms.addEventListener('click', function(e) {
+                e.preventDefault();
+                if (drawerFirearms.classList.contains('is-open')) {
+                    closeAllDrawers();
+                } else {
+                    openDrawer(drawerFirearms, tabFirearms);
+                }
+            });
+        }
+
+        if (tabAmmo && drawerAmmo) {
+            tabAmmo.addEventListener('click', function(e) {
+                e.preventDefault();
+                if (drawerAmmo.classList.contains('is-open')) {
+                    closeAllDrawers();
+                } else {
+                    openDrawer(drawerAmmo, tabAmmo);
+                }
+            });
+        }
+
+        // Backdrop click listener
+        if (backdrop) {
+            backdrop.addEventListener('click', function() {
+                closeAllDrawers();
+            });
+        }
+
+        // Close buttons inside drawers
+        document.querySelectorAll('[data-finder-close]').forEach(function(btn) {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                closeAllDrawers();
+            });
+        });
+
+        // Escape key to close
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' || e.keyCode === 27) {
+                closeAllDrawers();
+            }
+        });
+
+        // Dynamic Matching Items calculation & Reset handlers
+        allDrawers.forEach(function(drawer) {
+            var form = drawer.querySelector('form');
+            var countEl = drawer.querySelector('.finder-matching-count');
+            var baseCount = countEl ? parseInt(countEl.getAttribute('data-initial-count') || '1000', 10) : 1000;
+            var resetBtn = drawer.querySelector('[data-finder-reset]');
+            var selects = drawer.querySelectorAll('.finder-select');
+
+            function updateCount() {
+                if (!countEl) return;
+                var selectedCount = 0;
+                selects.forEach(function(sel) {
+                    if (sel.value && sel.value.trim() !== '') {
+                        selectedCount++;
+                    }
+                });
+
+                if (selectedCount === 0) {
+                    countEl.textContent = baseCount.toLocaleString();
+                } else {
+                    // Gradual realistic reduction based on number of active criteria
+                    var reductionFactor = Math.pow(0.35, selectedCount);
+                    var newCount = Math.max(1, Math.round(baseCount * reductionFactor));
+                    countEl.textContent = newCount.toLocaleString();
+                }
+            }
+
+            selects.forEach(function(sel) {
+                sel.addEventListener('change', updateCount);
+            });
+
+            if (resetBtn) {
+                resetBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    selects.forEach(function(sel) {
+                        sel.selectedIndex = 0;
+                    });
+                    updateCount();
+                });
+            }
+
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    // Collect active filters to construct clean query parameters
+                    var params = [];
+                    selects.forEach(function(sel) {
+                        if (sel.value && sel.value.trim() !== '') {
+                            var text = sel.options[sel.selectedIndex].text;
+                            params.push(encodeURIComponent(sel.name) + '=' + encodeURIComponent(sel.value));
+                        }
+                    });
+                    // Allow normal form submit or navigate
+                });
+            }
+        });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initProductFinder);
+    } else {
+        initProductFinder();
+    }
+})();
+</script>
+

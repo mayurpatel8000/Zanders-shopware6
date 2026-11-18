@@ -62,32 +62,33 @@
         }
 
         function showToast(msg, alertType) {
-            var container = document.getElementById('zanders-toast-container');
-            if (!container) {
-                container = document.createElement('div');
-                container.id = 'zanders-toast-container';
-                container.className = 'zanders-toast-container';
-                document.body.appendChild(container);
+            if (typeof window.showStorefrontAlert === 'function') {
+                window.showStorefrontAlert(msg, alertType);
+            } else {
+                var flashbags = document.querySelector('.flashbags');
+                if (!flashbags) {
+                    var main = document.getElementById('content-main') || document.querySelector('main.content-main') || document.querySelector('.container-main');
+                    if (main) {
+                        flashbags = document.createElement('div');
+                        flashbags.className = 'flashbags container';
+                        main.prepend(flashbags);
+                    }
+                }
+                if (flashbags) {
+                    var alertEl = document.createElement('div');
+                    alertEl.className = 'alert alert-' + (alertType || 'info') + ' alert-dismissible fade show d-flex align-items-center zanders-dynamic-alert';
+                    alertEl.setAttribute('role', 'alert');
+                    alertEl.innerHTML = '<div class="alert-content-container flex-grow-1">' + msg + '</div>' +
+                        '<button type="button" class="btn-close ms-2" data-bs-dismiss="alert" aria-label="Close"></button>';
+                    flashbags.appendChild(alertEl);
+                    setTimeout(function() {
+                        if (alertEl.parentNode) {
+                            alertEl.classList.remove('show');
+                            setTimeout(function() { alertEl.remove(); }, 250);
+                        }
+                    }, 4000);
+                }
             }
-
-            var alertEl = document.createElement('div');
-            alertEl.className = 'alert alert-' + (alertType || 'info') + ' alert-dismissible fade show d-flex align-items-center shadow zanders-compare-alert';
-            alertEl.setAttribute('role', 'alert');
-            alertEl.innerHTML = '<div class="alert-content flex-grow-1">' + msg + '</div>' +
-                '<button type="button" class="btn-close ms-2" aria-label="Close"></button>';
-
-            var closeBtn = alertEl.querySelector('.btn-close');
-            if (closeBtn) {
-                closeBtn.addEventListener('click', function() {
-                    alertEl.remove();
-                });
-            }
-
-            container.appendChild(alertEl);
-            setTimeout(function() {
-                alertEl.classList.remove('show');
-                setTimeout(function() { alertEl.remove(); }, 300);
-            }, 3000);
         }
 
         function updateCompareUI() {
@@ -97,8 +98,8 @@
             // 1. Update button states on product cards
             var allBtns = document.querySelectorAll('.product-compare-btn, [data-product-compare-btn]');
             allBtns.forEach(function(btn) {
-                var pId = btn.getAttribute('data-product-id');
-                var exists = list.some(function(item) { return item.id === pId; });
+                var pId = String(btn.getAttribute('data-product-id') || '').trim().toLowerCase();
+                var exists = list.some(function(item) { return String(item.id || '').trim().toLowerCase() === pId; });
                 if (exists) {
                     btn.classList.add('is-active');
                     btn.setAttribute('aria-pressed', 'true');
@@ -117,7 +118,9 @@
             if (bar && countEl && thumbsEl) {
                 countEl.textContent = count + '/' + MAX_COMPARE_ITEMS;
 
-                if (count > 0) {
+                var isDismissed = sessionStorage.getItem('zanders_compare_bar_dismissed') === 'true';
+
+                if (count > 0 && !isDismissed) {
                     bar.style.display = 'block';
 
                     // Build thumbnails
@@ -154,14 +157,32 @@
             var container = document.getElementById('compareContentContainer');
             if (container && window.location.pathname.indexOf('/compare') !== -1) {
                 var currentTable = container.querySelector('[data-compare-table]');
-                if (currentTable) {
-                    var renderedIds = Array.from(currentTable.querySelectorAll('[data-product-id]')).map(function(el) {
-                        return el.getAttribute('data-product-id');
-                    });
-                    var storageIds = list.map(function(item) { return item.id; });
+                var storageIds = list.map(function(item) { return String(item.id || '').trim().toLowerCase(); }).filter(Boolean);
 
-                    // Check if rendered table matches storage list
-                    if (renderedIds.sort().join(',') !== storageIds.sort().join(',')) {
+                if (!currentTable) {
+                    // Empty state was rendered by server. If we have items in storage, load them!
+                    if (storageIds.length > 0) {
+                        reloadCompareContent(storageIds);
+                    }
+                } else {
+                    var renderedIds = Array.from(currentTable.querySelectorAll('[data-product-id]')).map(function(el) {
+                        return String(el.getAttribute('data-product-id') || '').trim().toLowerCase();
+                    }).filter(Boolean);
+
+                    // If URL had products but storage was empty, sync storage with rendered products
+                    if (storageIds.length === 0 && renderedIds.length > 0) {
+                        renderedIds.forEach(function(rId) {
+                            var col = currentTable.querySelector('[data-product-id="' + rId + '"]');
+                            var titleEl = col ? col.querySelector('.compare-product-title a') : null;
+                            var imgEl = col ? col.querySelector('.compare-product-img-wrap img') : null;
+                            list.push({
+                                id: rId,
+                                name: titleEl ? titleEl.textContent.trim() : '',
+                                img: imgEl ? imgEl.src : ''
+                            });
+                        });
+                        saveCompareList(list);
+                    } else if (renderedIds.sort().join(',') !== storageIds.sort().join(',')) {
                         reloadCompareContent(storageIds);
                     }
                 }
@@ -192,15 +213,17 @@
                 container.classList.remove('opacity-50');
                 bindCompareTableEvents();
             })
-            .catch(function() {
+            .catch(function(err) {
+                console.error('Compare content load failed:', err);
                 container.classList.remove('opacity-50');
             });
         }
 
         function toggleProduct(productId, productData) {
             if (!productId) return;
+            productId = String(productId).trim().toLowerCase();
             var list = getCompareList();
-            var index = list.findIndex(function(item) { return item.id === productId; });
+            var index = list.findIndex(function(item) { return String(item.id || '').trim().toLowerCase() === productId; });
 
             if (index !== -1) {
                 list.splice(index, 1);
@@ -217,6 +240,7 @@
                     img: productData.img || ''
                 });
                 saveCompareList(list);
+                sessionStorage.removeItem('zanders_compare_bar_dismissed');
                 showToast(msgAdded, 'success');
             }
 
@@ -224,14 +248,17 @@
         }
 
         function removeProduct(productId) {
+            if (!productId) return;
+            productId = String(productId).trim().toLowerCase();
             var list = getCompareList();
-            list = list.filter(function(item) { return item.id !== productId; });
+            list = list.filter(function(item) { return String(item.id || '').trim().toLowerCase() !== productId; });
             saveCompareList(list);
             showToast(msgRemoved, 'info');
             updateCompareUI();
         }
 
         function clearAll() {
+            sessionStorage.removeItem('zanders_compare_bar_dismissed');
             saveCompareList([]);
             updateCompareUI();
         }
@@ -270,7 +297,8 @@
 
         // Global DOM click delegate for compare buttons
         document.addEventListener('click', function(e) {
-            var btn = e.target.closest('.product-compare-btn, [data-product-compare-btn]');
+            var target = e.target.nodeType === 3 ? e.target.parentElement : e.target;
+            var btn = target.closest ? target.closest('.product-compare-btn, [data-product-compare-btn]') : null;
             if (btn) {
                 e.preventDefault();
                 e.stopPropagation();
@@ -293,10 +321,30 @@
                 toggleProduct(productId, { name: name, img: img });
             }
 
+            // Click on Compare Now button in sticky bar
+            var barCompareBtn = target.closest ? target.closest('#compareBarCompareBtn') : null;
+            if (barCompareBtn) {
+                var currentList = getCompareList();
+                var compareIds = currentList.map(function(item) { return item.id; });
+                if (compareIds.length > 0) {
+                    barCompareBtn.href = compareUrl + '?products=' + compareIds.join(',');
+                }
+            }
+
             // Clear all on sticky bar
-            if (e.target.closest('#compareBarClearAll')) {
+            if (target.closest && target.closest('#compareBarClearAll')) {
                 e.preventDefault();
                 clearAll();
+            }
+
+            // Close / dismiss compare bar
+            if (target.closest && target.closest('#compareBarClose')) {
+                e.preventDefault();
+                sessionStorage.setItem('zanders_compare_bar_dismissed', 'true');
+                var barEl = document.getElementById('zandersCompareBar');
+                if (barEl) {
+                    barEl.style.display = 'none';
+                }
             }
         });
 

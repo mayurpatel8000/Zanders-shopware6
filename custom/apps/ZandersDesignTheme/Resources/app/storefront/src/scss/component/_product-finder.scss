@@ -1,0 +1,277 @@
+// =============================================================================
+// Zanders Product Finder (Sticky Side Tabs & Offcanvas Drawers)
+// Replicated from Live Reference Site (https://shop2.gzanders.com/)
+// =============================================================================
+
+// Side-panel sticky tabs (Left viewport edge at top: 38%)
+.zanders-finder-tabs {
+    position: fixed;
+    left: 0;
+    top: 38%;
+    z-index: 1045;
+    display: flex;
+    flex-direction: column;
+    gap: 10px; // mb-2.5 on live site
+
+    .finder-tab {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        padding: 20px 6px; // py-5 px-1.5 on live site
+        border-radius: 0 4px 4px 0;
+        color: #ffffff;
+        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.25);
+        gap: 8px;
+        transition: transform 0.2s ease, filter 0.2s ease;
+
+        &:hover {
+            transform: translateX(4px);
+            filter: brightness(1.08);
+        }
+
+        &-firearms {
+            background-color: #991020; // bg-primary
+        }
+
+        &-ammo {
+            background-color: #5C6466; // bg-dim-gray
+        }
+
+        .finder-tab-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform: rotate(90deg); // rotate-90 on live site
+            color: #ffffff;
+            width: 20px;
+            height: 20px;
+
+            svg {
+                display: block;
+                width: 20px;
+                height: 20px;
+            }
+        }
+
+        .finder-tab-label {
+            writing-mode: vertical-rl; // [writing-mode:tb-rl] on live site
+            text-orientation: mixed;
+            font-size: 16px; // lg:text-base on live site
+            font-weight: 500;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+            color: #ffffff;
+            font-family: inherit;
+        }
+    }
+}
+
+// Backdrop overlay (bg-black/60)
+.zanders-finder-backdrop {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.60); // bg-black/60 on live site
+    z-index: 1050;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+
+    &.is-open {
+        opacity: 1;
+        pointer-events: auto;
+    }
+}
+
+// Slide-out Drawer (Left offcanvas w-[330px])
+.zanders-finder-drawer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 330px; // w-[330px] on live site
+    max-width: 90vw;
+    background-color: #ffffff;
+    z-index: 1055;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    display: flex;
+    flex-direction: column;
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+
+    &.is-open {
+        transform: translateX(0);
+    }
+
+    // Flush square close button in top right corner (close absolute top-0 right-0 bg-primary text-white p-2)
+    .finder-drawer-close {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 40px;
+        height: 40px;
+        background-color: #991020; // bg-primary
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 10;
+        padding: 8px; // p-2
+        transition: background-color 0.2s ease;
+
+        &:hover {
+            background-color: #7f0d1b;
+        }
+
+        svg {
+            display: block;
+            width: 22px;
+            height: 22px;
+            stroke-width: 2;
+        }
+    }
+
+    // Content container (px-8 on live site = 32px padding)
+    .finder-drawer-content {
+        padding: 0 32px;
+        overflow-y: auto;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+
+        .finder-drawer-title {
+            font-size: 24px; // text-2xl on live site
+            font-weight: 600;
+            color: #111111;
+            margin: 14px 0 12px 0; // my-3 on live site
+            line-height: 1.3;
+        }
+
+        .finder-drawer-body {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+
+            .finder-select-group {
+                margin-bottom: 8px; // gap-y-2 on live site
+                position: relative;
+
+                .finder-select {
+                    width: 100%;
+                    height: 38px;
+                    padding: 6px 30px 6px 12px;
+                    font-size: 14px; // text-sm on live site
+                    font-weight: 400;
+                    color: #222222;
+                    background-color: #ffffff;
+                    border: 1px solid #d1d5db; // Tailwind border-gray-300
+                    border-radius: 4px; // rounded on live site
+                    appearance: none;
+                    -webkit-appearance: none;
+                    -moz-appearance: none;
+                    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23555555' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+                    background-repeat: no-repeat;
+                    background-position: right 10px center;
+                    background-size: 13px 13px;
+                    cursor: pointer;
+                    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+                    &:focus {
+                        outline: none;
+                        border-color: #991020;
+                        box-shadow: 0 0 0 1px #991020;
+                    }
+                }
+            }
+
+            .finder-matching-container {
+                font-size: 14px;
+                font-weight: 500; // font-medium on live site
+                color: #111111;
+                padding: 8px 0; // py-2 on live site
+                display: flex;
+                align-items: center;
+                gap: 4px;
+
+                label {
+                    margin-bottom: 0;
+                }
+
+                .finder-matching-count {
+                    font-weight: 500;
+                    color: #111111;
+                }
+            }
+
+            // Buttons: Search & Reset All (flex justify-between items-center)
+            .finder-drawer-actions {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-top: 6px;
+                padding-bottom: 24px;
+
+                .btn-finder-action {
+                    background-color: #991020; // btn-primary
+                    color: #ffffff;
+                    font-weight: 500;
+                    font-size: 16px; // text-base on live site
+                    line-height: 1.5;
+                    border: none;
+                    border-radius: 4px; // rounded on live site
+                    padding: 5px 22px; // py-1 px-4
+                    min-width: 110px;
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    cursor: pointer;
+                    transition: background-color 0.2s ease, opacity 0.2s ease;
+
+                    &:hover,
+                    &:focus {
+                        background-color: #7f0d1b;
+                        color: #ffffff;
+                        text-decoration: none;
+                    }
+
+                    &:active {
+                        opacity: 0.9;
+                    }
+                }
+            }
+        }
+    }
+}
+
+// Lock background scroll when open
+body.zanders-finder-open {
+    overflow: hidden;
+}
+
+// Responsive adjustments
+@media (max-width: 576px) {
+    .zanders-finder-tabs {
+        top: 30%;
+
+        .finder-tab {
+            padding: 14px 5px;
+
+            .finder-tab-label {
+                font-size: 12px; // text-xs on live site mobile
+            }
+        }
+    }
+
+    .zanders-finder-drawer {
+        width: 100vw;
+        max-width: 100vw;
+
+        .finder-drawer-content {
+            padding: 0 20px;
+        }
+    }
+}

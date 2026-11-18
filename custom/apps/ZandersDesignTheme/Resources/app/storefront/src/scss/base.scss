@@ -9,14 +9,16 @@
 @import 'component/compare';
 @import 'component/cart-drawer';
 @import 'component/account-login';
+@import 'component/filter-panel';
+@import 'component/buttons';
+@import 'component/product-finder';
 @import 'layout/footer';
 @import 'layout/age-verification';
 @import 'pages/home';
-@import 'components/filter-panel';
 
 // Container width & padding inline
 .container {
-    max-width: 1440px;
+    max-width: 1610px;
 }
 
 .container,

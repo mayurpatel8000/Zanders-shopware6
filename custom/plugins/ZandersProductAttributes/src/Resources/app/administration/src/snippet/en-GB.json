@@ -1,0 +1,15 @@
+{
+  "zanders-product-attributes": {
+    "cardTitle": "Product Custom Attributes",
+    "description": "Custom attribute values for this product. These values are displayed on storefront product cards, quick views, and product comparisons.",
+    "labelUpc": "UPC",
+    "placeholderUpc": "Enter UPC (e.g. 747115436491)",
+    "helpTextUpc": "Universal Product Code (UPC / Barcode) for this product",
+    "labelMsrp": "MSRP",
+    "placeholderMsrp": "e.g. 899.00",
+    "helpTextMsrp": "Manufacturer's Suggested Retail Price",
+    "labelMap": "MAP",
+    "placeholderMap": "e.g. 899.00",
+    "helpTextMap": "Minimum Advertised Price"
+  }
+}

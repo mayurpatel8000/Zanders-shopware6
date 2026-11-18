@@ -1,0 +1,161 @@
+{# Slide-out Drawer: Firearms Finder #}
+<div class="zanders-finder-drawer zanders-finder-drawer-firearms"
+     id="firearmsFinderDrawer"
+     role="dialog"
+     aria-modal="true"
+     aria-labelledby="firearmsFinderTitle"
+     aria-hidden="true">
+    
+    {# Close Button (Flush top-right square) #}
+    <div class="finder-drawer-close" data-finder-close aria-label="Close Firearms Finder">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+    </div>
+
+    {# Drawer Content Container #}
+    <div class="finder-drawer-content">
+        <h2 class="finder-drawer-title" id="firearmsFinderTitle">Firearms Finder</h2>
+
+        {# Form Body #}
+        <form class="finder-drawer-body" id="firearmsFinderForm" action="{{ seoUrl('frontend.navigation.page', { navigationId: '01a1aaf7f033786ea521f3af68fd955f' }) }}" method="GET">
+            {# 1. Manufacturer #}
+            <div class="finder-select-group">
+                <select class="finder-select" name="manufacturer" data-base-count="10000">
+                    <option value="">Select Manufacturer (137 options)</option>
+                    <option value="smith-wesson">Smith & Wesson</option>
+                    <option value="ruger">Ruger</option>
+                    <option value="glock">Glock</option>
+                    <option value="sig-sauer">Sig Sauer</option>
+                    <option value="springfield">Springfield Armory</option>
+                    <option value="colt">Colt</option>
+                    <option value="beretta">Beretta</option>
+                    <option value="browning">Browning</option>
+                    <option value="mossberg">Mossberg</option>
+                    <option value="taurus">Taurus</option>
+                    <option value="cz-usa">CZ-USA</option>
+                    <option value="walther">Walther</option>
+                    <option value="savage">Savage Arms</option>
+                    <option value="henry">Henry Repeating Arms</option>
+                    <option value="kimber">Kimber</option>
+                    <option value="winchester">Winchester</option>
+                    <option value="remington">Remington</option>
+                    <option value="kel-tec">Kel-Tec</option>
+                    <option value="fn-herstal">FN Herstal</option>
+                    <option value="heckler-koch">Heckler & Koch</option>
+                </select>
+            </div>
+
+            {# 2. Caliber #}
+            <div class="finder-select-group">
+                <select class="finder-select" name="caliber">
+                    <option value="">Select CALIBER (143 options)</option>
+                    <option value="9mm">9mm Luger</option>
+                    <option value="22lr">.22 LR</option>
+                    <option value="45acp">.45 ACP</option>
+                    <option value="556nato">5.56 NATO / .223 Rem</option>
+                    <option value="308win">.308 Winchester</option>
+                    <option value="380acp">.380 ACP</option>
+                    <option value="40sw">.40 S&W</option>
+                    <option value="65creed">6.5 Creedmoor</option>
+                    <option value="300blk">.300 AAC Blackout</option>
+                    <option value="357mag">.357 Magnum</option>
+                    <option value="38spl">.38 Special</option>
+                    <option value="44mag">.44 Magnum</option>
+                    <option value="10mm">10mm Auto</option>
+                    <option value="762x39">7.62x39mm</option>
+                    <option value="30-06">.30-06 Springfield</option>
+                </select>
+            </div>
+
+            {# 3. Gauge #}
+            <div class="finder-select-group">
+                <select class="finder-select" name="gauge">
+                    <option value="">Select GAUGE (12 options)</option>
+                    <option value="12ga">12 Gauge</option>
+                    <option value="20ga">20 Gauge</option>
+                    <option value="28ga">28 Gauge</option>
+                    <option value="410bore">.410 Bore</option>
+                    <option value="16ga">16 Gauge</option>
+                    <option value="10ga">10 Gauge</option>
+                    <option value="24ga">24 Gauge</option>
+                    <option value="32ga">32 Gauge</option>
+                </select>
+            </div>
+
+            {# 4. Stock Material #}
+            <div class="finder-select-group">
+                <select class="finder-select" name="stock_material">
+                    <option value="">Select STOCK MATERIAL (14 options)</option>
+                    <option value="synthetic">Synthetic</option>
+                    <option value="polymer">Polymer</option>
+                    <option value="walnut">Walnut</option>
+                    <option value="wood">Wood</option>
+                    <option value="laminate">Laminate</option>
+                    <option value="aluminum">Aluminum</option>
+                    <option value="carbon-fiber">Carbon Fiber</option>
+                    <option value="composite">Composite</option>
+                    <option value="hardwood">Hardwood</option>
+                    <option value="camo-synthetic">Camo Synthetic</option>
+                </select>
+            </div>
+
+            {# 5. Frame Material #}
+            <div class="finder-select-group">
+                <select class="finder-select" name="frame_material">
+                    <option value="">Select FRAME MATERIAL (7 options)</option>
+                    <option value="polymer">Polymer</option>
+                    <option value="aluminum">Aluminum</option>
+                    <option value="steel">Steel</option>
+                    <option value="stainless-steel">Stainless Steel</option>
+                    <option value="carbon-steel">Carbon Steel</option>
+                    <option value="alloy">Alloy</option>
+                    <option value="titanium">Titanium</option>
+                </select>
+            </div>
+
+            {# 6. Type Action #}
+            <div class="finder-select-group">
+                <select class="finder-select" name="type_action">
+                    <option value="">Select TYPE ACTION (9 options)</option>
+                    <option value="semi-auto">Semi-Automatic</option>
+                    <option value="bolt-action">Bolt Action</option>
+                    <option value="lever-action">Lever Action</option>
+                    <option value="pump-action">Pump Action</option>
+                    <option value="revolver">Revolver</option>
+                    <option value="break-open">Break Open</option>
+                    <option value="single-action">Single Action</option>
+                    <option value="double-action">Double Action</option>
+                    <option value="striker-fired">Striker Fired</option>
+                </select>
+            </div>
+
+            {# 7. Type of Sights #}
+            <div class="finder-select-group">
+                <select class="finder-select" name="type_sights">
+                    <option value="">Select TYPE OF SIGHTS (7 options)</option>
+                    <option value="fixed">Fixed</option>
+                    <option value="adjustable">Adjustable</option>
+                    <option value="night-sights">Night Sights</option>
+                    <option value="optics-ready">Optics Ready</option>
+                    <option value="fiber-optic">Fiber Optic</option>
+                    <option value="bead">Bead</option>
+                    <option value="red-dot">Red Dot</option>
+                </select>
+            </div>
+
+            {# Matching Items Counter #}
+            <div class="finder-matching-container">
+                <label class="mb-0">Matching Items: </label>
+                <span class="finder-matching-count" data-initial-count="10000">10000</span>
+            </div>
+
+            {# Actions #}
+            <div class="finder-drawer-actions">
+                <button type="submit" class="btn btn-finder-action btn-finder-search" id="finder-search">Search</button>
+                <button type="button" class="btn btn-finder-action btn-finder-reset" id="finder-reset-all" data-finder-reset>Reset All</button>
+            </div>
+        </form>
+    </div>
+</div>

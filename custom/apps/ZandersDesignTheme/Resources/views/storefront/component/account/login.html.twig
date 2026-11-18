@@ -28,14 +28,15 @@
 
     <div class="zanders-login-box">
         {% block component_account_login_header %}
-            <h2 class="zanders-registered-title text-uppercase fw-bold mb-2">
-                {{ lblRegTitle }}
-            </h2>
-            <div class="zanders-title-underline-dark mb-3"></div>
+            <div class="zanders-registered-title-wrap">
+                <h2 class="zanders-registered-title">
+                    {{ lblRegTitle }}
+                </h2>
+            </div>
 
-            <p class="zanders-registered-subtitle text-muted mb-4">
+            <div class="zanders-registered-subtitle">
                 {{ lblRegSubtitle }}
-            </p>
+            </div>
         {% endblock %}
 
         {% block component_account_login_form %}
@@ -131,7 +132,7 @@
 
                 {# Submit Button & Recover Password #}
                 {% block component_account_login_submit %}
-                    <div class="text-center d-flex flex-column align-items-center gap-3">
+                    <div class="zanders-submit-center-wrap">
                         <button type="submit"
                                 class="btn btn-primary zanders-btn-login">
                             {{ lblLoginButton }}

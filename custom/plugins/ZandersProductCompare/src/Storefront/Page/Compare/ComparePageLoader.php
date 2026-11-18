@@ -26,15 +26,16 @@ class ComparePageLoader
         // Extract product IDs from query string or request body
         $rawIds = $request->get('products', $request->get('ids', []));
         if (is_string($rawIds)) {
-            $productIds = array_filter(explode(',', $rawIds));
+            $productIds = explode(',', $rawIds);
         } elseif (is_array($rawIds)) {
-            $productIds = array_filter($rawIds);
+            $productIds = $rawIds;
         } else {
             $productIds = [];
         }
 
-        // Limit to max 4 products
-        $productIds = array_slice(array_unique($productIds), 0, 4);
+        // Clean, lowercase, and limit to max 4 products
+        $productIds = array_values(array_unique(array_filter(array_map('strtolower', array_map('trim', $productIds)))));
+        $productIds = array_slice($productIds, 0, 4);
         $page->setProductIds($productIds);
 
         if (empty($productIds)) {
