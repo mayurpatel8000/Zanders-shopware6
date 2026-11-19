@@ -1,0 +1,25 @@
+{#
+    Zanders Listing Additional Sidebar: Logged-in Customer Quick Action Buttons
+    Matches https://shop2.gzanders.com/firearms.html
+    1. VIEW MY OPEN ORDER
+    2. VIEW WISHLIST ITEMS
+#}
+{% set lblOpenOrder = 'zanders.sidebarActions.viewOpenOrder'|trans %}
+{% if 'zanders.' in lblOpenOrder|lower or lblOpenOrder == '' %}
+    {% set lblOpenOrder = 'VIEW MY OPEN ORDER' %}
+{% endif %}
+
+{% set lblWishlist = 'zanders.sidebarActions.viewWishlist'|trans %}
+{% if 'zanders.' in lblWishlist|lower or lblWishlist == '' %}
+    {% set lblWishlist = 'VIEW WISHLIST ITEMS' %}
+{% endif %}
+
+<div class="zanders-sidebar-account-actions">
+    <a href="{{ path('frontend.account.order.page') }}" class="btn zanders-sidebar-action-btn mb-2">
+        {{ lblOpenOrder }}
+    </a>
+    <a href="{{ path('frontend.wishlist.page') }}" class="btn zanders-sidebar-action-btn">
+        {{ lblWishlist }}
+    </a>
+</div>
+

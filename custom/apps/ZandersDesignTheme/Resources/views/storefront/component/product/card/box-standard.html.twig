@@ -102,6 +102,29 @@
                 <span class="meta-value text-muted">{{ lblOutOfStock }}</span>
             {% endif %}
         </div>
+
+        {% set calcPrice = product.calculatedPrice %}
+        {% if product.calculatedPrices.count > 0 %}
+            {% set calcPrice = product.calculatedPrices.last %}
+        {% endif %}
+        {% if product.variantListingConfig.displayParent and product.parentId === null %}
+            {% set calcPrice = product.calculatedCheapestPrice %}
+        {% endif %}
+
+        {% set itemMsrp = (calcPrice.listPrice ? calcPrice.listPrice.price : null) %}
+        {% if not itemMsrp and (product.translated.customFields.msrp or product.customFields.msrp) %}
+            {% set itemMsrp = product.translated.customFields.msrp ?: product.customFields.msrp %}
+        {% endif %}
+        {% if not itemMsrp %}
+            {% set itemMsrp = calcPrice.unitPrice %}
+        {% endif %}
+        {% set lblMsrp = 'zanders.productCard.msrp'|trans %}
+        {% if 'zanders.' in lblMsrp|lower or lblMsrp == '' %}{% set lblMsrp = 'MSRP' %}{% endif %}
+
+        <div class="product-card-meta-item product-card-msrp-item">
+            <span class="meta-label msrp-label">{{ lblMsrp }}:</span>
+            <span class="meta-value msrp-value">{{ itemMsrp|currency }}</span>
+        </div>
     </div>
 
     <div class="product-card-price-primary">

@@ -1,0 +1,39 @@
+{# @sw-package framework #}
+
+{% set config = { sorting: current } %}
+{% set showSorting = (slot.config.showSorting.value is defined) ? slot.config.showSorting.value : true %}
+
+{% set lblSortBy = 'zanders.listing.sortBy'|trans %}
+{% if 'zanders.' in lblSortBy|lower or lblSortBy == '' %}{% set lblSortBy = 'Sort by' %}{% endif %}
+
+{% if showSorting and sortings|length > 0 %}
+    <div class="toolbar-sorter sorter flex items-center justify-center lg:justify-end py-2 relative m-lg:border-l order-3 m-lg:flex-1">
+        <p class="sorter-label-visual m-lg:w-[calc(100%_-_24px)] text-xs md:text-base lg:text-sm font-medium pr-2 flex items-center gap-1 m-lg:absolute m-lg:top-0 m-lg:bottom-0 m-lg:left-0 m-lg:right-0 m-lg:flex m-lg:justify-center m-lg:items-center m-lg:pointer-events-none bg-white m-lg:uppercase m-lg:gap-x-2 m-0">
+            <span class="sorter-icon-wrap lg:hidden" aria-hidden="true">
+                <svg class="w-5 h-5" fill="none" height="20" role="img" viewBox="0 0 18 18" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M16.5417 4.73962H12.1667" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10"></path>
+                    <path d="M4.87492 4.73962H1.95825" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10"></path>
+                    <path d="M7.79159 7.29167C9.20106 7.29167 10.3437 6.14906 10.3437 4.73958C10.3437 3.33011 9.20106 2.1875 7.79159 2.1875C6.38211 2.1875 5.2395 3.33011 5.2395 4.73958C5.2395 6.14906 6.38211 7.29167 7.79159 7.29167Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10"></path>
+                    <path d="M16.5417 12.7604H13.625" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10"></path>
+                    <path d="M6.33325 12.7604H1.95825" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10"></path>
+                    <path d="M10.7083 15.3125C12.1178 15.3125 13.2604 14.1699 13.2604 12.7605C13.2604 11.351 12.1178 10.2084 10.7083 10.2084C9.29886 10.2084 8.15625 11.351 8.15625 12.7605C8.15625 14.1699 9.29886 15.3125 10.7083 15.3125Z" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10"></path>
+                </svg>
+            </span>
+            <span class="sorter-text">{{ lblSortBy }}</span>
+            <span class="m-lg:hidden">:</span>
+        </p>
+
+        <div class="sorting inline-block mr-3 m-lg:w-full"
+             data-listing-sorting="true"
+             data-listing-sorting-options="{{ config|json_encode }}">
+            <select class="form-select sorter-options bg-transparent text-sm p-1.5 pr-5 bg-right cursor-pointer"
+                    aria-label="{{ 'general.sortingLabel'|trans|striptags }}"
+                    id="sort-by">
+                {% for sorting in sortings %}
+                    {% set key = sorting.key %}
+                    <option value="{{ key }}"{% if key == current %} selected{% endif %}>{{ sorting.translated.label|sw_sanitize }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+{% endif %}

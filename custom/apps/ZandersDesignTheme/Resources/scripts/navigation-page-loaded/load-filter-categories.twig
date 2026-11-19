@@ -1,0 +1,17 @@
+{# Load Catalog categories (Firearms, Ammunition, Accessories, etc.) for the Category filter accordion #}
+{% set page = hook.page %}
+{% set categories = services.repository.search('category', {
+    'filter': [
+        { 'type': 'equals', 'field': 'active', 'value': true },
+        { 'type': 'equals', 'field': 'visible', 'value': true },
+        { 'type': 'equals', 'field': 'parentId', 'value': '01a1aaf710ed705cad1c4d32c9ba3d3c' }
+    ],
+    'sort': [
+        { 'field': 'name', 'order': 'ASC' }
+    ],
+    'limit': 50
+}) %}
+
+{% if categories and categories|length > 0 %}
+    {% do page.addExtension('filterCategories', categories) %}
+{% endif %}

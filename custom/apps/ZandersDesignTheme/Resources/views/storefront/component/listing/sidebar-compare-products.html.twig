@@ -1,0 +1,146 @@
+{#
+    Zanders Listing Additional Sidebar: Compare Products Widget
+    Matches https://shop2.gzanders.com/firearms.html (Logged In Customer)
+#}
+{% set lblCompareTitle = 'zanders.sidebarCompare.title'|trans %}
+{% if 'zanders.' in lblCompareTitle|lower or lblCompareTitle == '' %}
+    {% set lblCompareTitle = 'COMPARE PRODUCTS' %}
+{% endif %}
+
+{% set lblClearAll = 'zanders.sidebarCompare.clearAll'|trans %}
+{% if 'zanders.' in lblClearAll|lower or lblClearAll == '' %}
+    {% set lblClearAll = 'CLEAR ALL' %}
+{% endif %}
+
+{% set lblCompareBtn = 'zanders.sidebarCompare.button'|trans %}
+{% if 'zanders.' in lblCompareBtn|lower or lblCompareBtn == '' %}
+    {% set lblCompareBtn = 'COMPARE' %}
+{% endif %}
+
+<div class="block-compare zanders-sidebar-compare-card" id="zanders-sidebar-compare-card">
+    <h2 class="zanders-sidebar-compare-title">
+        {{ lblCompareTitle }}
+    </h2>
+
+    <div class="zanders-sidebar-compare-body">
+        <ul class="zanders-sidebar-compare-list" id="zanders-sidebar-compare-list">
+            {# Initial Reference Fallback Items matching live reference #}
+            <li class="zanders-sidebar-compare-item" data-id="compare-1">
+                <a href="#" class="zanders-sidebar-compare-link" title="WINCHESTER WILDCAT 22LR 40GR LEAD-RN 1255FPS 50RD 100BX/CS">
+                    WINCHESTER WILDCAT 22LR 40GR LEAD-RN 1255FPS 50RD 100BX/CS
+                </a>
+                <button type="button" class="zanders-sidebar-compare-remove" aria-label="Remove item" onclick="zandersRemoveCompareItem(this, 'compare-1')">
+                    &times;
+                </button>
+            </li>
+            <li class="zanders-sidebar-compare-item" data-id="compare-2">
+                <a href="#" class="zanders-sidebar-compare-link" title="USED MOSSBERG 702 PLINKSTER 22LR 18&quot; 10RD BLUE SYNTHETIC">
+                    USED MOSSBERG 702 PLINKSTER 22LR 18&quot; 10RD BLUE SYNTHETIC
+                </a>
+                <button type="button" class="zanders-sidebar-compare-remove" aria-label="Remove item" onclick="zandersRemoveCompareItem(this, 'compare-2')">
+                    &times;
+                </button>
+            </li>
+            <li class="zanders-sidebar-compare-item" data-id="compare-3">
+                <a href="#" class="zanders-sidebar-compare-link" title="USED MOSSBERG 702 PLINKSTER 22LR 18&quot; 10RD STAINLESS WOOD">
+                    USED MOSSBERG 702 PLINKSTER 22LR 18&quot; 10RD STAINLESS WOOD
+                </a>
+                <button type="button" class="zanders-sidebar-compare-remove" aria-label="Remove item" onclick="zandersRemoveCompareItem(this, 'compare-3')">
+                    &times;
+                </button>
+            </li>
+        </ul>
+
+        <div class="zanders-sidebar-compare-footer">
+            <a href="javascript:void(0);" class="zanders-sidebar-compare-clear" onclick="zandersClearAllCompare(event)">
+                {{ lblClearAll }}
+            </a>
+            <a href="javascript:void(0);" class="btn zanders-sidebar-compare-btn" onclick="zandersOpenCompareModal(event)">
+                {{ lblCompareBtn }}
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+    function zandersRemoveCompareItem(btn, id) {
+        if (!btn) return;
+        var row = btn.closest('.zanders-sidebar-compare-item');
+        if (row) {
+            row.remove();
+        }
+        try {
+            var key = 'zanders_compare_products';
+            var list = JSON.parse(localStorage.getItem(key)) || [];
+            list = list.filter(function(item) { return item && item.id !== id; });
+            localStorage.setItem(key, JSON.stringify(list));
+        } catch(e) {}
+    }
+
+    function zandersClearAllCompare(e) {
+        if (e && e.preventDefault) e.preventDefault();
+        var listElem = document.getElementById('zanders-sidebar-compare-list');
+        if (listElem) {
+            listElem.innerHTML = '<li class="zanders-sidebar-compare-empty p-3 text-center text-muted" style="font-size:12px;">No items to compare.</li>';
+        }
+        try {
+            localStorage.removeItem('zanders_compare_products');
+        } catch(err) {}
+    }
+
+    function zandersOpenCompareModal(e) {
+        if (e && e.preventDefault) e.preventDefault();
+        // Trigger sticky compare drawer if available or alert
+        var compareBar = document.querySelector('.zanders-compare-bar');
+        if (compareBar) {
+            compareBar.scrollIntoView({ behavior: 'smooth' });
+        }
+    }
+
+    (function() {
+        function initCompareSidebar() {
+            try {
+                var key = 'zanders_compare_products';
+                var raw = localStorage.getItem(key);
+                if (!raw) return;
+                var list = JSON.parse(raw);
+                if (!Array.isArray(list) || list.length === 0) return;
+
+                var container = document.getElementById('zanders-sidebar-compare-list');
+                if (!container) return;
+
+                container.innerHTML = '';
+                list.forEach(function(item) {
+                    if (!item || !item.name) return;
+                    var li = document.createElement('li');
+                    li.className = 'zanders-sidebar-compare-item';
+                    li.setAttribute('data-id', item.id || '');
+
+                    var a = document.createElement('a');
+                    a.className = 'zanders-sidebar-compare-link';
+                    a.href = item.url || '#';
+                    a.textContent = item.name.toUpperCase();
+                    a.title = item.name;
+
+                    var btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'zanders-sidebar-compare-remove';
+                    btn.setAttribute('aria-label', 'Remove item');
+                    btn.innerHTML = '&times;';
+                    btn.onclick = function() { zandersRemoveCompareItem(btn, item.id); };
+
+                    li.appendChild(a);
+                    li.appendChild(btn);
+                    container.appendChild(li);
+                });
+            } catch(e) {}
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initCompareSidebar);
+        } else {
+            initCompareSidebar();
+        }
+    })();
+</script>
+

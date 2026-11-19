@@ -1,0 +1,73 @@
+{#
+    Zanders Listing Additional Sidebar: Recently Viewed Products
+    Matches https://shop2.gzanders.com/firearms.html
+#}
+{% set lblRecentlyViewed = 'zanders.sidebarRecentlyViewed.title'|trans %}
+{% if 'zanders.' in lblRecentlyViewed|lower or lblRecentlyViewed == '' %}
+    {% set lblRecentlyViewed = 'RECENTLY VIEWED' %}
+{% endif %}
+
+<div class="block-recently-viewed zanders-sidebar-recently-viewed-card">
+    <h2 class="zanders-sidebar-recently-viewed-title">
+        {{ lblRecentlyViewed }}
+    </h2>
+
+    <div class="zanders-sidebar-recently-viewed-body">
+        <ul class="zanders-sidebar-recently-viewed-list" id="zanders-recently-viewed-list">
+            {# Fallback initial reference items #}
+            <li class="zanders-sidebar-recently-viewed-item">
+                <a href="#" class="zanders-sidebar-recently-viewed-link" title="WINCHESTER WILDCAT 22LR 40GR LEAD-RN 1255FPS 50RD 100BX/CS">
+                    WINCHESTER WILDCAT 22LR 40GR LEAD-RN 1255FPS 50RD 100BX/CS
+                </a>
+            </li>
+            <li class="zanders-sidebar-recently-viewed-item">
+                <a href="#" class="zanders-sidebar-recently-viewed-link" title="WINCHESTER WILDCAT 22LR 40GR LEAD-RN 1255FPS 50RD 100BX/CS">
+                    WINCHESTER WILDCAT 22LR 40GR LEAD-RN 1255FPS 50RD 100BX/CS
+                </a>
+            </li>
+            <li class="zanders-sidebar-recently-viewed-item">
+                <a href="#" class="zanders-sidebar-recently-viewed-link" title="WINCHESTER WILDCAT 22LR 40GR LEAD-RN 1255FPS 50RD 100BX/CS">
+                    WINCHESTER WILDCAT 22LR 40GR LEAD-RN 1255FPS 50RD 100BX/CS
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<script>
+    (function() {
+        function renderRecentlyViewed() {
+            try {
+                var key = 'zanders_recently_viewed';
+                var raw = localStorage.getItem(key);
+                if (!raw) return;
+                var list = JSON.parse(raw);
+                if (!Array.isArray(list) || list.length === 0) return;
+
+                var container = document.getElementById('zanders-recently-viewed-list');
+                if (!container) return;
+
+                container.innerHTML = '';
+                list.slice(0, 5).forEach(function(item) {
+                    if (!item || !item.name) return;
+                    var li = document.createElement('li');
+                    li.className = 'zanders-sidebar-recently-viewed-item';
+                    var a = document.createElement('a');
+                    a.className = 'zanders-sidebar-recently-viewed-link';
+                    a.href = item.url || '#';
+                    a.textContent = item.name.toUpperCase();
+                    a.title = item.name;
+                    li.appendChild(a);
+                    container.appendChild(li);
+                });
+            } catch(e) {}
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', renderRecentlyViewed);
+        } else {
+            renderRecentlyViewed();
+        }
+    })();
+</script>
+

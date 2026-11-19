@@ -10,6 +10,10 @@
 @import 'component/cart-drawer';
 @import 'component/account-login';
 @import 'component/filter-panel';
+@import 'component/listing-toolbar';
+@import 'component/listing-sidebar-login';
+@import 'component/recently-viewed';
+@import 'component/sidebar-logged-in';
 @import 'component/buttons';
 @import 'component/product-finder';
 @import 'layout/footer';
@@ -269,7 +273,6 @@
 
     // Default open on Homepage
     body.is-ctl-index,
-    body.is-active-route-frontend-detail-page,
     body.is-active-route-frontend-home-page {
         .navbar-nav > li.dropdown.nav-item:first-of-type {
             > .dropdown-menu {

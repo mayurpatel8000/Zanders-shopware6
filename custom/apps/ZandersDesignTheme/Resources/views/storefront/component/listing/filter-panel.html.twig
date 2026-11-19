@@ -1,0 +1,120 @@
+{#
+    Zanders Sidebar Filter Panel Override ("SHOPPING OPTIONS")
+    Extends vendor `@Storefront/storefront/component/listing/filter-panel.html.twig`:
+    - Mobile/tablet offcanvas header & desktop red "SHOPPING OPTIONS" banner
+    - Active filter chips container placed at the TOP under SHOPPING OPTIONS
+    - Collapsible in-flow "Category" navigation accordion with checkboxes & count badges
+    - Forces sidebar = true for all child filters so they render as in-flow collapse accordions
+    - Full responsive styling handled in _filter-panel.scss
+#}
+{% sw_extends '@Storefront/storefront/component/listing/filter-panel.html.twig' %}
+
+{% block component_filter_panel_header %}
+    {% set shopSnippet = 'zanders.listing.shoppingOptions'|trans %}
+    {% set shoppingTitle = (shopSnippet != 'zanders.listing.shoppingOptions') ? shopSnippet : 'SHOPPING OPTIONS' %}
+
+    {# Mobile/tablet offcanvas header shown when filter drawer opens #}
+    <div class="filter-panel-offcanvas-header">
+        <span data-id="off-canvas-headline" class="filter-panel-offcanvas-only filter-panel-offcanvas-title">
+            {{ shoppingTitle }}
+        </span>
+
+        <button type="button" class="btn-close filter-panel-offcanvas-only filter-panel-offcanvas-close js-offcanvas-close" aria-label="{{ 'listing.filterClose'|trans|striptags }}">
+        </button>
+    </div>
+{% endblock %}
+
+{% block component_filter_panel_items_container %}
+    {# Enforce sidebar = true so all child filter items render as in-flow collapse accordions #}
+    {% set sidebar = true %}
+
+    {% set shopSnippet = 'zanders.listing.shoppingOptions'|trans %}
+    {% set shoppingTitle = (shopSnippet != 'zanders.listing.shoppingOptions') ? shopSnippet : 'SHOPPING OPTIONS' %}
+
+    {# Crimson header banner at top of filter panel for Desktop #}
+    <div class="filter-panel-header-banner">
+        {{ shoppingTitle }}
+    </div>
+
+    {# Active filters container placed at the TOP under SHOPPING OPTIONS #}
+    <div class="filter-panel-active-container d-flex flex-wrap gap-2">
+    </div>
+
+    <div class="filter-panel-items-container" role="list">
+        {% block component_filter_panel_items %}
+            {% set activeId = page.category.id ?? (shopware.navigation.id ?? context.salesChannel.navigationCategoryId) %}
+
+            {# 1. Try category extension from navigation-page-loaded hook #}
+            {% set categoryOptions = page.extensions.filterCategories ?? null %}
+
+            {# 2. Fallback to navigation tree #}
+            {% if not categoryOptions or categoryOptions|length == 0 %}
+                {% set nav = page.header ? page.header.navigation : (page.navigation ?? null) %}
+                {% set categoryTree = nav ? nav.getChildren(activeId) : null %}
+                {% set categoryOptions = (categoryTree and categoryTree.tree|length > 0) ? categoryTree.tree : null %}
+
+                {% if (not categoryOptions or categoryOptions|length == 0) and page.category and page.category.parentId and nav %}
+                    {% set parentTree = nav.getChildren(page.category.parentId) %}
+                    {% if parentTree and parentTree.tree|length > 0 %}
+                        {% set categoryOptions = parentTree.tree %}
+                    {% endif %}
+                {% endif %}
+
+                {% if (not categoryOptions or categoryOptions|length == 0) and nav and nav.tree %}
+                    {% for rootItem in nav.tree %}
+                        {% if not categoryOptions and rootItem.children and rootItem.children.tree|length > 0 %}
+                            {% set categoryOptions = rootItem.children.tree %}
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            {% endif %}
+
+            {% if categoryOptions and categoryOptions|length > 0 %}
+                {% set catSnippet = 'zanders.listing.filterCategory'|trans %}
+                {% set catTitle = (catSnippet != 'zanders.listing.filterCategory') ? catSnippet : 'CATEGORY' %}
+
+                <div class="filter-panel-item filter-category-item d-grid" role="listitem">
+                    <button class="filter-panel-item-toggle btn collapsed"
+                            type="button"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#filter-category-collapse"
+                            aria-expanded="false"
+                            aria-controls="filter-category-collapse">
+                        <span class="filter-category-title">{{ catTitle }}</span>
+                        <span class="icon icon-filter-panel-item-toggle" aria-hidden="true">
+                            <svg class="chevron-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M13.5101 15.1999L15.4801 13.2299L18.6901 10.0199C19.3601 9.33993 18.8801 8.17993 17.9201 8.17993L11.6901 8.17993L6.08007 8.17993C5.12007 8.17993 4.64007 9.33993 5.32007 10.0199L10.5001 15.1999C11.3201 16.0299 12.6801 16.0299 13.5101 15.1999Z" fill="#292D32"/>
+                            </svg>
+                        </span>
+                    </button>
+                    <div class="filter-panel-item-dropdown collapse" id="filter-category-collapse">
+                        <ul class="filter-category-list">
+                            {% for item in categoryOptions %}
+                                {% set catEntity = item.category ? item.category : item %}
+                                {% if catEntity.active and not catEntity.visible is same as(false) %}
+                                    <li class="filter-category-list-item">
+                                        <a href="{{ seoUrl('frontend.navigation.page', { navigationId: catEntity.id }) }}"
+                                           class="filter-category-link{% if catEntity.id == activeId %} is-active{% endif %}">
+                                            <span class="filter-category-checkbox{% if catEntity.id == activeId %} is-checked{% endif %}" aria-hidden="true"></span>
+                                            <span class="filter-category-name">{{ catEntity.translated.name }}</span>
+                                            {% set catCount = catEntity.productCount ?? catEntity.extensions.productCount ?? (catEntity.childCount > 0 ? catEntity.childCount : null) %}
+                                            {% if catCount is not null %}
+                                                <span class="filter-category-count">({{ catCount }})</span>
+                                            {% endif %}
+                                        </a>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            {% endif %}
+
+            {{ parent() }}
+        {% endblock %}
+    </div>
+{% endblock %}
+
+{% block component_filter_panel_active_container %}
+    {# Rendered at top under SHOPPING OPTIONS header banner #}
+{% endblock %}

@@ -45,6 +45,22 @@
       "stayConnected": "Stay connected",
       "copyrightNotice": "© 1996-%year% Zanders Sporting Goods",
       "distributorNotice": "Zanders Sporting Goods is a wholesale firearms distributor selling only to federally licensed dealers"
+    },
+    "listing": {
+      "shoppingOptions": "SHOPPING OPTIONS",
+      "filterCategory": "CATEGORY",
+      "items": "Items",
+      "of": "of",
+      "show": "Show:",
+      "perPage": "per page",
+      "showPerPage": "Show items per page",
+      "viewAs": "View as  :",
+      "hideOutOfStock": "Hide Out of Stock Items",
+      "sortBy": "Sort by"
+    },
+    "sidebarLogin": {
+      "title": "LOGIN",
+      "button": "LOGIN"
     }
   }
 }

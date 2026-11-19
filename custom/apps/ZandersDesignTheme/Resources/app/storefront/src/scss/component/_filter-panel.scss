@@ -1,72 +1,182 @@
 // ==============================================================================
 // ZANDERS SPORTING GOODS - SIDEBAR FILTER PANEL ("SHOPPING OPTIONS")
-// Clean accordion styling matching reference design
-// Zero !important declarations
+// Complete responsive design matching live reference site (shop2.gzanders.com)
+// Breakpoints: Mobile (< 768px), Tablet (768px - 1024px), Desktop (>= 1025px)
 // ==============================================================================
 
-// Outer wrapper & CMS Element
+// Design Tokens
+$zanders-red: #991020;
+$zanders-red-hover: #7d0d1a;
+$bright-gray: #EFEFEF;
+$charcoal-black: #000000;
+$slate-gray: #1f2937;
+$border-light: #efefef;
+$filter-shadow: 4px 4px 36px 0 rgba(0, 0, 0, 0.12);
+$roboto-font-stack: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+
+// ==============================================================================
+// 1. PAGE LAYOUT INTEGRATION (Desktop 280px left column, Tablet/Mobile inline)
+// ==============================================================================
+
+// When sidebar filter and product listing are inside cms-section-default
+@media (min-width: 1025px) {
+    .cms-section-default:has(.cms-block-sidebar-filter):has(.cms-block-product-listing) {
+        display: flex;
+        flex-wrap: wrap;
+
+        .cms-block-category-heading,
+        .cms-block-image-text {
+            width: 100%;
+        }
+
+        .cms-block-sidebar-filter {
+            width: 280px;
+            min-width: 280px;
+            max-width: 280px;
+            margin-right: 24px;
+            align-self: flex-start;
+        }
+
+        .cms-block-product-listing {
+            flex: 1;
+            min-width: 0;
+            width: calc(100% - 304px);
+        }
+    }
+
+    // Standard Shopware cms-section-sidebar
+    .cms-section-sidebar {
+        .cms-section-sidebar-sidebar-content {
+            width: 280px;
+            min-width: 280px;
+            max-width: 280px;
+            flex: 0 0 280px;
+        }
+
+        .cms-section-sidebar-main-content {
+            flex: 1;
+            min-width: 0;
+        }
+    }
+}
+
+// Outer CMS Element
 .cms-element-sidebar-filter {
     width: 100%;
     margin-bottom: 24px;
 
-    // Mobile trigger button (< 992px)
+    // Mobile / Tablet Trigger Accordion Button (< 1025px)
     .filter-panel-wrapper-toggle {
         display: none;
         width: 100%;
-        background-color: #8c1d2f;
-        border: 1px solid #8c1d2f;
-        color: #ffffff;
-        font-size: 13px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
+        background-color: #ffffff;
+        color: #000000;
+        border: none;
+        border-bottom: 1px solid $border-light;
         border-radius: 0;
-        padding: 10px 16px;
+        font-family: $roboto-font-stack;
+        font-weight: 500;
+        text-transform: uppercase;
+        align-items: center;
+        justify-content: space-between;
         margin-bottom: 16px;
-        transition: background-color 0.2s ease, border-color 0.2s ease;
+        box-shadow: none;
+        outline: none;
+        cursor: pointer;
+        transition: color 0.2s ease, background-color 0.2s ease;
 
+        .filter-panel-wrapper-toggle-title {
+            letter-spacing: 0.5px;
+        }
+
+        .filter-panel-wrapper-toggle-icon,
         .icon {
-            color: #ffffff;
-            margin-right: 8px;
-            vertical-align: -2px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
 
+            .chevron-icon,
             svg {
-                fill: #ffffff;
+                width: 20px;
+                height: 20px;
+                transition: transform 0.3s ease;
+
+                path {
+                    fill: #292D32;
+                    transition: fill 0.2s ease;
+                }
             }
         }
 
         &:hover,
         &:focus {
-            background-color: #6e1322;
-            border-color: #6e1322;
-            color: #ffffff;
+            background-color: #fafafa;
+            color: $zanders-red;
+            box-shadow: none;
+            outline: none;
+
+            .chevron-icon path,
+            svg path {
+                fill: $zanders-red;
+            }
         }
 
-        @media (max-width: 991.98px) {
+        &[aria-expanded="true"] {
+            color: $zanders-red;
+
+            .chevron-icon,
+            svg {
+                transform: rotate(180deg);
+
+                path {
+                    fill: $zanders-red;
+                }
+            }
+        }
+
+        // Breakpoint specific sizing
+        @media (max-width: 1024.98px) {
             display: flex;
-            align-items: center;
-            justify-content: center;
+            padding: 12px 16px;
+            font-size: 16px;
+        }
+
+        @media (max-width: 767.98px) {
+            padding: 10px 14px;
+            font-size: 12px;
+
+            .filter-panel-wrapper-toggle-icon .chevron-icon,
+            .icon svg {
+                width: 18px;
+                height: 18px;
+            }
         }
     }
 }
 
-// Offcanvas overlay on mobile
+// ==============================================================================
+// 2. OFFCANVAS DRAWER (Mobile/Tablet drawer mode)
+// ==============================================================================
+
 .offcanvas-filter {
     .filter-panel-offcanvas-header {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        background-color: #8c1d2f;
-        padding: 12px 18px;
+        background-color: $zanders-red;
+        padding: 14px 18px;
         min-height: 52px;
 
         .filter-panel-offcanvas-title {
             color: #ffffff;
-            font-size: 14px;
-            font-weight: 700;
+            font-family: $roboto-font-stack;
+            font-size: 16px;
+            font-weight: 500;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             margin-bottom: 0;
+            line-height: 1.2;
         }
 
         .filter-panel-offcanvas-close {
@@ -74,6 +184,7 @@
             opacity: 0.9;
             margin-left: auto;
             padding: 8px;
+            cursor: pointer;
 
             &:hover {
                 opacity: 1;
@@ -85,32 +196,64 @@
         padding: 0;
         height: calc(100% - 52px);
         overflow-y: auto;
+        box-shadow: none;
+        border: none;
+
+        .filter-panel-header-banner {
+            display: none;
+        }
+
+        .filter-panel-item-dropdown {
+            max-height: 215px;
+        }
     }
 }
 
-// Main Filter Panel
+// ==============================================================================
+// 3. MAIN FILTER PANEL COMPONENT
+// ==============================================================================
+
 .filter-panel {
     display: block;
     width: 100%;
     background-color: #ffffff;
-    border: 1px solid #d5d5d5;
+    border: none;
     border-radius: 0;
-    box-shadow: none;
     margin-bottom: 24px;
+    font-family: $roboto-font-stack;
 
-    // Header Red Banner ("SHOPPING OPTIONS")
+    // Desktop Box Shadow (>= 1025px)
+    @media (min-width: 1025px) {
+        box-shadow: $filter-shadow;
+    }
+
+    @media (max-width: 1024.98px) {
+        box-shadow: none;
+        border: 1px solid $border-light;
+    }
+
+    // Static Crimson Header Banner ("SHOPPING OPTIONS")
     .filter-panel-header-banner {
-        background-color: #8c1d2f;
+        background-color: $zanders-red;
         color: #ffffff;
         text-align: center;
-        padding: 12px 16px;
-        font-size: 14px;
-        font-weight: 700;
+        padding: 16px;
+        font-family: $roboto-font-stack;
+        font-size: 18px;
+        font-weight: 500;
         text-transform: uppercase;
-        letter-spacing: 0.8px;
+        letter-spacing: 0.5px;
         border-radius: 0;
         line-height: 1.2;
         user-select: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        @media (max-width: 767.98px) {
+            font-size: 14px;
+            padding: 12px 14px;
+        }
     }
 
     // Items list container
@@ -123,32 +266,41 @@
         background-color: #ffffff;
     }
 
-    // Individual filter item row
+    // ==========================================================================
+    // 4. ACCORDION FILTER ITEM ROW
+    // ==========================================================================
+
     .filter-panel-item {
         display: block;
         width: 100%;
         margin: 0;
         padding: 0;
-        border-bottom: 1px solid #d5d5d5;
+        border-bottom: 1px solid $charcoal-black; // Crisp 1px black border
         background-color: #ffffff;
         border-radius: 0;
+        position: relative;
+
+        &.dropdown {
+            display: block;
+        }
 
         &:last-child {
             border-bottom: none;
         }
 
-        // Accordion Toggle Button
+        // Accordion Toggle Header Button
         .filter-panel-item-toggle {
             display: flex;
             align-items: center;
             justify-content: space-between;
             width: 100%;
-            min-height: 40px;
-            padding: 10px 14px;
+            min-height: 48px;
+            padding: 16px;
             background-color: #ffffff;
-            color: #222222;
-            font-size: 13px;
-            font-weight: 700;
+            color: $charcoal-black;
+            font-family: $roboto-font-stack;
+            font-size: 16px;
+            font-weight: 500;
             text-transform: uppercase;
             letter-spacing: 0.3px;
             text-align: left;
@@ -156,98 +308,152 @@
             border-radius: 0;
             box-shadow: none;
             cursor: pointer;
-            transition: background-color 0.15s ease, color 0.15s ease;
+            transition: color 0.15s ease, background-color 0.15s ease;
+
+            @media (max-width: 767.98px) {
+                padding: 10px 14px;
+                min-height: 40px;
+                font-size: 12px;
+            }
 
             &:hover {
-                background-color: #f7f7f7;
-                color: #8c1d2f;
+                background-color: #ffffff;
+                color: $zanders-red;
+
+                .icon-filter-panel-item-toggle .chevron-icon path,
+                .icon svg path {
+                    fill: $zanders-red;
+                }
             }
 
             &:focus,
             &:active {
                 outline: none;
                 box-shadow: none;
-                background-color: #f7f7f7;
+                background-color: #ffffff;
             }
 
-            // Downward Caret Icon
-            .icon-filter-panel-item-toggle {
+            // Downward Chevron Caret Icon
+            .icon-filter-panel-item-toggle,
+            .icon {
                 display: inline-flex;
                 align-items: center;
                 justify-content: center;
                 margin-left: auto;
-                width: 12px;
-                height: 12px;
-                color: #222222;
-                transition: transform 0.2s ease-in-out;
+                width: 24px;
+                height: 24px;
                 flex-shrink: 0;
+                transition: transform 0.3s ease;
 
-                svg {
-                    width: 9px;
-                    height: 6px;
-                    fill: #222222;
-                    color: #222222;
-                    top: 0;
+                @media (max-width: 767.98px) {
+                    width: 18px;
+                    height: 18px;
                 }
-            }
 
-            // When open / expanded
-            &[aria-expanded='true'],
-            &.show {
-                background-color: #fafafa;
-                color: #8c1d2f;
+                .chevron-icon,
+                svg {
+                    width: 24px;
+                    height: 24px;
+                    transition: transform 0.3s ease;
 
-                .icon-filter-panel-item-toggle {
-                    transform: rotate(180deg);
+                    @media (max-width: 767.98px) {
+                        width: 18px;
+                        height: 18px;
+                    }
 
-                    svg {
-                        fill: #8c1d2f;
-                        color: #8c1d2f;
+                    path {
+                        fill: #292D32;
+                        transition: fill 0.2s ease;
                     }
                 }
             }
 
-            // Filter count indicator (e.g. 2 selected)
+            // Expanded / Open state: Caret points UP ▲ (180deg rotated)
+            &[aria-expanded='true'],
+            &.show,
+            &:not(.collapsed)[data-bs-toggle="collapse"] {
+                color: $zanders-red;
+                background-color: #ffffff;
+
+                .icon-filter-panel-item-toggle,
+                .icon {
+                    transform: rotate(180deg);
+
+                    .chevron-icon path,
+                    svg path {
+                        fill: $zanders-red;
+                    }
+                }
+            }
+
+            // Filter count indicator (e.g. 2 selected in toggle button)
             .filter-multi-select-count {
                 display: inline-block;
                 margin-left: 6px;
-                font-size: 11px;
-                font-weight: 600;
-                color: #8c1d2f;
+                font-size: 12px;
+                font-weight: 500;
+                color: $zanders-red;
             }
         }
 
-        // Accordion Collapsed Content / Dropdown
-        .filter-panel-item-dropdown {
-            width: 100%;
-            min-width: 100%;
-            background-color: #ffffff;
-            padding: 10px 14px 14px 14px;
-            border: none;
-            border-top: 1px solid #f0f0f0;
-            border-radius: 0;
-            box-shadow: none;
-            max-height: 240px;
+        // ======================================================================
+        // 5. ACCORDION DROPDOWN CONTENT (#EFEFEF background, IN-FLOW STATIC)
+        // ======================================================================
+
+        .filter-panel-item-dropdown,
+        .dropdown-menu {
+            position: static !important;
+            float: none !important;
+            transform: none !important;
+            inset: auto !important;
+            width: 100% !important;
+            min-width: 100% !important;
+            box-shadow: none !important;
+            background-color: $bright-gray; // rgb(239, 239, 239)
+            padding: 12px 16px;
+            border: none !important;
+            border-top: 1px solid $charcoal-black !important; // Crisp 1px black top border
+            border-radius: 0 !important;
             overflow-y: auto;
+
+            // Desktop max-height 505px
+            @media (min-width: 1025px) {
+                max-height: 505px;
+            }
+
+            // Mobile & Tablet max-height 215px
+            @media (max-width: 1024.98px) {
+                max-height: 215px;
+                padding: 10px 14px;
+            }
+
+            // Custom Scrollbar (8px width, pill thumb)
             scrollbar-width: thin;
-            scrollbar-color: #c0c0c0 #f8f8f8;
+            scrollbar-color: #b6b6b6 $bright-gray;
 
             &::-webkit-scrollbar {
-                width: 5px;
+                width: 8px;
             }
 
             &::-webkit-scrollbar-track {
-                background: #f8f8f8;
+                background: $bright-gray;
             }
 
             &::-webkit-scrollbar-thumb {
-                background-color: #c0c0c0;
-                border-radius: 3px;
+                background-color: #b6b6b6;
+                border-radius: 9999px;
+
+                &:hover {
+                    background-color: #999999;
+                }
             }
         }
     }
 
-    // Category Filter Navigation (Inside filter panel)
+    // ==========================================================================
+    // 6. CATEGORY NAVIGATION ACCORDION (Matching Screenshot)
+    // ==========================================================================
+
     .filter-category-item {
         .filter-category-list {
             list-style: none;
@@ -256,35 +462,114 @@
 
             .filter-category-list-item {
                 margin: 0;
-                padding: 3px 0;
+                padding: 4px 0;
 
                 .filter-category-link {
                     display: flex;
                     align-items: center;
-                    font-size: 13px;
-                    color: #444444;
+                    width: 100%;
+                    font-size: 14px;
+                    color: $charcoal-black;
                     text-decoration: none;
-                    padding: 4px 6px;
-                    border-radius: 2px;
-                    transition: background-color 0.15s ease, color 0.15s ease, padding-left 0.15s ease;
+                    padding: 4px 0;
+                    transition: color 0.15s ease;
+
+                    @media (max-width: 767.98px) {
+                        font-size: 12px;
+                    }
+
+                    // Square Checkbox [ ]
+                    .filter-category-checkbox {
+                        width: 16px;
+                        height: 16px;
+                        border: 1px solid #000000;
+                        border-radius: 2px;
+                        background-color: #ffffff;
+                        margin-right: 12px;
+                        flex-shrink: 0;
+                        position: relative;
+                        display: inline-block;
+                        transition: border-color 0.15s ease, background-color 0.15s ease;
+
+                        &.is-checked {
+                            background-color: $zanders-red;
+                            border-color: $zanders-red;
+
+                            &::after {
+                                content: '';
+                                display: block;
+                                width: 5px;
+                                height: 9px;
+                                border: solid #ffffff;
+                                border-width: 0 2px 2px 0;
+                                transform: rotate(45deg);
+                                position: absolute;
+                                top: 1px;
+                                left: 4px;
+                            }
+                        }
+                    }
+
+                    .filter-category-name {
+                        flex: 1;
+                        font-size: 14px;
+                        color: $charcoal-black;
+                        transition: color 0.15s ease;
+
+                        @media (max-width: 767.98px) {
+                            font-size: 12px;
+                        }
+                    }
+
+                    // Right-aligned item count (xx)
+                    .filter-category-count {
+                        font-size: 13px;
+                        font-weight: 400;
+                        color: #1f2937;
+                        margin-left: auto;
+                        flex-shrink: 0;
+                        transition: color 0.15s ease;
+
+                        @media (max-width: 767.98px) {
+                            font-size: 11px;
+                        }
+                    }
 
                     &:hover {
-                        background-color: #f7f7f7;
-                        color: #8c1d2f;
-                        padding-left: 10px;
+                        color: $zanders-red;
+
+                        .filter-category-name,
+                        .filter-category-count {
+                            color: $zanders-red;
+                        }
+
+                        .filter-category-checkbox {
+                            border-color: $zanders-red;
+                        }
                     }
 
                     &.is-active {
-                        font-weight: 700;
-                        color: #8c1d2f;
-                        background-color: #fef4f5;
+                        font-weight: 600;
+                        color: $zanders-red;
+
+                        .filter-category-name,
+                        .filter-category-count {
+                            color: $zanders-red;
+                        }
+
+                        .filter-category-checkbox {
+                            border-color: $zanders-red;
+                        }
                     }
                 }
             }
         }
     }
 
-    // Multi-select option list (Manufacturer, properties)
+    // ==========================================================================
+    // 7. MULTI-SELECT & PROPERTIES (Manufacturer, Caliber, Finish, etc.)
+    // ==========================================================================
+
     .filter-multi-select-list {
         list-style: none;
         margin: 0;
@@ -292,48 +577,83 @@
 
         .filter-multi-select-list-item {
             margin: 0;
-            padding: 4px 0;
+            padding: 5px 0;
 
             .filter-multi-select-item {
                 display: flex;
                 align-items: center;
+                justify-content: space-between;
                 width: 100%;
                 margin: 0;
+                cursor: pointer;
 
+                // Checkbox input
                 .form-check-input,
                 .filter-multi-select-checkbox {
-                    width: 15px;
-                    height: 15px;
+                    width: 16px;
+                    height: 16px;
                     margin-top: 0;
-                    margin-right: 8px;
-                    border: 1px solid #adb5bd;
+                    margin-right: 12px;
+                    border: 1px solid #000000;
                     border-radius: 2px;
+                    background-color: #ffffff;
                     cursor: pointer;
                     flex-shrink: 0;
+                    float: none;
 
                     &:checked {
-                        background-color: #8c1d2f;
-                        border-color: #8c1d2f;
+                        background-color: $zanders-red;
+                        border-color: $zanders-red;
                     }
 
                     &:focus {
-                        box-shadow: 0 0 0 2px rgba(140, 29, 47, 0.2);
-                        border-color: #8c1d2f;
+                        box-shadow: 0 0 0 2px rgba(153, 16, 32, 0.2);
+                        border-color: $zanders-red;
                     }
                 }
 
+                // Label
                 .filter-multi-select-item-label {
-                    font-size: 13px;
-                    color: #444444;
+                    font-size: 14px;
+                    color: $charcoal-black;
                     cursor: pointer;
                     user-select: none;
                     padding: 0;
                     margin: 0;
-                    width: auto;
+                    flex: 1;
                     transition: color 0.15s ease;
 
+                    @media (max-width: 767.98px) {
+                        font-size: 12px;
+                    }
+
                     &:hover {
-                        color: #8c1d2f;
+                        color: $zanders-red;
+                    }
+                }
+
+                // Count badge: right-aligned (xx)
+                .filter-multi-select-count {
+                    font-size: 13px;
+                    font-weight: 400;
+                    color: $slate-gray;
+                    margin-left: auto;
+                    flex-shrink: 0;
+                    transition: color 0.15s ease;
+
+                    @media (max-width: 767.98px) {
+                        font-size: 11px;
+                    }
+                }
+
+                // Entire row hover transitions to crimson
+                &:hover {
+                    .filter-multi-select-item-label {
+                        color: $zanders-red;
+                    }
+
+                    .filter-multi-select-count {
+                        color: $zanders-red;
                     }
                 }
             }
@@ -345,14 +665,17 @@
         }
     }
 
-    // Price range filter
+    // ==========================================================================
+    // 8. RANGE & PRICE FILTER
+    // ==========================================================================
+
     .filter-range {
         .filter-range-container {
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 8px;
-            padding: 4px 0;
+            padding: 8px 0;
 
             .filter-range-min,
             .filter-range-max {
@@ -367,18 +690,23 @@
                 .form-control,
                 .min-input,
                 .max-input {
-                    height: 32px;
-                    font-size: 12px;
-                    padding: 4px 8px;
+                    height: 34px;
+                    font-size: 13px;
+                    padding: 4px 10px;
                     border: 1px solid #cccccc;
                     border-radius: 0;
                     background-color: #ffffff;
                     margin-top: 4px;
                     transition: border-color 0.15s ease;
 
+                    @media (max-width: 767.98px) {
+                        height: 30px;
+                        font-size: 12px;
+                    }
+
                     &:focus {
-                        border-color: #8c1d2f;
-                        box-shadow: 0 0 0 2px rgba(140, 29, 47, 0.2);
+                        border-color: $zanders-red;
+                        box-shadow: 0 0 0 2px rgba(153, 16, 32, 0.2);
                         outline: none;
                     }
                 }
@@ -398,68 +726,142 @@
         }
     }
 
-    // Boolean filter (Free shipping, etc.)
-    .filter-boolean {
-        padding: 10px 14px;
+    // ==========================================================================
+    // 9. BOOLEAN FILTER (In stock, Free Shipping, etc.)
+    // ==========================================================================
+
+    .filter-boolean,
+    &.filter-boolean {
+        display: flex !important;
+        align-items: center !important;
+        width: 100% !important;
+        min-height: 48px !important;
+        height: auto !important;
+        margin: 0 !important;
+        padding: 14px 16px !important;
+        background-color: #ffffff !important;
+        border: none !important;
+        border-bottom: 1px solid $charcoal-black !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        box-sizing: border-box !important;
+        cursor: pointer;
+
+        &:last-child {
+            border-bottom: none !important;
+        }
+
+        @media (max-width: 767.98px) {
+            min-height: 42px !important;
+            padding: 10px 14px !important;
+        }
 
         .form-check {
-            display: flex;
-            align-items: center;
-            margin-bottom: 0;
-            min-height: auto;
-            padding-left: 0;
+            display: flex !important;
+            align-items: center !important;
+            width: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            min-height: auto !important;
+            line-height: normal !important;
+            cursor: pointer;
 
             .form-check-input,
             .filter-boolean-input {
-                width: 15px;
-                height: 15px;
-                margin-top: 0;
-                margin-right: 8px;
-                border: 1px solid #adb5bd;
-                border-radius: 2px;
+                appearance: none !important;
+                -webkit-appearance: none !important;
+                display: inline-block !important;
+                width: 16px !important;
+                height: 16px !important;
+                min-width: 16px !important;
+                max-width: 16px !important;
+                min-height: 16px !important;
+                max-height: 16px !important;
+                margin: 0 10px 0 0 !important;
+                padding: 0 !important;
+                float: none !important;
+                position: static !important;
+                flex-shrink: 0 !important;
+                align-self: center !important;
+                vertical-align: middle !important;
+                border: 1px solid #adb5bd !important;
+                border-radius: 2px !important;
+                background-color: #ffffff !important;
                 cursor: pointer;
-                float: none;
+                box-shadow: none !important;
+                transition: background-color 0.15s ease, border-color 0.15s ease;
 
                 &:checked {
-                    background-color: #8c1d2f;
-                    border-color: #8c1d2f;
+                    background-color: $zanders-red !important;
+                    border-color: $zanders-red !important;
+                    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='m6 10 3 3 6-6'/%3e%3c/svg%3e") !important;
+                    background-position: center !important;
+                    background-size: contain !important;
+                    background-repeat: no-repeat !important;
                 }
 
                 &:focus {
-                    box-shadow: 0 0 0 2px rgba(140, 29, 47, 0.2);
-                    border-color: #8c1d2f;
+                    box-shadow: 0 0 0 2px rgba(153, 16, 32, 0.2) !important;
+                    border-color: $zanders-red !important;
+                    outline: none !important;
                 }
             }
 
-            .filter-boolean-label {
-                font-size: 13px;
-                font-weight: 700;
+            .filter-boolean-label,
+            .custom-control-label {
+                display: inline-flex !important;
+                align-items: center !important;
+                flex: 1 1 auto !important;
+                width: auto !important;
+                height: auto !important;
+                min-height: 16px !important;
+                line-height: 1.2 !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                font-family: $roboto-font-stack;
+                font-size: 14px;
+                font-weight: 500;
                 text-transform: uppercase;
-                color: #222222;
+                color: $charcoal-black;
                 letter-spacing: 0.3px;
                 cursor: pointer;
                 user-select: none;
-                margin-bottom: 0;
+                align-self: center !important;
                 transition: color 0.15s ease;
 
-                &:hover {
-                    color: #8c1d2f;
+                @media (max-width: 767.98px) {
+                    font-size: 12px;
                 }
+
+                &:hover {
+                    color: $zanders-red;
+                }
+            }
+        }
+
+        &:hover {
+            .filter-boolean-label,
+            .custom-control-label {
+                color: $zanders-red;
             }
         }
     }
 
-    // Active filters pills container
+    // ==========================================================================
+    // 10. ACTIVE FILTER CHIPS & CLEAR ALL
+    // ==========================================================================
+
     .filter-panel-active-container {
         display: flex;
         flex-wrap: wrap;
+        align-items: center;
         gap: 6px;
-        padding: 10px 14px;
-        background-color: #fcfcfc;
-        border-top: 1px solid #e8e8e8;
+        padding: 12px 16px;
+        background-color: #ffffff;
+        border-bottom: 1px solid $charcoal-black;
 
         &:empty {
-            display: none;
+            display: none !important;
             padding: 0;
             border: none;
         }
@@ -467,36 +869,101 @@
         .filter-active {
             display: inline-flex;
             align-items: center;
-            font-size: 11px;
-            font-weight: 600;
-            color: #8c1d2f;
+            font-size: 12px;
+            font-weight: 500;
+            color: $zanders-red;
             background-color: #ffffff;
-            border: 1px solid #8c1d2f;
+            border: 1px solid $zanders-red;
             border-radius: 2px;
-            padding: 2px 8px;
+            padding: 4px 8px;
             line-height: 1.4;
             transition: all 0.15s ease;
 
+            .icon {
+                margin-left: 6px;
+                color: $zanders-red;
+
+                svg {
+                    width: 10px;
+                    height: 10px;
+                    fill: $zanders-red;
+                }
+            }
+
             &:hover {
-                background-color: #8c1d2f;
+                background-color: $zanders-red;
                 color: #ffffff;
+
+                .icon,
+                .icon svg {
+                    color: #ffffff;
+                    fill: #ffffff;
+                }
             }
         }
 
         .filter-reset-all {
             display: inline-block;
-            font-size: 11px;
-            font-weight: 700;
-            color: #8c1d2f;
+            font-size: 12px;
+            font-weight: 600;
+            color: $zanders-red;
             text-decoration: underline;
             background: none;
             border: none;
-            padding: 2px 4px;
+            padding: 4px 6px;
             cursor: pointer;
+            transition: color 0.15s ease;
+            margin-left: auto;
 
             &:hover {
-                color: #6e1322;
+                color: $zanders-red-hover;
             }
+        }
+    }
+}
+
+// Global specificity overrides to prevent vendor _filter-boolean.scss conflicts
+body .filter-panel,
+body .filter-panel.is--sidebar {
+    .filter-boolean {
+        display: flex !important;
+        align-items: center !important;
+        width: 100% !important;
+        height: auto !important;
+        min-height: 48px !important;
+        border: none !important;
+        border-bottom: 1px solid #000000 !important;
+        border-radius: 0 !important;
+        padding: 14px 16px !important;
+        background: #ffffff !important;
+        box-shadow: none !important;
+
+        .form-check {
+            display: flex !important;
+            align-items: center !important;
+            width: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            min-height: auto !important;
+        }
+
+        .filter-boolean-input {
+            margin-top: 0 !important;
+            margin-bottom: 0 !important;
+            margin-left: 0 !important;
+            margin-right: 10px !important;
+            float: none !important;
+            position: static !important;
+            align-self: center !important;
+        }
+
+        .filter-boolean-label {
+            width: auto !important;
+            height: auto !important;
+            line-height: 1.2 !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            align-self: center !important;
         }
     }
 }

@@ -1,0 +1,531 @@
+// =============================================================================
+// Zanders Catalog Listing Toolbar Styles
+// Matches https://shop2.gzanders.com/zandersexclusive.html
+// =============================================================================
+
+$roboto-font-stack: 'Roboto', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+$zanders-red: #991020;
+$zanders-red-hover: #7f0d1b;
+
+// -----------------------------------------------------------------------------
+// Listing Page Columns Layout (Main Listing + Right Additional Sidebar)
+// -----------------------------------------------------------------------------
+.cms-block-product-listing {
+    .cms-block-container {
+        padding-top: 0 !important;
+    }
+}
+
+.zanders-listing-columns-layout {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 24px;
+
+    @media (min-width: 1025px) {
+        display: grid;
+        grid-template-columns: 1fr 240px;
+        align-items: start;
+        gap: 24px;
+    }
+
+    @media (min-width: 1280px) {
+        grid-template-columns: 1fr 260px;
+        gap: 30px;
+    }
+}
+
+.zanders-listing-main-column {
+    width: 100%;
+    min-width: 0; // Prevent grid blowout
+}
+
+// -----------------------------------------------------------------------------
+// Listing Page Header (Breadcrumb & Category Title in Center Column)
+// -----------------------------------------------------------------------------
+.zanders-listing-header {
+    width: 100%;
+    margin-bottom: 8px;
+
+    .zanders-listing-breadcrumb {
+        margin-bottom: 6px;
+
+        ol.breadcrumb {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            gap: 2px;
+            background: transparent;
+
+            .breadcrumb-item {
+                display: inline-flex;
+                align-items: center;
+                font-family: $roboto-font-stack;
+                font-size: 13px;
+                line-height: 1.4;
+                color: #777777;
+
+                + .breadcrumb-item::before {
+                    content: "/";
+                    padding: 0 6px;
+                    color: #999999;
+                    font-weight: 400;
+                }
+
+                a.breadcrumb-link {
+                    color: #222222;
+                    text-decoration: none;
+                    transition: color 0.15s ease;
+
+                    &:hover {
+                        color: $zanders-red;
+                    }
+                }
+
+                &.is-active,
+                &.is-active span.breadcrumb-title {
+                    color: $zanders-red;
+                    font-weight: 500;
+                }
+
+                span.breadcrumb-title {
+                    font-size: 13px;
+                }
+            }
+        }
+    }
+
+    .zanders-category-heading {
+        margin-top: 6px;
+        margin-bottom: 20px;
+
+        h1.zanders-category-title {
+            font-family: 'Poppins', $roboto-font-stack;
+            font-size: 32px;
+            font-weight: 800;
+            line-height: 1.2;
+            color: #000000;
+            text-transform: uppercase;
+            margin: 0;
+            letter-spacing: -0.01em;
+
+            @media (max-width: 1024.98px) {
+                font-size: 26px;
+                line-height: 1.25;
+            }
+
+            @media (max-width: 767.98px) {
+                font-size: 22px;
+                line-height: 1.3;
+                margin-bottom: 8px;
+            }
+        }
+    }
+}
+
+// Suppress outer full-width breadcrumb and category heading on listing pages
+body:has(.zanders-listing-columns-layout) {
+    .container-main > .cms-breadcrumb,
+    .cms-breadcrumb.container,
+    .cms-block-category-heading {
+        display: none !important;
+    }
+}
+
+// Fallback suppression for engines without :has()
+.cms-section-default:has(.zanders-listing-columns-layout) .cms-block-category-heading {
+    display: none !important;
+}
+
+// -----------------------------------------------------------------------------
+// Toolbar Container & Dual-Row Layout
+// -----------------------------------------------------------------------------
+.toolbar.toolbar-products.zanders-toolbar {
+    width: 100%;
+    margin-bottom: 16px;
+
+    &.zanders-toolbar-bottom {
+        margin-top: 24px;
+        margin-bottom: 32px;
+
+        .zanders-toolbar-row-1 {
+            border-top: 1px solid #000000 !important;
+            border-bottom: 1px solid #000000 !important;
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // Sub-Row 1: Amount, Centered Pagination, Limiter
+    // -------------------------------------------------------------------------
+    .zanders-toolbar-row-1 {
+        padding: 14px 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px;
+        border-top: 1px solid #000000;
+        border-bottom: 1px solid #000000;
+
+        @media (min-width: 1025px) {
+            padding: 16px 0;
+        }
+
+        // Amount: "Items 1 - 60 of 104"
+        .toolbar-amount {
+            font-family: $roboto-font-stack;
+            font-size: 14px;
+            line-height: 16px;
+            font-weight: 500;
+            color: #222222;
+            margin: 0;
+
+            .toolbar-number {
+                font-weight: 700;
+                color: #000000;
+                padding: 0 1px;
+            }
+        }
+
+        // Pagination Wrap
+        .zanders-toolbar-pagination-wrap {
+            margin: 0;
+
+            @media (max-width: 639.98px) {
+                order: 3;
+                width: 100%;
+                justify-content: center;
+                padding-top: 8px;
+            }
+
+            nav.pages,
+            .pagination-nav {
+                display: inline-flex;
+                align-items: center;
+                margin: 0;
+                padding: 0;
+
+                .label {
+                    font-family: $roboto-font-stack;
+                    font-size: 14px;
+                    font-weight: 700;
+                    color: #222222;
+                    margin-right: 8px;
+                }
+
+                ol.pages-items,
+                ul.pagination {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 2px;
+                    list-style: none;
+                    margin: 0;
+                    padding: 0;
+
+                    li.page-item,
+                    li.item {
+                        display: inline-flex;
+                        align-items: center;
+                        margin: 0;
+
+                        a.page-link,
+                        a.page,
+                        a.action {
+                            display: inline-flex;
+                            align-items: center;
+                            justify-content: center;
+                            font-family: $roboto-font-stack;
+                            font-size: 14px;
+                            font-weight: 500;
+                            line-height: 20px;
+                            padding: 2px 6px;
+                            color: #222222;
+                            text-decoration: none;
+                            border: none;
+                            background: transparent;
+                            box-shadow: none;
+                            transition: color 0.15s ease;
+
+                            &:hover,
+                            &:focus {
+                                color: $zanders-red;
+                                background: transparent;
+                            }
+
+                            &.active,
+                            &.text-theme-red {
+                                color: $zanders-red !important;
+                                font-weight: 700;
+                            }
+
+                            svg {
+                                width: 16px;
+                                height: 16px;
+                                stroke-width: 2;
+                            }
+                        }
+
+                        &.active a.page-link {
+                            color: $zanders-red !important;
+                            font-weight: 700;
+                        }
+
+                        &.disabled a.page-link {
+                            opacity: 0.4;
+                            pointer-events: none;
+                        }
+                    }
+                }
+            }
+        }
+
+        // Limiter: "Show: [60] per page"
+        .field.limiter {
+            display: flex;
+            align-items: center;
+            margin: 0;
+
+            .label {
+                font-family: $roboto-font-stack;
+                font-size: 14px;
+                font-weight: 700;
+                color: #222222;
+            }
+
+            .limiter-options {
+                font-family: $roboto-font-stack;
+                font-size: 12px;
+                font-weight: 500;
+                padding: 4px 20px 4px 8px;
+                border: 1px solid #d5d5d5;
+                border-radius: 0;
+                background-color: #ffffff;
+                cursor: pointer;
+
+                &:focus {
+                    outline: none;
+                    border-color: #000000;
+                }
+            }
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // Sub-Row 2: View Modes, Out-of-Stock Toggle, Sorter
+    // -------------------------------------------------------------------------
+    .zanders-toolbar-row-2 {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+
+        // Mobile & Tablet styling (< 1025px)
+        @media (max-width: 1024.98px) {
+            border-top: 1px solid #000000;
+            border-bottom: 1px solid #000000;
+            margin-top: 8px;
+        }
+
+        @media (min-width: 1025px) {
+            padding-top: 8px;
+            gap: 12px;
+        }
+
+        // 1. View Modes
+        .modes {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            order: 1;
+
+            @media (max-width: 1024.98px) {
+                flex: 1;
+                justify-content: center;
+                padding: 8px 0;
+            }
+
+            .modes-label {
+                font-family: $roboto-font-stack;
+                font-size: 14px;
+                font-weight: 500;
+                color: #222222;
+                margin-right: 6px;
+
+                @media (max-width: 1024.98px) {
+                    display: none !important;
+                }
+            }
+
+            .modes-mode {
+                width: 24px;
+                height: 24px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                background: transparent;
+                border: none;
+                padding: 0;
+                cursor: pointer;
+                color: #777777;
+                position: relative;
+                transition: color 0.15s ease;
+
+                svg {
+                    width: 18px;
+                    height: 18px;
+                }
+
+                span,
+                .visually-hidden {
+                    position: absolute !important;
+                    width: 1px !important;
+                    height: 1px !important;
+                    padding: 0 !important;
+                    margin: -1px !important;
+                    overflow: hidden !important;
+                    clip: rect(0, 0, 0, 0) !important;
+                    white-space: nowrap !important;
+                    border: 0 !important;
+                }
+
+                &.active,
+                &:hover {
+                    color: $zanders-red;
+                }
+            }
+        }
+
+        // 2. Hide Out of Stock Items Link
+        .zanders-toolbar-oos {
+            @media (min-width: 1025px) {
+                order: 2;
+                margin-right: auto;
+                margin-left: 24px;
+            }
+
+            @media (max-width: 1024.98px) {
+                order: 4;
+                width: 100%;
+                border-top: 1px solid #d5d5d5;
+                text-align: center;
+                padding: 8px 0;
+            }
+
+            .zanders-oos-link {
+                font-family: $roboto-font-stack;
+                font-size: 14px;
+                font-weight: 500;
+                text-transform: uppercase;
+                text-decoration: underline;
+                color: $zanders-red;
+                transition: color 0.15s ease;
+
+                &:hover {
+                    color: $zanders-red-hover;
+                }
+            }
+        }
+
+        // 3. Sorter
+        .zanders-toolbar-sorter-wrap {
+            @media (min-width: 1025px) {
+                order: 3;
+                margin-left: auto;
+            }
+
+            @media (max-width: 1024.98px) {
+                order: 2;
+                flex: 1;
+                border-left: 1px solid #d5d5d5;
+            }
+
+            .toolbar-sorter {
+                display: flex;
+                align-items: center;
+                position: relative;
+                padding: 8px 0;
+
+                @media (max-width: 1024.98px) {
+                    justify-content: center;
+                    width: 100%;
+                    height: 42px;
+                    padding: 0;
+
+                    .sorter-label-visual {
+                        position: absolute;
+                        inset: 0;
+                        width: 100%;
+                        height: 100%;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        gap: 8px;
+                        background: #ffffff;
+                        pointer-events: none;
+                        font-family: $roboto-font-stack;
+                        font-size: 13px;
+                        font-weight: 600;
+                        text-transform: uppercase;
+                        color: #222222;
+
+                        .sorter-icon-wrap {
+                            display: inline-flex;
+                            align-items: center;
+                        }
+                    }
+
+                    .sorting {
+                        width: 100%;
+                        height: 100%;
+                        margin: 0;
+
+                        select.sorter-options {
+                            position: absolute;
+                            inset: 0;
+                            width: 100%;
+                            height: 100%;
+                            opacity: 0;
+                            cursor: pointer;
+                            z-index: 2;
+                        }
+                    }
+                }
+
+                @media (min-width: 1025px) {
+                    gap: 8px;
+
+                    .sorter-label-visual {
+                        font-family: $roboto-font-stack;
+                        font-size: 14px;
+                        font-weight: 500;
+                        color: #222222;
+                    }
+
+                    .sorting {
+                        display: inline-block;
+
+                        select.sorter-options {
+                            font-family: $roboto-font-stack;
+                            font-size: 14px;
+                            font-weight: 500;
+                            padding: 4px 28px 4px 10px;
+                            border: 1px solid #d5d5d5;
+                            border-radius: 0;
+                            background-color: transparent;
+                            cursor: pointer;
+
+                            &:focus {
+                                outline: none;
+                                border-color: #000000;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+

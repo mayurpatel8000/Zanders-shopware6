@@ -1,0 +1,102 @@
+// =============================================================================
+// Zanders Catalog Listing Additional Sidebar: Customer Login Block
+// Matches https://shop2.gzanders.com/zandersexclusive.html
+// =============================================================================
+
+$roboto-font-stack: 'Roboto', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+$zanders-red: #991020;
+$zanders-red-hover: #7f0d1b;
+
+.zanders-listing-sidebar-additional {
+    width: 100%;
+
+    @media (max-width: 1024.98px) {
+        order: 3;
+        margin-top: 32px;
+    }
+
+    .zanders-sidebar-login-card {
+        border: none;
+        border-radius: 0;
+        box-shadow: none;
+        overflow: hidden;
+
+        .zanders-sidebar-login-title {
+            background-color: #343434; // bg-jet
+            color: #ffffff;
+            font-family: $roboto-font-stack;
+            font-size: 16px;
+            font-weight: 500;
+            line-height: 20px;
+            text-transform: uppercase;
+            text-align: center;
+            padding: 12px 16px;
+            margin: 0;
+            border-radius: 0;
+            letter-spacing: 0.5px;
+        }
+
+        .zanders-sidebar-login-body {
+            background-color: #f8f8f8; // bg-white-smoke
+            padding: 20px;
+            margin: 0;
+            border: none;
+
+            .zanders-sidebar-login-field {
+                margin-bottom: 12px;
+
+                &:last-of-type {
+                    margin-bottom: 20px;
+                }
+            }
+
+            .zanders-sidebar-login-input {
+                background-color: #e3e3e3; // bg-platinum
+                border: 1px solid #d5d5d5;
+                border-radius: 0;
+                font-family: $roboto-font-stack;
+                font-size: 14px;
+                color: #222222;
+                height: 42px;
+                padding: 10px 12px;
+                box-shadow: none;
+
+                &::placeholder {
+                    color: #777777;
+                    font-size: 14px;
+                }
+
+                &:focus {
+                    background-color: #ffffff;
+                    border-color: $zanders-red;
+                    box-shadow: 0 0 0 2px rgba(153, 16, 32, 0.15);
+                }
+            }
+
+            .zanders-sidebar-login-btn {
+                background-color: $zanders-red;
+                border: 1px solid $zanders-red;
+                border-radius: 0;
+                color: #ffffff;
+                font-family: $roboto-font-stack;
+                font-size: 14px;
+                font-weight: 600;
+                line-height: 20px;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                padding: 10px 40px; // px-10
+                min-width: 130px;
+                transition: background-color 0.2s ease, opacity 0.2s ease;
+
+                &:hover,
+                &:focus {
+                    background-color: $zanders-red-hover;
+                    border-color: $zanders-red-hover;
+                    color: #ffffff;
+                    opacity: 0.85;
+                }
+            }
+        }
+    }
+}
+

@@ -1,17 +1,22 @@
 {#
     Zanders Sidebar Filter Panel Override ("SHOPPING OPTIONS")
     Extends vendor `@Storefront/storefront/component/listing/filter-panel.html.twig`:
-    - Replaces mobile offcanvas title & adds desktop red "SHOPPING OPTIONS" banner
-    - Prepends a collapsible "Category" navigation accordion (child -> sibling -> root fallback)
-    - Includes scoped component CSS directly in the template for portability
+    - Mobile/tablet offcanvas header & desktop red "SHOPPING OPTIONS" banner
+    - Active filter chips container placed at the TOP under SHOPPING OPTIONS
+    - Collapsible in-flow "Category" navigation accordion with checkboxes & count badges
+    - Forces sidebar = true for all child filters so they render as in-flow collapse accordions
+    - Full responsive styling handled in _filter-panel.scss
 #}
 {% sw_extends '@Storefront/storefront/component/listing/filter-panel.html.twig' %}
 
 {% block component_filter_panel_header %}
+    {% set shopSnippet = 'zanders.listing.shoppingOptions'|trans %}
+    {% set shoppingTitle = (shopSnippet != 'zanders.listing.shoppingOptions') ? shopSnippet : 'SHOPPING OPTIONS' %}
+
     {# Mobile/tablet offcanvas header shown when filter drawer opens #}
     <div class="filter-panel-offcanvas-header">
         <span data-id="off-canvas-headline" class="filter-panel-offcanvas-only filter-panel-offcanvas-title">
-            {{ 'zanders.listing.shoppingOptions'|trans|default('SHOPPING OPTIONS') }}
+            {{ shoppingTitle }}
         </span>
 
         <button type="button" class="btn-close filter-panel-offcanvas-only filter-panel-offcanvas-close js-offcanvas-close" aria-label="{{ 'listing.filterClose'|trans|striptags }}">
@@ -20,44 +25,65 @@
 {% endblock %}
 
 {% block component_filter_panel_items_container %}
-    {# Crimson header banner at top of filter panel #}
+    {# Enforce sidebar = true so all child filter items render as in-flow collapse accordions #}
+    {% set sidebar = true %}
+
+    {% set shopSnippet = 'zanders.listing.shoppingOptions'|trans %}
+    {% set shoppingTitle = (shopSnippet != 'zanders.listing.shoppingOptions') ? shopSnippet : 'SHOPPING OPTIONS' %}
+
+    {# Crimson header banner at top of filter panel for Desktop #}
     <div class="filter-panel-header-banner">
-        {{ 'zanders.listing.shoppingOptions'|trans|default('SHOPPING OPTIONS') }}
+        {{ shoppingTitle }}
+    </div>
+
+    {# Active filters container placed at the TOP under SHOPPING OPTIONS #}
+    <div class="filter-panel-active-container d-flex flex-wrap gap-2">
     </div>
 
     <div class="filter-panel-items-container" role="list">
         {% block component_filter_panel_items %}
-            {# Resolve relevant category links for the Category accordion (children -> parent siblings -> root tree) #}
-            {% set nav = page.navigation ?? (page.header ? page.header.navigation : null) %}
-            {% set activeId = shopware.navigation.id ?? context.salesChannel.navigationCategoryId %}
-            {% set categoryTree = nav ? nav.getChildren(activeId) : null %}
-            {% set categoryOptions = (categoryTree and categoryTree.tree|length > 0) ? categoryTree.tree : null %}
+            {% set activeId = page.category.id ?? (shopware.navigation.id ?? context.salesChannel.navigationCategoryId) %}
 
-            {# If no children, try parent category siblings #}
-            {% if (not categoryOptions or categoryOptions|length == 0) and page.category and page.category.parentId and nav %}
-                {% set parentTree = nav.getChildren(page.category.parentId) %}
-                {% if parentTree and parentTree.tree|length > 0 %}
-                    {% set categoryOptions = parentTree.tree %}
+            {# 1. Try category extension from navigation-page-loaded hook #}
+            {% set categoryOptions = page.extensions.filterCategories ?? null %}
+
+            {# 2. Fallback to navigation tree #}
+            {% if not categoryOptions or categoryOptions|length == 0 %}
+                {% set nav = page.header ? page.header.navigation : (page.navigation ?? null) %}
+                {% set categoryTree = nav ? nav.getChildren(activeId) : null %}
+                {% set categoryOptions = (categoryTree and categoryTree.tree|length > 0) ? categoryTree.tree : null %}
+
+                {% if (not categoryOptions or categoryOptions|length == 0) and page.category and page.category.parentId and nav %}
+                    {% set parentTree = nav.getChildren(page.category.parentId) %}
+                    {% if parentTree and parentTree.tree|length > 0 %}
+                        {% set categoryOptions = parentTree.tree %}
+                    {% endif %}
+                {% endif %}
+
+                {% if (not categoryOptions or categoryOptions|length == 0) and nav and nav.tree %}
+                    {% for rootItem in nav.tree %}
+                        {% if not categoryOptions and rootItem.children and rootItem.children.tree|length > 0 %}
+                            {% set categoryOptions = rootItem.children.tree %}
+                        {% endif %}
+                    {% endfor %}
                 {% endif %}
             {% endif %}
 
-            {# If still empty, use root navigation tree #}
-            {% if (not categoryOptions or categoryOptions|length == 0) and nav and nav.tree %}
-                {% set categoryOptions = nav.tree %}
-            {% endif %}
-
             {% if categoryOptions and categoryOptions|length > 0 %}
+                {% set catSnippet = 'zanders.listing.filterCategory'|trans %}
+                {% set catTitle = (catSnippet != 'zanders.listing.filterCategory') ? catSnippet : 'CATEGORY' %}
+
                 <div class="filter-panel-item filter-category-item d-grid" role="listitem">
-                    <button class="filter-panel-item-toggle btn"
+                    <button class="filter-panel-item-toggle btn collapsed"
                             type="button"
                             data-bs-toggle="collapse"
                             data-bs-target="#filter-category-collapse"
                             aria-expanded="false"
                             aria-controls="filter-category-collapse">
-                        <span class="filter-category-title">{{ 'zanders.listing.filterCategory'|trans|default('Category') }}</span>
+                        <span class="filter-category-title">{{ catTitle }}</span>
                         <span class="icon icon-filter-panel-item-toggle" aria-hidden="true">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="9" height="6" viewBox="0 0 9 6">
-                                <polygon points="0,0 9,0 4.5,6" fill="currentColor"/>
+                            <svg class="chevron-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M13.5101 15.1999L15.4801 13.2299L18.6901 10.0199C19.3601 9.33993 18.8801 8.17993L11.6901 8.17993L6.08007 8.17993C5.12007 8.17993 4.64007 9.33993 5.32007 10.0199L10.5001 15.1999C11.3201 16.0299 12.6801 16.0299 13.5101 15.1999Z" fill="#292D32"/>
                             </svg>
                         </span>
                     </button>
@@ -69,7 +95,12 @@
                                     <li class="filter-category-list-item">
                                         <a href="{{ seoUrl('frontend.navigation.page', { navigationId: catEntity.id }) }}"
                                            class="filter-category-link{% if catEntity.id == activeId %} is-active{% endif %}">
-                                            {{ catEntity.translated.name }}
+                                            <span class="filter-category-checkbox{% if catEntity.id == activeId %} is-checked{% endif %}" aria-hidden="true"></span>
+                                            <span class="filter-category-name">{{ catEntity.translated.name }}</span>
+                                            {% set catCount = catEntity.productCount ?? catEntity.extensions.productCount ?? (catEntity.childCount > 0 ? catEntity.childCount : null) %}
+                                            {% if catCount is not null %}
+                                                <span class="filter-category-count">({{ catCount }})</span>
+                                            {% endif %}
                                         </a>
                                     </li>
                                 {% endif %}
@@ -82,336 +113,8 @@
             {{ parent() }}
         {% endblock %}
     </div>
+{% endblock %}
 
-    {# Inline CSS styling directly in template file as requested #}
-    <style>
-        .filter-panel {
-            display: block;
-            width: 100%;
-            background-color: #ffffff;
-            border: 1px solid #d5d5d5;
-            border-radius: 0;
-            box-shadow: none;
-            margin-bottom: 24px;
-        }
-        .filter-panel .filter-panel-header-banner {
-            background-color: #8c1d2f;
-            color: #ffffff;
-            text-align: center;
-            padding: 12px 16px;
-            font-size: 14px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-            border-radius: 0;
-            line-height: 1.2;
-            user-select: none;
-        }
-        .filter-panel .filter-panel-items-container {
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-            margin: 0;
-            padding: 0;
-            background-color: #ffffff;
-        }
-        .filter-panel .filter-panel-item {
-            display: block;
-            width: 100%;
-            margin: 0;
-            padding: 0;
-            border-bottom: 1px solid #d5d5d5;
-            background-color: #ffffff;
-            border-radius: 0;
-        }
-        .filter-panel .filter-panel-item:last-child {
-            border-bottom: none;
-        }
-        .filter-panel .filter-panel-item-toggle {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            width: 100%;
-            min-height: 40px;
-            padding: 10px 14px;
-            background-color: #ffffff;
-            color: #222222;
-            font-size: 13px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-            text-align: left;
-            border: none;
-            border-radius: 0;
-            box-shadow: none;
-            cursor: pointer;
-            transition: background-color 0.15s ease, color 0.15s ease;
-        }
-        .filter-panel .filter-panel-item-toggle:hover {
-            background-color: #f7f7f7;
-            color: #8c1d2f;
-        }
-        .filter-panel .filter-panel-item-toggle:focus,
-        .filter-panel .filter-panel-item-toggle:active {
-            outline: none;
-            box-shadow: none;
-            background-color: #f7f7f7;
-        }
-        .filter-panel .filter-panel-item-toggle .icon-filter-panel-item-toggle {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            margin-left: auto;
-            width: 12px;
-            height: 12px;
-            color: #222222;
-            transition: transform 0.2s ease-in-out;
-            flex-shrink: 0;
-        }
-        .filter-panel .filter-panel-item-toggle .icon-filter-panel-item-toggle svg {
-            width: 9px;
-            height: 6px;
-            fill: #222222;
-            color: #222222;
-            top: 0;
-        }
-        .filter-panel .filter-panel-item-toggle[aria-expanded="true"],
-        .filter-panel .filter-panel-item-toggle.show {
-            background-color: #fafafa;
-            color: #8c1d2f;
-        }
-        .filter-panel .filter-panel-item-toggle[aria-expanded="true"] .icon-filter-panel-item-toggle,
-        .filter-panel .filter-panel-item-toggle.show .icon-filter-panel-item-toggle {
-            transform: rotate(180deg);
-        }
-        .filter-panel .filter-panel-item-toggle[aria-expanded="true"] .icon-filter-panel-item-toggle svg,
-        .filter-panel .filter-panel-item-toggle.show .icon-filter-panel-item-toggle svg {
-            fill: #8c1d2f;
-            color: #8c1d2f;
-        }
-        .filter-panel .filter-panel-item-dropdown {
-            width: 100%;
-            min-width: 100%;
-            background-color: #ffffff;
-            padding: 10px 14px 14px 14px;
-            border: none;
-            border-top: 1px solid #f0f0f0;
-            border-radius: 0;
-            box-shadow: none;
-            max-height: 240px;
-            overflow-y: auto;
-            scrollbar-width: thin;
-            scrollbar-color: #c0c0c0 #f8f8f8;
-        }
-        .filter-panel .filter-category-list {
-            list-style: none;
-            margin: 0;
-            padding: 0;
-        }
-        .filter-panel .filter-category-list-item {
-            margin: 0;
-            padding: 3px 0;
-        }
-        .filter-panel .filter-category-link {
-            display: flex;
-            align-items: center;
-            font-size: 13px;
-            color: #444444;
-            text-decoration: none;
-            padding: 4px 6px;
-            border-radius: 2px;
-            transition: background-color 0.15s ease, color 0.15s ease, padding-left 0.15s ease;
-        }
-        .filter-panel .filter-category-link:hover {
-            background-color: #f7f7f7;
-            color: #8c1d2f;
-            padding-left: 10px;
-        }
-        .filter-panel .filter-category-link.is-active {
-            font-weight: 700;
-            color: #8c1d2f;
-            background-color: #fef4f5;
-        }
-        .filter-panel .filter-multi-select-list {
-            list-style: none;
-            margin: 0;
-            padding: 0;
-        }
-        .filter-panel .filter-multi-select-list-item {
-            margin: 0;
-            padding: 4px 0;
-        }
-        .filter-panel .filter-multi-select-item {
-            display: flex;
-            align-items: center;
-            width: 100%;
-            margin: 0;
-        }
-        .filter-panel .filter-multi-select-item .form-check-input,
-        .filter-panel .filter-multi-select-item .filter-multi-select-checkbox {
-            width: 15px;
-            height: 15px;
-            margin-top: 0;
-            margin-right: 8px;
-            border: 1px solid #adb5bd;
-            border-radius: 2px;
-            cursor: pointer;
-            flex-shrink: 0;
-        }
-        .filter-panel .filter-multi-select-item .form-check-input:checked,
-        .filter-panel .filter-multi-select-item .filter-multi-select-checkbox:checked {
-            background-color: #8c1d2f;
-            border-color: #8c1d2f;
-        }
-        .filter-panel .filter-multi-select-item-label {
-            font-size: 13px;
-            color: #444444;
-            cursor: pointer;
-            user-select: none;
-            padding: 0;
-            margin: 0;
-            width: auto;
-            transition: color 0.15s ease;
-        }
-        .filter-panel .filter-multi-select-item-label:hover {
-            color: #8c1d2f;
-        }
-        .filter-panel .filter-multi-select-count {
-            display: inline-block;
-            margin-left: 6px;
-            font-size: 11px;
-            font-weight: 600;
-            color: #8c1d2f;
-        }
-        .filter-panel .filter-range .filter-range-container {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 8px;
-            padding: 4px 0;
-        }
-        .filter-panel .filter-range .filter-range-min,
-        .filter-panel .filter-range .filter-range-max {
-            display: flex;
-            flex-direction: column;
-            flex: 1;
-            font-size: 11px;
-            color: #777777;
-            text-transform: uppercase;
-            margin-bottom: 0;
-        }
-        .filter-panel .filter-range .form-control,
-        .filter-panel .filter-range .min-input,
-        .filter-panel .filter-range .max-input {
-            height: 32px;
-            font-size: 12px;
-            padding: 4px 8px;
-            border: 1px solid #cccccc;
-            border-radius: 0;
-            background-color: #ffffff;
-            margin-top: 4px;
-            transition: border-color 0.15s ease;
-        }
-        .filter-panel .filter-range .form-control:focus,
-        .filter-panel .filter-range .min-input:focus,
-        .filter-panel .filter-range .max-input:focus {
-            border-color: #8c1d2f;
-            box-shadow: 0 0 0 2px rgba(140, 29, 47, 0.2);
-            outline: none;
-        }
-        .filter-panel .filter-range .filter-range-unit {
-            display: none;
-        }
-        .filter-panel .filter-range .filter-range-divider {
-            align-self: flex-end;
-            padding-bottom: 8px;
-            color: #888888;
-            font-size: 14px;
-            font-weight: 700;
-        }
-        .filter-panel .filter-boolean {
-            padding: 10px 14px;
-        }
-        .filter-panel .filter-boolean .form-check {
-            display: flex;
-            align-items: center;
-            margin-bottom: 0;
-            min-height: auto;
-            padding-left: 0;
-        }
-        .filter-panel .filter-boolean .form-check-input,
-        .filter-panel .filter-boolean .filter-boolean-input {
-            width: 15px;
-            height: 15px;
-            margin-top: 0;
-            margin-right: 8px;
-            border: 1px solid #adb5bd;
-            border-radius: 2px;
-            cursor: pointer;
-            float: none;
-        }
-        .filter-panel .filter-boolean .form-check-input:checked,
-        .filter-panel .filter-boolean .filter-boolean-input:checked {
-            background-color: #8c1d2f;
-            border-color: #8c1d2f;
-        }
-        .filter-panel .filter-boolean .filter-boolean-label {
-            font-size: 13px;
-            font-weight: 700;
-            text-transform: uppercase;
-            color: #222222;
-            letter-spacing: 0.3px;
-            cursor: pointer;
-            user-select: none;
-            margin-bottom: 0;
-            transition: color 0.15s ease;
-        }
-        .filter-panel .filter-boolean .filter-boolean-label:hover {
-            color: #8c1d2f;
-        }
-        .filter-panel .filter-panel-active-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            padding: 10px 14px;
-            background-color: #fcfcfc;
-            border-top: 1px solid #e8e8e8;
-        }
-        .filter-panel .filter-panel-active-container:empty {
-            display: none;
-            padding: 0;
-            border: none;
-        }
-        .filter-panel .filter-active {
-            display: inline-flex;
-            align-items: center;
-            font-size: 11px;
-            font-weight: 600;
-            color: #8c1d2f;
-            background-color: #ffffff;
-            border: 1px solid #8c1d2f;
-            border-radius: 2px;
-            padding: 2px 8px;
-            line-height: 1.4;
-            transition: all 0.15s ease;
-        }
-        .filter-panel .filter-active:hover {
-            background-color: #8c1d2f;
-            color: #ffffff;
-        }
-        .filter-panel .filter-reset-all {
-            display: inline-block;
-            font-size: 11px;
-            font-weight: 700;
-            color: #8c1d2f;
-            text-decoration: underline;
-            background: none;
-            border: none;
-            padding: 2px 4px;
-            cursor: pointer;
-        }
-        .filter-panel .filter-reset-all:hover {
-            color: #6e1322;
-        }
-    </style>
+{% block component_filter_panel_active_container %}
+    {# Rendered at top under SHOPPING OPTIONS header banner #}
 {% endblock %}

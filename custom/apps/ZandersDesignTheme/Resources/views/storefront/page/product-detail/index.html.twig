@@ -1,0 +1,29 @@
+{% sw_extends '@Storefront/storefront/page/product-detail/index.html.twig' %}
+
+{% block page_product_detail_main_content %}
+    {{ parent() }}
+
+    {% if page.product %}
+        <script>
+            (function() {
+                try {
+                    var prod = {
+                        id: '{{ page.product.id }}',
+                        name: '{{ page.product.translated.name|e('js') }}',
+                        url: '{{ seoUrl('frontend.detail.page', { productId: page.product.id }) }}'
+                    };
+                    var key = 'zanders_recently_viewed';
+                    var stored = [];
+                    try {
+                        stored = JSON.parse(localStorage.getItem(key)) || [];
+                    } catch(e) { stored = []; }
+                    stored = stored.filter(function(item) { return item && item.id !== prod.id; });
+                    stored.unshift(prod);
+                    if (stored.length > 5) { stored = stored.slice(0, 5); }
+                    localStorage.setItem(key, JSON.stringify(stored));
+                } catch(err) {}
+            })();
+        </script>
+    {% endif %}
+{% endblock %}
+

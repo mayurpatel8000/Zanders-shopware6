@@ -66,6 +66,22 @@
       "requiredFields": "* Required Fields",
       "loginButton": "LOGIN",
       "forgotPassword": "Forgot Your Password?"
+    },
+    "listing": {
+      "shoppingOptions": "SHOPPING OPTIONS",
+      "filterCategory": "CATEGORY",
+      "items": "Items",
+      "of": "of",
+      "show": "Show:",
+      "perPage": "per page",
+      "showPerPage": "Show items per page",
+      "viewAs": "View as  :",
+      "hideOutOfStock": "Hide Out of Stock Items",
+      "sortBy": "Sort by"
+    },
+    "sidebarLogin": {
+      "title": "LOGIN",
+      "button": "LOGIN"
     }
   }
 }

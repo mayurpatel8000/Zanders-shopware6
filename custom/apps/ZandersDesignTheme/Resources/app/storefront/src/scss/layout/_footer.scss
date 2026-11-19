@@ -1,43 +1,96 @@
-/*
-Footer
-==================================================
-Zanders Footer:
-- Light gray upper section (#F2F2F2)
-- Navigation columns (COMPANY, RESOURCES)
-- Contact items with red circular icons
-- Zanders brand logo on right
-- Crimson red bottom strip ($primary) with social icons and copyright
-*/
+// =============================================================================
+// Zanders Footer Styles
+// Exact replication of live reference (https://shop2.gzanders.com/)
+// Upper Section: #F0F0F0 (bg-flash-White)
+// Bottom Strip: #991020 ($primary)
+// Typography: Roboto font stack as per theme standards
+// =============================================================================
+
+$roboto-font-stack: 'Roboto', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+$zanders-red: #991020;
+$zanders-red-hover: #7f0d1b;
+$bg-upper-footer: #F0F0F0;
+$color-link-gray: #787878;
 
 footer.footer-main,
 .footer-main {
     background-color: transparent;
     padding: 0;
     border-top: 0;
+    font-family: $roboto-font-stack;
 }
 
+// -----------------------------------------------------------------------------
+// Upper Section: #F0F0F0 (bg-flash-White)
+// -----------------------------------------------------------------------------
 .footer-top {
-    background-color: #F0F0F0;
-    padding-block: 48px;
+    background-color: $bg-upper-footer;
+    font-family: $roboto-font-stack;
+    
+    // Responsive section padding (py-6 mobile -> py-12 tablet/desktop)
+    padding-top: 24px;
+    padding-bottom: 24px;
+
+    @media (min-width: 640px) {
+        padding-top: 48px;
+        padding-bottom: 48px;
+    }
 
     .footer-main-row {
-        row-gap: 32px;
+        row-gap: 24px;
+
+        @media (min-width: 768px) {
+            row-gap: 32px;
+        }
+
+        @media (min-width: 1025px) {
+            column-gap: 0;
+            justify-content: space-between;
+        }
+        @media (min-width: 1280px) {
+            column-gap: 24px;            
+        }
+    }
+
+    // Navigation Columns (COMPANY, RESOURCES)
+    .footer-col-nav {
+        @media (max-width: 767.98px) {
+            margin-bottom: 8px;
+        }
     }
 
     .footer-col-headline {
-        font-size: 22px;
-        line-height: 26px;
+        font-family: $roboto-font-stack;
         font-weight: 500;
         color: #000000;
         text-transform: uppercase;
-        margin-bottom: 24px;
+        letter-spacing: 0.3px;
+
+        // Mobile (< 640px): 14px / 24px, mb-2 (8px)
+        font-size: 14px;
+        line-height: 24px;
+        margin-bottom: 8px;
+
+        // Tablet (640px - 1279px): 18px / 28px, mb-6 (24px)
+        @media (min-width: 640px) {
+            font-size: 18px;
+            line-height: 28px;
+            margin-bottom: 24px;
+        }
+
+        // Desktop / 2XL (>= 1280px): 22px / 28px
+        @media (min-width: 1280px) {
+            font-size: 22px;
+            line-height: 28px;
+        }
 
         a {
             color: #000000;
             text-decoration: none;
+            transition: color 0.15s ease;
 
             &:hover {
-                color: $primary;
+                color: $zanders-red;
             }
         }
     }
@@ -45,141 +98,412 @@ footer.footer-main,
     .footer-nav-list {
         margin: 0;
         padding: 0;
+        list-style: none;
 
         .footer-nav-item {
-            margin-bottom: 16px;
+            // Mobile (< 640px): mb-2 (8px)
+            margin-bottom: 8px;
+
+            // Tablet / Desktop (>= 640px): mb-4 (16px)
+            @media (min-width: 640px) {
+                margin-bottom: 16px;
+            }
 
             &:last-child {
                 margin-bottom: 0;
             }
 
             .footer-nav-link {
-                font-size: 19px;
-                line-height: 22px;
+                font-family: $roboto-font-stack;
                 font-weight: 400;
-                color: #787878;
+                color: $color-link-gray;
                 text-decoration: none;
+                display: inline-block;
+                line-height: 1;
                 transition: color 0.15s ease;
 
+                // Mobile (< 640px): 12px
+                font-size: 12px;
+
+                // Tablet / Small Desktop (640px - 1279px): 16px
+                @media (min-width: 640px) {
+                    font-size: 16px;
+                    line-height: 24px;
+                }
+
+                // Desktop / 2XL (>= 1280px): 19px
+                @media (min-width: 1280px) {
+                    font-size: 19px;
+                }
+
                 &:hover {
-                    color: $primary;
+                    color: $zanders-red;
                 }
             }
         }
     }
 
-    .footer-contact-items {
-        display: flex;
-        flex-direction: column;
-        gap: 22px;
-    }
-
-    .footer-contact-item {
-        display: flex;
-        align-items: center;
-
-        .footer-contact-link {
-            display: flex;
-            align-items: center;
-            text-decoration: none;
-            color: inherit;
-
-            &:hover .footer-contact-phone-text {
-                color: $primary;
-            }
-        }
-
-        .footer-icon-circle {
-            width: 54px;
-            height: 54px;
-            min-width: 54px;
-            border-radius: 50%;
-            border: 2px solid $primary;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: transparent;
-            color: $primary;
-            transition: all 0.2s ease;
-            margin-right: 18px;
-
-            svg {
-                width: 27px;
-                height: 27px;
-            }
-        }
-
-        .footer-contact-phone-text {
-            font-size: 19px;
-            line-height: 26px;
-            font-weight: 400;
-            color: #000000;
-            transition: color 0.15s ease;
-        }
-
-        .footer-contact-hours-text {
+    // Contact Information Column (Phone & Hours)
+    .footer-col-contact {
+        .footer-contact-items {
             display: flex;
             flex-direction: column;
-            font-size: 19px;
-            line-height: 26px;
-            font-weight: 400;
-            color: #000000;
+            gap: 10px;
+
+            @media (min-width: 640px) {
+                gap: 20px;
+            }
+
+            @media (min-width: 1025px) {
+                gap: 28px;
+            }
+        }
+
+        .footer-contact-item {
+            display: flex;
+            align-items: center;
+
+            .footer-contact-link {
+                display: flex;
+                align-items: center;
+                text-decoration: none;
+                color: inherit;
+
+                &:hover .footer-contact-phone-text {
+                    color: $zanders-red;
+                }
+            }
+
+            // Circular Outline Red Icon
+            .footer-icon-circle {
+                border-radius: 50%;
+                border-style: solid;
+                border-color: $zanders-red;
+                color: $zanders-red;
+                background-color: transparent;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
+                transition: all 0.2s ease;
+
+                // Mobile (< 640px): 24px x 24px, 1px border, 8px margin
+                width: 24px;
+                height: 24px;
+                min-width: 24px;
+                border-width: 1px;
+                margin-right: 8px;
+
+                svg {
+                    width: 12px;
+                    height: 12px;
+                }
+
+                // Tablet (640px - 1024px): 40px x 40px, 2px border, 14px margin
+                @media (min-width: 640px) {
+                    width: 40px;
+                    height: 40px;
+                    min-width: 40px;
+                    border-width: 2px;
+                    margin-right: 14px;
+
+                    svg {
+                        width: 20px;
+                        height: 20px;
+                    }
+                }
+
+                // Desktop (1025px - 1279px): 48px x 48px
+                @media (min-width: 1025px) {
+                    width: 48px;
+                    height: 48px;
+                    min-width: 48px;
+                    margin-right: 16px;
+
+                    svg {
+                        width: 24px;
+                        height: 24px;
+                    }
+                }
+
+                // 2XL Desktop (>= 1280px): 54px x 54px
+                @media (min-width: 1280px) {
+                    width: 54px;
+                    height: 54px;
+                    min-width: 54px;
+                    margin-right: 18px;
+
+                    svg {
+                        width: 28px;
+                        height: 28px;
+                    }
+                }
+            }
+
+            .footer-contact-phone-text {
+                font-family: $roboto-font-stack;
+                font-weight: 400;
+                color: #000000;
+                transition: color 0.15s ease;
+
+                // Mobile (< 640px): 10px
+                font-size: 10px;
+                line-height: 14px;
+
+                // Tablet (640px - 1279px): 18px / 28px
+                @media (min-width: 640px) {
+                    font-size: 18px;
+                    line-height: 28px;
+                }
+
+                // Desktop / 2XL (>= 1280px): 22px / 28px
+                @media (min-width: 1280px) {
+                    font-size: 22px;
+                    line-height: 28px;
+                }
+            }
+
+            .footer-contact-hours-text {
+                display: flex;
+                flex-direction: column;
+                font-family: $roboto-font-stack;
+                font-weight: 400;
+                color: #000000;
+
+                // Mobile (< 640px): 10px
+                font-size: 10px;
+                line-height: 14px;
+
+                // Tablet (640px - 1279px): 18px / 28px
+                @media (min-width: 640px) {
+                    font-size: 18px;
+                    line-height: 28px;
+                }
+
+                // Desktop / 2XL (>= 1280px): 22px / 28px
+                @media (min-width: 1280px) {
+                    font-size: 22px;
+                    line-height: 28px;
+                }
+            }
         }
     }
 
+    // Brand Logo Column
     .footer-col-logo {
-        .footer-logo-img {
-            max-width: 250px;
+        .footer-logo-link {
+            display: inline-block;
+            width: 100%;
+
+            // Mobile (< 640px): max-width 220px
+            max-width: 85%;
+
+            // Tablet (640px - 1024px): max-width 300px
+            // @media (min-width: 640px) {
+            //     max-width: 300px;
+            // }
+
+            // // Desktop (1025px - 1279px): max-width 280px
+            // @media (min-width: 1025px) {
+            //     max-width: 280px;
+            // }
+
+            // // Large Desktop (1280px - 1463px): max-width 310px
+            // @media (min-width: 1280px) {
+            //     max-width: 310px;
+            // }
+
+            // // 2XL Desktop (>= 1464px): max-width 410px
+            // @media (min-width: 1464px) {
+            //     max-width: 410px;
+            // }
+        }
+
+        .footer-logo-img,
+        .footer-logo-svg,
+        svg {
             height: auto;
+            width: 100%;
+            max-width: 100%;
             display: inline-block;
         }
     }
 }
 
+// -----------------------------------------------------------------------------
+// Bottom Bar: #991020 (bg-primary)
+// -----------------------------------------------------------------------------
 .footer-bottom-bar {
-    background-color: $primary;
+    background-color: $zanders-red;
     color: #ffffff;
-    padding: 16px 0;
+    font-family: $roboto-font-stack;
 
-    .footer-stay-connected {
-        font-size: 16px;
-        font-weight: 500;
-        margin-right: 14px;
-        color: #ffffff;
+    // Mobile padding py-2 (8px), Tablet/Desktop py-4 (16px)
+    padding-top: 8px;
+    padding-bottom: 8px;
+
+    @media (min-width: 640px) {
+        padding-top: 16px;
+        padding-bottom: 16px;
     }
 
-    .footer-social-icons {
-        .footer-social-link {
-            color: #ffffff;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            transition: opacity 0.2s ease, transform 0.2s ease;
+    .footer-bottom-inner {
+        gap: 12px;
 
-            svg {
-                width: 18px;
-                height: 18px;
-                fill: currentColor;
+        // Mobile / Tablet (< 1025px): vertical column stack centered
+        @media (max-width: 1024.98px) {
+            flex-direction: column;
+            text-align: center;
+            justify-content: center;
+        }
+
+        // Desktop (>= 1025px): horizontal row justified
+        @media (min-width: 1025px) {
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+        }
+    }
+
+    // Social Links ("Stay connected" + icons)
+    .footer-bottom-left {
+        gap: 12px;
+
+        @media (max-width: 1024.98px) {
+            justify-content: center;
+        }
+
+        .footer-stay-connected {
+            font-family: $roboto-font-stack;
+            font-weight: 500;
+            color: #ffffff;
+            white-space: nowrap;
+
+            // Mobile (< 640px): 12px
+            font-size: 12px;
+
+            // Tablet (640px - 1024px): 14px
+            @media (min-width: 640px) {
+                font-size: 14px;
             }
 
-            &:hover {
-                opacity: 0.8;
-                transform: translateY(-1px);
+            // Desktop (1025px - 1279px): 14px
+            @media (min-width: 1025px) {
+                font-size: 14px;
+            }
+
+            // Large Desktop (1280px - 1463px): 16px
+            @media (min-width: 1280px) {
+                font-size: 16px;
+            }
+
+            // 2XL Desktop (>= 1464px): 20px
+            @media (min-width: 1464px) {
+                font-size: 20px;
+            }
+        }
+
+        .footer-social-icons {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            @media (min-width: 640px) {
+                gap: 12px;
+            }
+
+            .footer-social-link {
+                color: #ffffff;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                transition: opacity 0.2s ease, transform 0.2s ease;
+
+                // Mobile: 24px container, 14px SVG
+                width: 24px;
+                height: 24px;
+
+                svg {
+                    width: 14px;
+                    height: 14px;
+                    fill: currentColor;
+                }
+
+                // Tablet / Desktop (>= 640px): 32px container, 18px SVG
+                @media (min-width: 640px) {
+                    width: 32px;
+                    height: 32px;
+
+                    svg {
+                        width: 18px;
+                        height: 18px;
+                    }
+                }
+
+                // 2XL Desktop (>= 1464px): 46px container, 24px SVG
+                @media (min-width: 1464px) {
+                    width: 46px;
+                    height: 46px;
+
+                    svg {
+                        width: 24px;
+                        height: 24px;
+                    }
+                }
+
+                &:hover {
+                    opacity: 0.85;
+                    transform: translateY(-2px);
+                }
             }
         }
     }
 
-    .footer-copyright-line {
-        font-size: 16px;
-        font-weight: 400;
-        color: #ffffff;
-        margin-bottom: 2px;
-    }
+    // Copyright & Legal Disclaimer
+    .footer-bottom-right {
+        @media (max-width: 1024.98px) {
+            text-align: center;
+        }
 
-    .footer-distributor-line {
-        font-size: 16px;
-        font-weight: 400;
-        color: #ffffff;
-        opacity: 0.95;
+        @media (min-width: 1025px) {
+            text-align: end;
+        }
+
+        .footer-copyright-line,
+        .footer-distributor-line {
+            font-family: $roboto-font-stack;
+            font-weight: 400;
+            color: #ffffff;
+
+            // Mobile (< 640px): 12px / 14px
+            font-size: 12px;
+            line-height: 14px;
+
+            // Tablet (640px - 1279px): 14px / 20px
+            @media (min-width: 640px) {
+                font-size: 14px;
+                line-height: 20px;
+            }
+
+            // Large Desktop (1280px - 1463px): 16px / 24px
+            @media (min-width: 1280px) {
+                font-size: 16px;
+                line-height: 24px;
+            }
+
+            // 2XL Desktop (>= 1464px): 20px / 28px
+            @media (min-width: 1464px) {
+                font-size: 20px;
+                line-height: 28px;
+            }
+        }
+
+        .footer-copyright-line {
+            margin-bottom: 2px;
+        }
+
+        .footer-distributor-line {
+            opacity: 0.95;
+        }
     }
 }

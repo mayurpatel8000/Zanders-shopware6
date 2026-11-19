@@ -1,27 +1,38 @@
-/*
-Product Card
-==================================================
-Matches Zanders product card design:
-- Pure white card with soft drop shadow
-- Centered product image with contain fit
-- Centered bold uppercase title
-- Centered metadata (Item Number, UPC, Available: <count>)
-- Centered large crimson primary price ($26.88)
-- Centered Qty selector: Qty: [ 00 ]
-- Secondary prices row: MSRP : $899.00  |  MAP : $899.00
-- 3 circular action icons: Wishlist, Compare, Quick View
-- 2 full-width solid crimson action buttons: ADD TO CART and BUY NOW
-*/
+// ==============================================================================
+// ZANDERS SPORTING GOODS - PRODUCT CARD COMPONENT
+// Complete responsive design matching live reference site (shop2.gzanders.com)
+// Breakpoints: Desktop (>= 1025px), Tablet (768px - 1024px), Mobile (< 768px)
+// ==============================================================================
+
+// Design Tokens
+$zanders-red:         #991020;  // Official Zanders Crimson Red
+$zanders-red-hover:   #7d0d1a;  // Darkened hover state
+$zanders-red-soft:    #fff1f2;  // Soft pink tint for active tool states
+$charcoal-black:      #1A2530;  // Deep charcoal for headings & primary text
+$slate-dark:          #212529;  // Form borders and input text
+$muted-gray:          #777777;  // Metadata labels (Item Number, UPC, Available)
+$border-light:        #ECECEC;  // Outer perimeter border
+$card-bg:             #ffffff;  // Clean white canvas
+$input-bg:            #f4f6f8;  // Light platinum input background
+$tool-btn-bg:         #f2f4f6;  // Circular tool icon background
+$tool-btn-border:     #e2e5e8;  // Circular tool icon border
+$font-family-display: 'Poppins', 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+$roboto-font-stack:   'Roboto', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+
+// ==============================================================================
+// 1. PRODUCT CARD CONTAINER & ELEVATION
+// ==============================================================================
 
 .card.product-box,
 .product-box {
-    background-color: #ffffff;
-    border: 1px solid #ECECEC;
+    background-color: $card-bg;
+    border: 1px solid $border-light;
     border-radius: 0;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     text-align: center;
     height: 100%;
+    box-sizing: border-box;
 
     &:hover {
         box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
@@ -29,7 +40,7 @@ Matches Zanders product card design:
     }
 
     .card-body {
-        padding: 24px 20px 24px;
+        padding: 24px 20px;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -43,6 +54,9 @@ Matches Zanders product card design:
         display: none;
     }
 
+    // ==========================================================================
+    // 2. PRODUCT IMAGE AREA
+    // ==========================================================================
     .product-image-wrapper {
         height: 160px;
         max-height: 160px;
@@ -70,6 +84,7 @@ Matches Zanders product card design:
             object-fit: contain;
             margin: 0 auto;
             display: block;
+            transition: transform 0.25s ease;
         }
 
         .product-image-placeholder {
@@ -80,6 +95,10 @@ Matches Zanders product card design:
             align-items: center;
             justify-content: center;
         }
+    }
+
+    &:hover .product-image {
+        transform: scale(1.02);
     }
 
     .product-info {
@@ -96,11 +115,14 @@ Matches Zanders product card design:
         display: none;
     }
 
+    // ==========================================================================
+    // 3. PRODUCT TITLE
+    // ==========================================================================
     .product-name {
-        font-family: 'Poppins', sans-serif;
+        font-family: $font-family-display;
         font-size: 15px;
-        font-weight: 700;
-        color: #1A2530;
+        font-weight: 600;
+        color: $charcoal-black;
         text-transform: uppercase;
         text-align: center;
         line-height: 1.35;
@@ -114,14 +136,18 @@ Matches Zanders product card design:
         text-overflow: ellipsis;
         text-decoration: none;
         width: 100%;
+        transition: color 0.15s ease;
 
         &:hover,
         &:focus {
-            color: #8c1d2f;
+            color: $zanders-red;
             text-decoration: none;
         }
     }
 
+    // ==========================================================================
+    // 4. METADATA BLOCK (Item Number, UPC, Available)
+    // ==========================================================================
     .product-card-meta {
         display: flex;
         flex-direction: column;
@@ -132,41 +158,50 @@ Matches Zanders product card design:
         width: 100%;
 
         .product-card-meta-item {
-            font-family: 'Poppins', sans-serif;
+            font-family: $font-family-display;
             font-size: 13px;
             line-height: 1.45;
-            color: #222222;
+            color: $charcoal-black;
 
             .meta-label {
                 font-weight: 400;
-                color: #777777;
+                color: $muted-gray;
                 margin-right: 4px;
             }
 
             .meta-value {
                 font-weight: 700;
-                color: #1A2530;
+                color: $charcoal-black;
+
+                &.text-muted {
+                    color: #dc2626 !important; // Out of stock indicator
+                    font-weight: 600;
+                }
             }
         }
     }
 
-    /* Primary Price */
+    // ==========================================================================
+    // 5. PRIMARY SELLING PRICE
+    // ==========================================================================
     .product-card-price-primary {
         text-align: center;
         margin-bottom: 10px;
         width: 100%;
 
         .primary-price-value {
-            font-family: 'Poppins', sans-serif;
+            font-family: $font-family-display;
             font-size: 22px;
             font-weight: 700;
-            color: #8c1d2f;
+            color: $zanders-red;
             line-height: 1.2;
             display: inline-block;
         }
     }
 
-    /* Action wrapper & form */
+    // ==========================================================================
+    // 6. ACTION WRAPPER & FORM
+    // ==========================================================================
     .product-action-wrapper {
         width: 100%;
         margin-top: 4px;
@@ -179,7 +214,9 @@ Matches Zanders product card design:
         }
     }
 
-    /* Quantity row: Qty: [ 00 ] */
+    // ==========================================================================
+    // 7. QUANTITY ROW: Qty: [ 00 ]
+    // ==========================================================================
     .product-card-qty-row {
         display: flex;
         align-items: center;
@@ -189,7 +226,7 @@ Matches Zanders product card design:
         width: 100%;
 
         .product-card-qty-label {
-            font-family: 'Poppins', sans-serif;
+            font-family: $font-family-display;
             font-size: 14px;
             color: #555555;
             font-weight: 500;
@@ -201,13 +238,13 @@ Matches Zanders product card design:
             height: 32px;
             padding: 2px 6px;
             text-align: center;
-            font-family: 'Poppins', sans-serif;
+            font-family: $font-family-display;
             font-size: 14px;
             font-weight: 600;
-            color: #212529;
-            background-color: #f4f6f8;
+            color: $slate-dark;
+            background-color: $input-bg;
             border: none;
-            border-bottom: 2px solid #212529;
+            border-bottom: 2px solid $slate-dark;
             border-radius: 2px 2px 0 0;
             box-shadow: none;
             -moz-appearance: textfield;
@@ -220,14 +257,16 @@ Matches Zanders product card design:
 
             &:focus {
                 background-color: #ffffff;
-                border-bottom-color: #8c1d2f;
+                border-bottom-color: $zanders-red;
                 outline: none;
                 box-shadow: none;
             }
         }
     }
 
-    /* Secondary Prices: MSRP & MAP */
+    // ==========================================================================
+    // 8. SECONDARY PRICES: MSRP & MAP
+    // ==========================================================================
     .product-card-secondary-prices {
         display: flex;
         justify-content: space-between;
@@ -235,33 +274,35 @@ Matches Zanders product card design:
         width: 100%;
         margin-bottom: 16px;
         padding: 0 4px;
-        font-family: 'Poppins', sans-serif;
+        font-family: $font-family-display;
         font-size: 14px;
         font-weight: 600;
-        color: #8c1d2f;
+        color: $zanders-red;
 
         .price-col {
             display: inline-flex;
             align-items: center;
             gap: 4px;
-            color: #8c1d2f;
+            color: $zanders-red;
             white-space: nowrap;
 
             .price-label {
-                color: #8c1d2f;
+                color: $zanders-red;
                 font-weight: 600;
                 white-space: nowrap;
             }
 
             .price-val {
-                color: #8c1d2f;
+                color: $zanders-red;
                 font-weight: 600;
                 white-space: nowrap;
             }
         }
     }
 
-    /* Circular action icons row: Wishlist, Compare, Quick View */
+    // ==========================================================================
+    // 9. CIRCULAR ACTION ICONS: Wishlist, Compare, Quick View
+    // ==========================================================================
     .product-card-action-icons {
         display: flex;
         justify-content: center;
@@ -274,8 +315,8 @@ Matches Zanders product card design:
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            background-color: #f2f4f6;
-            border: 1px solid #e2e5e8;
+            background-color: $tool-btn-bg;
+            border: 1px solid $tool-btn-border;
             color: #6c757d;
             display: inline-flex;
             align-items: center;
@@ -309,8 +350,8 @@ Matches Zanders product card design:
             }
 
             &:hover {
-                background-color: #8c1d2f;
-                border-color: #8c1d2f;
+                background-color: $zanders-red;
+                border-color: $zanders-red;
                 color: #ffffff;
 
                 svg {
@@ -322,9 +363,9 @@ Matches Zanders product card design:
             &.product-wishlist-added,
             &.is-wishlist,
             &.is-active {
-                background-color: #fff1f2;
-                border-color: #8c1d2f;
-                color: #8c1d2f;
+                background-color: $zanders-red-soft;
+                border-color: $zanders-red;
+                color: $zanders-red;
 
                 .icon-wishlist-not-added,
                 .wishlist-not-added {
@@ -338,14 +379,14 @@ Matches Zanders product card design:
                     justify-content: center;
 
                     svg {
-                        stroke: #8c1d2f;
-                        fill: #8c1d2f;
+                        stroke: $zanders-red;
+                        fill: $zanders-red;
                     }
                 }
 
                 &:hover {
-                    background-color: #8c1d2f;
-                    border-color: #8c1d2f;
+                    background-color: $zanders-red;
+                    border-color: $zanders-red;
                     color: #ffffff;
 
                     .icon-wishlist-added svg,
@@ -358,7 +399,9 @@ Matches Zanders product card design:
         }
     }
 
-    /* Action buttons row: ADD TO CART & BUY NOW */
+    // ==========================================================================
+    // 10. PRIMARY ACTION BUTTONS: ADD TO CART & BUY NOW
+    // ==========================================================================
     .product-card-action-buttons {
         display: flex;
         gap: 10px;
@@ -367,16 +410,17 @@ Matches Zanders product card design:
         .product-card-btn-add,
         .product-card-btn-buy {
             flex: 1 1 0;
-            background-color: #8c1d2f;
-            border: 1px solid #8c1d2f;
+            background-color: $zanders-red;
+            border: 1px solid $zanders-red;
             color: #ffffff;
-            font-family: 'Poppins', sans-serif;
+            font-family: $font-family-display;
             font-size: 13px;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.3px;
             border-radius: 2px;
             padding: 10px 4px;
+            height: 38px;
             line-height: 1.2;
             text-align: center;
             white-space: nowrap;
@@ -389,8 +433,8 @@ Matches Zanders product card design:
 
             &:hover,
             &:focus {
-                background-color: #6e1322;
-                border-color: #6e1322;
+                background-color: $zanders-red-hover;
+                border-color: $zanders-red-hover;
                 color: #ffffff;
                 text-decoration: none;
                 box-shadow: none;
@@ -406,59 +450,77 @@ Matches Zanders product card design:
         display: none;
     }
 
-    /* Mobile adjustments */
-    @media (max-width: 575.98px) {
+    // ==========================================================================
+    // 11. RESPONSIVE BREAKPOINTS
+    // ==========================================================================
+
+    // Tablet (768px - 1024.98px)
+    @media (min-width: 768px) and (max-width: 1024.98px) {
         .card-body {
-            padding: 16px 12px 16px;
+            padding: 20px 16px;
         }
 
         .product-image-wrapper {
-            height: 130px;
-            max-height: 130px;
-            margin-bottom: 12px;
+            height: 140px;
+            max-height: 140px;
+            margin-bottom: 14px;
 
             .product-image {
-                max-height: 130px;
+                max-height: 140px;
             }
         }
 
         .product-name {
-            font-size: 13px;
-            min-height: 36px;
-            margin-bottom: 8px;
+            font-size: 14px;
+            min-height: 38px;
+            margin-bottom: 10px;
         }
 
         .product-card-meta {
             font-size: 12px;
-            margin-bottom: 8px;
+            gap: 2px;
+            margin-bottom: 10px;
+
+            .product-card-meta-item {
+                font-size: 12px;
+            }
         }
 
-        .product-card-price-primary .primary-price-value {
-            font-size: 18px;
+        .product-card-price-primary {
+            margin-bottom: 8px;
+
+            .primary-price-value {
+                font-size: 20px;
+            }
         }
 
         .product-card-qty-row {
-            margin-bottom: 10px;
+            margin-bottom: 12px;
+            gap: 6px;
+
+            .product-card-qty-label {
+                font-size: 13px;
+            }
 
             .product-card-qty-input {
-                width: 54px;
-                height: 28px;
+                width: 58px;
+                height: 30px;
                 font-size: 13px;
             }
         }
 
         .product-card-secondary-prices {
-            font-size: 12px;
-            margin-bottom: 12px;
+            font-size: 13px;
+            margin-bottom: 14px;
         }
 
         .product-card-action-icons {
-            gap: 8px;
-            margin-bottom: 14px;
+            gap: 10px;
+            margin-bottom: 16px;
 
             .product-card-icon-btn {
-                width: 34px;
-                height: 34px;
+                width: 36px;
+                height: 36px;
 
                 svg {
                     width: 16px;
@@ -468,13 +530,698 @@ Matches Zanders product card design:
         }
 
         .product-card-action-buttons {
+            gap: 8px;
+
+            .product-card-btn-add,
+            .product-card-btn-buy {
+                height: 36px;
+                font-size: 12px;
+                padding: 8px 4px;
+            }
+        }
+    }
+
+    // Mobile (< 768px)
+    @media (max-width: 767.98px) {
+        .card-body {
+            padding: 16px 12px;
+        }
+
+        .product-image-wrapper {
+            height: 120px;
+            max-height: 120px;
+            margin-bottom: 10px;
+
+            .product-image {
+                max-height: 120px;
+            }
+        }
+
+        .product-name {
+            font-size: 13px;
+            min-height: 34px;
+            line-height: 1.3;
+            margin-bottom: 8px;
+        }
+
+        .product-card-meta {
+            font-size: 11px;
+            gap: 2px;
+            margin-bottom: 8px;
+
+            .product-card-meta-item {
+                font-size: 11px;
+                line-height: 1.35;
+            }
+        }
+
+        .product-card-price-primary {
+            margin-bottom: 6px;
+
+            .primary-price-value {
+                font-size: 18px;
+            }
+        }
+
+        .product-card-qty-row {
+            margin-bottom: 10px;
+            gap: 6px;
+
+            .product-card-qty-label {
+                font-size: 12px;
+            }
+
+            .product-card-qty-input {
+                width: 52px;
+                height: 28px;
+                font-size: 12px;
+            }
+        }
+
+        .product-card-secondary-prices {
+            font-size: 11px;
+            margin-bottom: 12px;
+            padding: 0 2px;
+        }
+
+        .product-card-action-icons {
+            gap: 8px;
+            margin-bottom: 12px;
+
+            .product-card-icon-btn {
+                width: 32px;
+                height: 32px;
+
+                svg {
+                    width: 14px;
+                    height: 14px;
+                }
+            }
+        }
+
+        .product-card-action-buttons {
             gap: 6px;
 
             .product-card-btn-add,
             .product-card-btn-buy {
+                height: 34px;
                 font-size: 11px;
                 padding: 8px 2px;
                 letter-spacing: 0;
+            }
+        }
+    }
+
+    // Extra-Small Mobile (< 360px)
+    @media (max-width: 359.98px) {
+        .card-body {
+            padding: 12px 8px;
+        }
+
+        .product-card-action-buttons {
+            flex-direction: column;
+            gap: 6px;
+
+            .product-card-btn-add,
+            .product-card-btn-buy {
+                width: 100%;
+            }
+        }
+    }
+}
+
+// ==============================================================================
+// 12. LISTING GRID LAYOUT RULES (3 columns Desktop, 2 columns Tablet/Mobile)
+// ==============================================================================
+
+.cms-element-product-listing .cms-listing-row {
+    display: flex;
+    flex-wrap: wrap;
+    margin-right: -10px;
+    margin-left: -10px;
+
+    > .cms-listing-col {
+        padding-right: 10px;
+        padding-left: 10px;
+        margin-bottom: 20px;
+        box-sizing: border-box;
+
+        // Desktop (>= 1025px): 3 columns in the listing alongside 280px left sidebar
+        @media (min-width: 1025px) {
+            flex: 0 0 calc(100% / 3) !important;
+            max-width: calc(100% / 3) !important;
+        }
+
+        // Tablet (768px - 1024.98px): 2 columns
+        @media (min-width: 768px) and (max-width: 1024.98px) {
+            flex: 0 0 50% !important;
+            max-width: 50% !important;
+        }
+
+        // Mobile (< 768px): 2 columns for optimal shopping density
+        @media (max-width: 767.98px) {
+            flex: 0 0 50% !important;
+            max-width: 50% !important;
+            padding-right: 6px;
+            padding-left: 6px;
+            margin-bottom: 12px;
+        }
+
+        // Extra small mobile (< 380px): 1 column
+        @media (max-width: 379.98px) {
+            flex: 0 0 100% !important;
+            max-width: 100% !important;
+            padding-right: 0;
+            padding-left: 0;
+        }
+    }
+}
+
+// ==============================================================================
+// 13. VIEW MODES: LIST & SIMPLE
+// Matching live reference images (media_1795086446411_ae2f6e90.jpg and media_1795086482235_458472be.jpg)
+// ==============================================================================
+
+// Hide inline MSRP item in default grid view (grid has secondary prices at bottom)
+.product-card-meta-item.product-card-msrp-item {
+    display: none;
+}
+
+// ------------------------------------------------------------------------------
+// A. VIEW MODE: LIST (Horizontal Row with Image on Left & Info on Right)
+// Matches reference image: media_1795086446411_ae2f6e90.jpg
+// ------------------------------------------------------------------------------
+.cms-element-product-listing .cms-listing-row.is-view-list {
+    > .cms-listing-col {
+        flex: 0 0 100% !important;
+        max-width: 100% !important;
+        width: 100% !important;
+        margin-bottom: 20px !important;
+    }
+
+    .card.product-box,
+    .product-box {
+        background-color: #ffffff !important;
+        border: 1px solid #e8e8e8 !important;
+        border-radius: 0 !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+        text-align: left !important;
+        height: auto !important;
+        transition: box-shadow 0.2s ease !important;
+
+        &:hover {
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08) !important;
+            transform: none !important;
+        }
+
+        .card-body {
+            display: flex !important;
+            flex-direction: row !important;
+            align-items: center !important;
+            justify-content: flex-start !important;
+            padding: 24px 28px !important;
+            gap: 32px !important;
+            text-align: left !important;
+            height: auto !important;
+            box-sizing: border-box !important;
+
+            @media (max-width: 767.98px) {
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                padding: 16px !important;
+                gap: 16px !important;
+            }
+        }
+
+        // Left: Thumbnail Image
+        .product-image-wrapper {
+            flex: 0 0 200px !important;
+            width: 200px !important;
+            min-width: 200px !important;
+            max-width: 200px !important;
+            height: 160px !important;
+            max-height: 160px !important;
+            margin: 0 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+
+            @media (max-width: 767.98px) {
+                flex: 0 0 140px !important;
+                width: 140px !important;
+                min-width: 140px !important;
+                height: 120px !important;
+            }
+
+            .product-image-link {
+                width: 100% !important;
+                height: 100% !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+            }
+
+            .product-image {
+                max-height: 150px !important;
+                max-width: 100% !important;
+                width: auto !important;
+                height: auto !important;
+                object-fit: contain !important;
+                display: block !important;
+                margin: 0 auto !important;
+            }
+        }
+
+        // Right: Product Details
+        .product-info {
+            flex: 1 1 auto !important;
+            width: 100% !important;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            justify-content: center !important;
+            text-align: left !important;
+            min-width: 0 !important;
+
+            // Product Name (Uppercase Bold 16px)
+            .product-name {
+                font-family: 'Poppins', $roboto-font-stack !important;
+                font-size: 16px !important;
+                font-weight: 700 !important;
+                text-transform: uppercase !important;
+                color: #1A2530 !important;
+                line-height: 1.35 !important;
+                margin: 0 0 8px 0 !important;
+                text-align: left !important;
+                text-decoration: none !important;
+                display: inline-block !important;
+
+                &:hover {
+                    color: $zanders-red !important;
+                }
+            }
+
+            // Metadata: Item Number, UPC, Available, MSRP
+            .product-card-meta {
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                text-align: left !important;
+                gap: 4px !important;
+                margin: 0 0 4px 0 !important;
+
+                .product-card-meta-item {
+                    display: flex !important;
+                    align-items: center !important;
+                    font-size: 14px !important;
+                    line-height: 1.4 !important;
+                    margin: 0 !important;
+
+                    .meta-label {
+                        color: #777777 !important;
+                        font-weight: 400 !important;
+                        min-width: 95px !important;
+                        text-align: left !important;
+                    }
+
+                    .meta-value {
+                        color: #222222 !important;
+                        font-weight: 600 !important;
+                        text-align: left !important;
+                    }
+
+                    // MSRP line directly matching reference image
+                    &.product-card-msrp-item {
+                        display: flex !important;
+                        margin-top: 4px !important;
+
+                        .meta-label.msrp-label {
+                            color: #991020 !important;
+                            font-size: 14px !important;
+                            font-weight: 600 !important;
+                            min-width: 65px !important;
+                        }
+
+                        .meta-value.msrp-value {
+                            color: #991020 !important;
+                            font-size: 15px !important;
+                            font-weight: 700 !important;
+                        }
+                    }
+                }
+            }
+
+            // Standalone large price hidden (clean MSRP line is used)
+            .product-card-price-primary {
+                display: none !important;
+            }
+
+            .product-action-wrapper {
+                margin-top: 14px !important;
+                width: 100% !important;
+                display: flex !important;
+                justify-content: flex-start !important;
+                text-align: left !important;
+
+                .product-card-secondary-prices,
+                .product-card-action-icons {
+                    display: none !important;
+                }
+
+                .product-card-form {
+                    display: flex !important;
+                    flex-direction: row !important;
+                    align-items: center !important;
+                    justify-content: flex-start !important;
+                    gap: 16px !important;
+                    margin: 0 !important;
+                    width: auto !important;
+                    flex-wrap: wrap !important;
+                }
+
+                .product-card-qty-row {
+                    display: inline-flex !important;
+                    flex-direction: row !important;
+                    align-items: center !important;
+                    justify-content: flex-start !important;
+                    gap: 8px !important;
+                    margin: 0 !important;
+                    width: auto !important;
+                    flex-shrink: 0 !important;
+
+                    .product-card-qty-label {
+                        font-family: $roboto-font-stack !important;
+                        font-size: 14px !important;
+                        font-weight: 600 !important;
+                        color: #222222 !important;
+                        margin: 0 !important;
+                    }
+
+                    .product-card-qty-input {
+                        width: 52px !important;
+                        height: 38px !important;
+                        padding: 4px 8px !important;
+                        text-align: center !important;
+                        font-family: $roboto-font-stack !important;
+                        font-size: 14px !important;
+                        font-weight: 700 !important;
+                        color: #000000 !important;
+                        border: 1px solid #000000 !important;
+                        border-radius: 0 !important;
+                        background: #ffffff !important;
+                        box-shadow: none !important;
+                    }
+                }
+
+                .product-card-action-buttons {
+                    display: inline-flex !important;
+                    flex-direction: row !important;
+                    align-items: center !important;
+                    justify-content: flex-start !important;
+                    gap: 10px !important;
+                    margin: 0 !important;
+                    width: auto !important;
+                    flex-shrink: 0 !important;
+
+                    .product-card-btn-add,
+                    .product-card-btn-buy {
+                        height: 38px !important;
+                        padding: 8px 22px !important;
+                        font-family: $roboto-font-stack !important;
+                        font-size: 12px !important;
+                        font-weight: 700 !important;
+                        text-transform: uppercase !important;
+                        letter-spacing: 0.05em !important;
+                        border-radius: 0 !important;
+                        cursor: pointer !important;
+                        width: auto !important;
+                        min-width: 130px !important;
+                        white-space: nowrap !important;
+                        display: inline-flex !important;
+                        align-items: center !important;
+                        justify-content: center !important;
+                        transition: all 0.15s ease !important;
+                    }
+
+                    .product-card-btn-add {
+                        background-color: #991020 !important;
+                        border: 1px solid #991020 !important;
+                        color: #ffffff !important;
+
+                        &:hover {
+                            background-color: #7d0d1a !important;
+                            border-color: #7d0d1a !important;
+                        }
+                    }
+
+                    .product-card-btn-buy {
+                        display: inline-flex !important;
+                        background-color: #800e1b !important;
+                        border: 1px solid #800e1b !important;
+                        color: #ffffff !important;
+
+                        &:hover {
+                            background-color: #660b15 !important;
+                            border-color: #660b15 !important;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+// ------------------------------------------------------------------------------
+// B. VIEW MODE: SIMPLE (Text Only - No Image, Clean White Box)
+// Matches reference image: media_1795086482235_458472be.jpg
+// ------------------------------------------------------------------------------
+.cms-element-product-listing .cms-listing-row.is-view-simple {
+    > .cms-listing-col {
+        flex: 0 0 100% !important;
+        max-width: 100% !important;
+        width: 100% !important;
+        margin-bottom: 16px !important;
+    }
+
+    .card.product-box,
+    .product-box {
+        background-color: #ffffff !important;
+        border: 1px solid #e8e8e8 !important;
+        border-radius: 0 !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+        text-align: left !important;
+        height: auto !important;
+        transition: box-shadow 0.2s ease !important;
+
+        &:hover {
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08) !important;
+            transform: none !important;
+        }
+
+        .card-body {
+            display: block !important;
+            padding: 20px 24px !important;
+            text-align: left !important;
+            height: auto !important;
+            box-sizing: border-box !important;
+        }
+
+        // NO PRODUCT IMAGE IN SIMPLE VIEW (Matches media_1795086482235_458472be.jpg!)
+        .product-image-wrapper {
+            display: none !important;
+        }
+
+        // Product Info Container (Full Width)
+        .product-info {
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            text-align: left !important;
+            width: 100% !important;
+
+            // Product Name (Uppercase bold 16px)
+            .product-name {
+                font-family: 'Poppins', $roboto-font-stack !important;
+                font-size: 16px !important;
+                font-weight: 700 !important;
+                text-transform: uppercase !important;
+                color: #1A2530 !important;
+                line-height: 1.35 !important;
+                margin: 0 0 8px 0 !important;
+                text-align: left !important;
+                text-decoration: none !important;
+                display: inline-block !important;
+
+                &:hover {
+                    color: $zanders-red !important;
+                }
+            }
+
+            // Metadata: Item Number, UPC, Available, MSRP
+            .product-card-meta {
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                text-align: left !important;
+                gap: 4px !important;
+                margin: 0 !important;
+
+                .product-card-meta-item {
+                    display: flex !important;
+                    align-items: center !important;
+                    font-size: 14px !important;
+                    line-height: 1.4 !important;
+                    margin: 0 !important;
+
+                    .meta-label {
+                        color: #777777 !important;
+                        font-weight: 400 !important;
+                        min-width: 95px !important;
+                        text-align: left !important;
+                    }
+
+                    .meta-value {
+                        color: #222222 !important;
+                        font-weight: 600 !important;
+                        text-align: left !important;
+                    }
+
+                    // MSRP line directly matching reference image
+                    &.product-card-msrp-item {
+                        display: flex !important;
+                        margin-top: 4px !important;
+
+                        .meta-label.msrp-label {
+                            color: #991020 !important;
+                            font-size: 14px !important;
+                            font-weight: 600 !important;
+                            min-width: 65px !important;
+                        }
+
+                        .meta-value.msrp-value {
+                            color: #991020 !important;
+                            font-size: 15px !important;
+                            font-weight: 700 !important;
+                        }
+                    }
+                }
+            }
+
+            // Standalone large price hidden (clean MSRP line is used)
+            .product-card-price-primary {
+                display: none !important;
+            }
+
+            .product-action-wrapper {
+                margin-top: 14px !important;
+                width: 100% !important;
+                display: flex !important;
+                justify-content: flex-start !important;
+                text-align: left !important;
+
+                .product-card-secondary-prices,
+                .product-card-action-icons {
+                    display: none !important;
+                }
+
+                .product-card-form {
+                    display: flex !important;
+                    flex-direction: row !important;
+                    align-items: center !important;
+                    justify-content: flex-start !important;
+                    gap: 16px !important;
+                    margin: 0 !important;
+                    width: auto !important;
+                    flex-wrap: wrap !important;
+                }
+
+                .product-card-qty-row {
+                    display: inline-flex !important;
+                    flex-direction: row !important;
+                    align-items: center !important;
+                    justify-content: flex-start !important;
+                    gap: 8px !important;
+                    margin: 0 !important;
+                    width: auto !important;
+                    flex-shrink: 0 !important;
+
+                    .product-card-qty-label {
+                        font-family: $roboto-font-stack !important;
+                        font-size: 14px !important;
+                        font-weight: 600 !important;
+                        color: #222222 !important;
+                        margin: 0 !important;
+                    }
+
+                    .product-card-qty-input {
+                        width: 52px !important;
+                        height: 38px !important;
+                        padding: 4px 8px !important;
+                        text-align: center !important;
+                        font-family: $roboto-font-stack !important;
+                        font-size: 14px !important;
+                        font-weight: 700 !important;
+                        color: #000000 !important;
+                        border: 1px solid #000000 !important;
+                        border-radius: 0 !important;
+                        background: #ffffff !important;
+                        box-shadow: none !important;
+                    }
+                }
+
+                .product-card-action-buttons {
+                    display: inline-flex !important;
+                    flex-direction: row !important;
+                    align-items: center !important;
+                    justify-content: flex-start !important;
+                    gap: 10px !important;
+                    margin: 0 !important;
+                    width: auto !important;
+                    flex-shrink: 0 !important;
+
+                    .product-card-btn-add,
+                    .product-card-btn-buy {
+                        height: 38px !important;
+                        padding: 8px 22px !important;
+                        font-family: $roboto-font-stack !important;
+                        font-size: 12px !important;
+                        font-weight: 700 !important;
+                        text-transform: uppercase !important;
+                        letter-spacing: 0.05em !important;
+                        border-radius: 0 !important;
+                        cursor: pointer !important;
+                        width: auto !important;
+                        min-width: 130px !important;
+                        white-space: nowrap !important;
+                        display: inline-flex !important;
+                        align-items: center !important;
+                        justify-content: center !important;
+                        transition: all 0.15s ease !important;
+                    }
+
+                    .product-card-btn-add {
+                        background-color: #991020 !important;
+                        border: 1px solid #991020 !important;
+                        color: #ffffff !important;
+
+                        &:hover {
+                            background-color: #7d0d1a !important;
+                            border-color: #7d0d1a !important;
+                        }
+                    }
+
+                    .product-card-btn-buy {
+                        display: inline-flex !important;
+                        background-color: #800e1b !important;
+                        border: 1px solid #800e1b !important;
+                        color: #ffffff !important;
+
+                        &:hover {
+                            background-color: #660b15 !important;
+                            border-color: #660b15 !important;
+                        }
+                    }
+                }
             }
         }
     }

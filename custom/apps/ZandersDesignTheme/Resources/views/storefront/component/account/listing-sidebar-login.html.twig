@@ -1,0 +1,89 @@
+{#
+    Zanders Listing Additional Sidebar:
+    - Logged In Customer: Compare Products + Quick Action Buttons + Recently Viewed
+    - Guest Visitor: Customer Login Card + Recently Viewed
+    Matches https://shop2.gzanders.com/firearms.html
+#}
+{% set isCustomer = context.customer or (app.request and app.request.get('logged_in') == '1') %}
+
+<aside class="sidebar sidebar-additional zanders-listing-sidebar-additional">
+    {% if isCustomer %}
+        {% block component_listing_sidebar_compare %}
+            {% sw_include '@Storefront/storefront/component/listing/sidebar-compare-products.html.twig' %}
+        {% endblock %}
+
+        {% block component_listing_sidebar_actions %}
+            {% sw_include '@Storefront/storefront/component/listing/sidebar-account-actions.html.twig' %}
+        {% endblock %}
+    {% else %}
+        {% block component_listing_sidebar_login %}
+            {% set lblLoginTitle = 'zanders.sidebarLogin.title'|trans %}
+            {% if 'zanders.' in lblLoginTitle|lower or lblLoginTitle == '' %}{% set lblLoginTitle = 'LOGIN' %}{% endif %}
+
+            {% set lblLoginBtn = 'zanders.sidebarLogin.button'|trans %}
+            {% if 'zanders.' in lblLoginBtn|lower or lblLoginBtn == '' %}{% set lblLoginBtn = 'LOGIN' %}{% endif %}
+
+            {% set lblEmailPlaceholder = 'account.loginMailLabel'|trans %}
+            {% if 'account.' in lblEmailPlaceholder|lower or lblEmailPlaceholder == '' %}{% set lblEmailPlaceholder = 'Email' %}{% endif %}
+
+            {% set lblPassPlaceholder = 'account.loginPasswordLabel'|trans %}
+            {% if 'account.' in lblPassPlaceholder|lower or lblPassPlaceholder == '' %}{% set lblPassPlaceholder = 'Password' %}{% endif %}
+
+            <div class="block-customer-login zanders-sidebar-login-card">
+                <form action="{{ path('frontend.account.login') }}"
+                      class="form form-login zanders-sidebar-login-form"
+                      id="customer-login-form"
+                      method="post"
+                      data-form-handler="true">
+
+                    <input type="hidden" name="redirectTo" value="{{ app.request.attributes.get('_route') }}">
+                    <input type="hidden" name="redirectParameters" value="{{ app.request.attributes.get('_route_params')|json_encode }}">
+
+                    <h2 class="block p-3 text-center bg-jet font-medium text-white uppercase zanders-sidebar-login-title m-0">
+                        {{ lblLoginTitle }}
+                    </h2>
+
+                    <fieldset class="fieldset login p-5 bg-white-smoke zanders-sidebar-login-body">
+                        <div class="field email required mb-2 zanders-sidebar-login-field">
+                            <div class="control">
+                                <input autocomplete="username"
+                                       class="form-control form-input bg-platinum px-2 py-3 zanders-sidebar-login-input"
+                                       id="sidebar-login-email"
+                                       name="username"
+                                       placeholder="{{ lblEmailPlaceholder }}"
+                                       required="required"
+                                       title="{{ lblEmailPlaceholder }}*"
+                                       type="email" />
+                            </div>
+                        </div>
+
+                        <div class="field password required mb-4 zanders-sidebar-login-field">
+                            <div class="control flex items-center">
+                                <input autocomplete="current-password"
+                                       class="form-control form-input bg-platinum px-2 py-3 zanders-sidebar-login-input"
+                                       id="sidebar-login-password"
+                                       name="password"
+                                       placeholder="{{ lblPassPlaceholder }}"
+                                       required="required"
+                                       title="{{ lblPassPlaceholder }}*"
+                                       type="password" />
+                            </div>
+                        </div>
+
+                        <div class="flex justify-center items-center text-center">
+                            <button class="btn btn-primary disabled:opacity-75 uppercase lg:leading-5 font-medium px-10 zanders-sidebar-login-btn"
+                                    name="send"
+                                    type="submit">
+                                <span>{{ lblLoginBtn }}</span>
+                            </button>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+        {% endblock %}
+    {% endif %}
+
+    {% block component_listing_sidebar_recently_viewed %}
+        {% sw_include '@Storefront/storefront/component/listing/recently-viewed.html.twig' %}
+    {% endblock %}
+</aside>

@@ -1,0 +1,226 @@
+{% sw_extends '@Storefront/storefront/component/product/listing.html.twig' %}
+
+{% block element_product_listing_wrapper_content %}
+    <div class="zanders-listing-columns-layout">
+        <div class="zanders-listing-main-column">
+            {# Center Main Column: Breadcrumb and Category Title at top (Y=0) #}
+            <div class="zanders-listing-header">
+                {% set navId = shopware.navigation.id ?: (page.category.id ?? (page.header.navigation.active.id ?? null)) %}
+                {% set breadcrumbs = [] %}
+                {% if navId %}
+                    {% set breadcrumbs = sw_breadcrumb_full_by_id(navId, context) %}
+                {% endif %}
+
+                <nav aria-label="breadcrumb" class="zanders-listing-breadcrumb">
+                    <ol class="breadcrumb" itemscope itemtype="https://schema.org/BreadcrumbList">
+                        <li class="breadcrumb-item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                            <a href="{{ path('frontend.home.page') }}" class="breadcrumb-link" title="{{ 'general.homeLink'|trans|striptags }}" itemprop="item">
+                                <span class="breadcrumb-title" itemprop="name">{{ 'general.homeLink'|trans|striptags }}</span>
+                            </a>
+                            <meta itemprop="position" content="1">
+                        </li>
+
+                        {% if breadcrumbs|length > 0 %}
+                            {% for breadcrumbItem in breadcrumbs %}
+                                {% set isLast = loop.last %}
+                                {% set itemUrl = breadcrumbItem.seoUrl ?: path('frontend.navigation.page', { navigationId: breadcrumbItem.id }) %}
+                                {% set itemName = breadcrumbItem.translated.name %}
+                                <li class="breadcrumb-item{% if isLast %} is-active{% endif %}" {% if isLast %}aria-current="page"{% endif %} itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                                    {% if isLast %}
+                                        <span class="breadcrumb-title" itemprop="name">{{ itemName }}</span>
+                                    {% else %}
+                                        <a href="{{ itemUrl }}" class="breadcrumb-link" title="{{ itemName }}" itemprop="item">
+                                            <span class="breadcrumb-title" itemprop="name">{{ itemName }}</span>
+                                        </a>
+                                    {% endif %}
+                                    <meta itemprop="position" content="{{ loop.index + 1 }}">
+                                </li>
+                            {% endfor %}
+                        {% elseif page.header.navigation.active.translated.name or page.category.translated.name %}
+                            {% set catName = page.header.navigation.active.translated.name ?: page.category.translated.name %}
+                            <li class="breadcrumb-item is-active" aria-current="page" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                                <span class="breadcrumb-title" itemprop="name">{{ catName }}</span>
+                                <meta itemprop="position" content="2">
+                            </li>
+                        {% endif %}
+                    </ol>
+                </nav>
+
+                <div class="zanders-category-heading">
+                    <h1 class="zanders-category-title">
+                        {{ page.header.navigation.active.translated.name ?: (page.category.translated.name ?: 'Catalog') }}
+                    </h1>
+                </div>
+            </div>
+
+            <div class="cms-element-product-listing">
+                {% if searchResult.total > 0 %}
+                    {% block element_product_listing_pagination_nav_actions %}
+                        {% sw_include '@Storefront/storefront/component/listing/toolbar.html.twig' with {
+                            searchResult: searchResult,
+                            toolbarPosition: 'top',
+                            paginationFallbackUrl: paginationFallbackUrl
+                        } %}
+                    {% endblock %}
+                {% endif %}
+
+                {% block element_product_listing_row %}
+                    {% if searchResult.total > searchResult.limit %}
+                        {% set ariaLiveText = 'listing.filterPanelAriaLivePaginated'|trans({
+                            '%count%': searchResult.entities|length,
+                            '%total%': searchResult.total}
+                        )|sw_sanitize %}
+                    {% else %}
+                        {% set ariaLiveText = 'listing.filterPanelAriaLive'|trans({'%count%': searchResult.total})|sw_sanitize %}
+                    {% endif %}
+
+                    <div class="row cms-listing-row js-listing-wrapper" data-aria-live-text="{{- ariaLiveText -}}"{% if searchResult.total > 0 %} role="list"{% endif %}>
+                        {% if searchResult.total > 0 %}
+                            {% block element_product_listing_col %}
+                                {% for product in searchResult.entities %}
+                                    <div class="cms-listing-col {{ listingColumns }}" role="listitem">
+                                        {% block element_product_listing_box %}
+                                            {% if feature('BREADCRUMB_REWORK') %}
+                                                {% sw_include '@Storefront/storefront/component/product/card/box.html.twig' with {
+                                                    layout: boxLayout,
+                                                    displayMode: displayMode,
+                                                    referrerCategoryId: config('core.listing.buildBreadcrumbByReferrerCategory') ? shopware.navigation.id : null,
+                                                } %}
+                                            {% else %}
+                                                {% sw_include '@Storefront/storefront/component/product/card/box.html.twig' with {
+                                                    layout: boxLayout,
+                                                    displayMode: displayMode
+                                                } %}
+                                            {% endif %}
+                                        {% endblock %}
+                                    </div>
+                                {% endfor %}
+                            {% endblock %}
+                        {% else %}
+                            {% block element_product_listing_col_empty %}
+                                <div class="cms-listing-col col-12">
+                                    {% block element_product_listing_col_empty_alert %}
+                                        {% sw_include '@Storefront/storefront/utilities/alert.html.twig' with {
+                                            type: 'info',
+                                            content: 'listing.emptyResultMessage'|trans|sw_sanitize,
+                                            announceOnLoad: true,
+                                        } %}
+                                    {% endblock %}
+                                </div>
+                            {% endblock %}
+                        {% endif %}
+                    </div>
+                {% endblock %}
+
+                {% block element_product_listing_pagination_nav_bottom %}
+                    {% if searchResult.total > 0 %}
+                        {% sw_include '@Storefront/storefront/component/listing/toolbar.html.twig' with {
+                            searchResult: searchResult,
+                            toolbarPosition: 'bottom',
+                            paginationFallbackUrl: paginationFallbackUrl
+                        } %}
+                    {% endif %}
+                {% endblock %}
+            </div>
+        </div>
+
+        {% block element_product_listing_sidebar_additional %}
+            {% sw_include '@Storefront/storefront/component/account/listing-sidebar-login.html.twig' %}
+        {% endblock %}
+    </div>
+
+    {# View Mode Switcher JS: Syncs Top & Bottom toolbars, toggles view classes, persists to localStorage #}
+    <script>
+        (function() {
+            var STORAGE_KEY = 'zanders_listing_view';
+            var VALID_MODES = ['grid', 'list', 'simple'];
+
+            function getActiveMode() {
+                try {
+                    var saved = localStorage.getItem(STORAGE_KEY);
+                    if (saved && VALID_MODES.indexOf(saved) !== -1) {
+                        return saved;
+                    }
+                } catch (e) {}
+                return 'grid';
+            }
+
+            function setActiveMode(mode) {
+                if (VALID_MODES.indexOf(mode) === -1) mode = 'grid';
+                try {
+                    localStorage.setItem(STORAGE_KEY, mode);
+                } catch (e) {}
+                applyMode(mode);
+            }
+
+            function applyMode(mode) {
+                // Update buttons across all toolbars (top & bottom)
+                var buttons = document.querySelectorAll('.modes-mode[data-view-mode]');
+                for (var i = 0; i < buttons.length; i++) {
+                    var btn = buttons[i];
+                    if (btn.getAttribute('data-view-mode') === mode) {
+                        btn.classList.add('active');
+                    } else {
+                        btn.classList.remove('active');
+                    }
+                }
+
+                // Update listing container
+                var rows = document.querySelectorAll('.cms-listing-row');
+                for (var j = 0; j < rows.length; j++) {
+                    var row = rows[j];
+                    row.classList.remove('is-view-grid', 'is-view-list', 'is-view-simple');
+                    row.classList.add('is-view-' + mode);
+                }
+            }
+
+            // Click delegation for view mode buttons
+            document.addEventListener('click', function(e) {
+                var btn = e.target.closest('.modes-mode[data-view-mode]');
+                if (!btn) return;
+                e.preventDefault();
+                var mode = btn.getAttribute('data-view-mode');
+                if (mode) {
+                    setActiveMode(mode);
+                }
+            });
+
+            // Initial apply
+            function init() {
+                applyMode(getActiveMode());
+            }
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', init);
+            } else {
+                init();
+            }
+
+            // MutationObserver to maintain view mode across Shopware AJAX pagination/filtering
+            if (window.MutationObserver) {
+                var observer = new MutationObserver(function(mutations) {
+                    var shouldReapply = false;
+                    for (var i = 0; i < mutations.length; i++) {
+                        var m = mutations[i];
+                        if (m.addedNodes && m.addedNodes.length > 0) {
+                            for (var j = 0; j < m.addedNodes.length; j++) {
+                                var node = m.addedNodes[j];
+                                if (node.nodeType === 1 && (node.classList.contains('cms-listing-row') || (node.querySelector && node.querySelector('.cms-listing-row')))) {
+                                    shouldReapply = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if (shouldReapply) break;
+                    }
+                    if (shouldReapply) {
+                        applyMode(getActiveMode());
+                    }
+                });
+
+                var target = document.querySelector('.zanders-listing-main-column') || document.body;
+                observer.observe(target, { childList: true, subtree: true });
+            }
+        })();
+    </script>
+{% endblock %}
