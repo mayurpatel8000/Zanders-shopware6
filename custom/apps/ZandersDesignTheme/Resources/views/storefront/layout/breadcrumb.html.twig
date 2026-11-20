@@ -6,3 +6,29 @@
     </nav>
 {% endblock %}
 
+{% block layout_breadcrumb_list %}
+    <ol class="breadcrumb" itemscope itemtype="https://schema.org/BreadcrumbList">
+        <li class="breadcrumb-item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+            <a href="{{ path('frontend.home.page') }}" class="breadcrumb-link" title="Home">
+                <span class="breadcrumb-title" itemprop="name">Home</span>
+            </a>
+            <meta itemprop="position" content="1">
+        </li>
+        {% if breadcrumbCategories and breadcrumbCategories|length > 0 %}
+            {% for breadcrumbCategory in breadcrumbCategories %}
+                <li class="breadcrumb-item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                    <a href="{{ breadcrumbCategory.seoUrl }}" class="breadcrumb-link" title="{{ breadcrumbCategory.translated.name }}">
+                        <span class="breadcrumb-title" itemprop="name">{{ breadcrumbCategory.translated.name }}</span>
+                    </a>
+                    <meta itemprop="position" content="{{ loop.index + 1 }}">
+                </li>
+            {% endfor %}
+        {% endif %}
+        {% if product %}
+            <li class="breadcrumb-item is-active" aria-current="page" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                <span class="breadcrumb-title zanders-breadcrumb-product" itemprop="name">{{ product.translated.name }}</span>
+                <meta itemprop="position" content="{{ (breadcrumbCategories ? breadcrumbCategories|length : 0) + 2 }}">
+            </li>
+        {% endif %}
+    </ol>
+{% endblock %}

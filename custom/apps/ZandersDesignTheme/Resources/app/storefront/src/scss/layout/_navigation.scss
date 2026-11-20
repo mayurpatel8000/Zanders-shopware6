@@ -335,9 +335,17 @@
     }
 
     // Open by default on the Homepage
-    body.is-ctl-index,
-    body.is-active-route-frontend-detail-page,
+    body.is-ctl-index,      
     body.is-active-route-frontend-home-page {
+        .navbar-nav > li.dropdown.nav-item:first-of-type {
+            > .dropdown-menu {
+                display: block !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+            }
+        }
+    }
+    body.is-active-route-frontend-detail-page {
         .navbar-nav > li.dropdown.nav-item:first-of-type {
             > .dropdown-menu {
                 display: block !important;

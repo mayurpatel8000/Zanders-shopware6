@@ -1,0 +1,21 @@
+{% sw_extends '@Storefront/storefront/element/cms-element-product-description-reviews.html.twig' %}
+
+{% block element_product_description_reviews_tabs_navigation %}
+    {# Omit generic Bootstrap tabs navigation bar on Zanders PDP #}
+{% endblock %}
+
+{% block element_product_description_reviews_tabs_content_container %}
+    <div class="zanders-pdp-additional-info-wrapper">
+        {% block element_product_description_reviews_tabs_content_description %}
+            <div class="tab-pane fade show active"
+                 id="{{ descriptionTabContent }}"
+                 role="tabpanel"
+                 aria-labelledby="{{ descriptionTabId }}">
+                {% sw_include '@Storefront/storefront/component/product/description.html.twig' with {
+                    product: element.data.product
+                } %}
+            </div>
+        {% endblock %}
+    </div>
+{% endblock %}
+

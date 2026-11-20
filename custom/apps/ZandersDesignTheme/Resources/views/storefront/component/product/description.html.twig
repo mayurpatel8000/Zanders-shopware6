@@ -1,0 +1,11 @@
+{% sw_extends '@Storefront/storefront/component/product/description.html.twig' %}
+
+{% block component_product_description_title %}
+    {# Check if description already has an Additional Information header #}
+    {% if 'Additional Information' not in product.translated.description and 'additional-attributes' not in product.translated.description %}
+        <div class="zanders-pdp-tab-header">
+            <h2 class="zanders-pdp-tab-title">ADDITIONAL INFORMATION</h2>
+        </div>
+    {% endif %}
+{% endblock %}
+

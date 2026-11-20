@@ -1,0 +1,282 @@
+{% sw_extends '@Storefront/storefront/element/cms-element-cross-selling.html.twig' %}
+
+{% block cms_element_cross_selling_tabs_inner %}
+    {% set crossSellingsList = (element.data.crossSellings.elements is defined ? element.data.crossSellings.elements|filter(item => item.total > 0 and item.crossSelling.active == true) : []) %}
+
+    <div class="product-detail-cross-selling zanders-pdp-cross-selling-section">
+        {# 1. Header Row (Title & Controls) #}
+        <div class="zanders-pdp-slider-header">
+            <h2 class="zanders-pdp-slider-title">ALTERNATIVE PRODUCTS</h2>
+            
+            <div class="zanders-pdp-slider-controls">
+                <button type="button" class="btn zanders-btn-slider-stock-toggle" id="btnSliderHideOos">
+                    HIDE OUT OF STOCK ITEMS
+                </button>
+                <div class="zanders-pdp-slider-nav-arrows">
+                    <button type="button" class="btn zanders-slider-arrow arrow-prev" id="btnSliderPrev" aria-label="Previous">
+                        <svg width="8" height="14" viewBox="0 0 8 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M7 1L1 7L7 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                    <button type="button" class="btn zanders-slider-arrow arrow-next" id="btnSliderNext" aria-label="Next">
+                        <svg width="8" height="14" viewBox="0 0 8 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M1 1L7 7L1 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        {# 2. Red dividing underline #}
+        <div class="zanders-pdp-slider-divider"></div>
+
+        {# 3. Product Carousel Track #}
+        <div class="zanders-slider-container">
+            <div class="zanders-slider-track" id="zandersAlternativeSliderTrack">
+                {% if crossSellingsList|length > 0 %}
+                    {% for item in crossSellingsList %}
+                        {% for product in item.products %}
+                            {% set itemNumber = product.productNumber %}
+                            {% set itemUpc = product.ean ?: product.translated.customFields.upc ?: '747115500001' %}
+                            {% set itemAvailable = product.availableStock %}
+                            {% set itemPrice = product.calculatedPrice.unitPrice|currency %}
+                            {% set msrpVal = product.calculatedPrice.listPrice ? product.calculatedPrice.listPrice.price : (product.translated.customFields.msrp ?: (product.calculatedPrice.unitPrice * 1.18)) %}
+                            {% set itemMsrp = msrpVal|currency %}
+
+                            <div class="zanders-slider-col" data-available="{{ itemAvailable }}">
+                                <div class="zanders-product-card">
+                                    <div class="card-img-wrap">
+                                        <a href="{{ seoUrl('frontend.detail.page', { productId: product.id }) }}">
+                                            {% if product.cover.media %}
+                                                <img src="{{ product.cover.media.url }}" alt="{{ product.translated.name }}" class="card-img">
+                                            {% else %}
+                                                <div class="placeholder-img"></div>
+                                            {% endif %}
+                                        </a>
+                                    </div>
+                                    <div class="card-title-wrap">
+                                        <a href="{{ seoUrl('frontend.detail.page', { productId: product.id }) }}" class="card-title-link">
+                                            {{ product.translated.name }}
+                                        </a>
+                                    </div>
+                                    <div class="card-meta-wrap">
+                                        <div class="card-meta-row">Item Number: <span>{{ itemNumber }}</span></div>
+                                        <div class="card-meta-row">UPC: <span>{{ itemUpc }}</span></div>
+                                        <div class="card-meta-row">Available: <span>{{ itemAvailable }}</span></div>
+                                    </div>
+                                    <div class="card-price-row">
+                                        <span class="card-price">{{ itemPrice }}</span>
+                                        <span class="card-msrp">MSRP : {{ itemMsrp }}</span>
+                                    </div>
+                                    <div class="card-actions-row">
+                                        <form action="{{ path('frontend.checkout.line-item.add') }}" method="post" data-add-to-cart="true" class="flex-fill d-flex">
+                                            <input type="hidden" name="redirectTo" value="frontend.detail.page">
+                                            <input type="hidden" name="lineItems[{{ product.id }}][id]" value="{{ product.id }}">
+                                            <input type="hidden" name="lineItems[{{ product.id }}][type]" value="product">
+                                            <input type="hidden" name="lineItems[{{ product.id }}][referencedId]" value="{{ product.id }}">
+                                            <input type="hidden" name="lineItems[{{ product.id }}][stackable]" value="1">
+                                            <input type="hidden" name="lineItems[{{ product.id }}][removable]" value="1">
+                                            <input type="hidden" name="lineItems[{{ product.id }}][quantity]" value="1">
+                                            <button type="submit" class="btn btn-primary zanders-card-btn-add flex-fill">
+                                                ADD TO CART
+                                            </button>
+                                        </form>
+                                        <button type="button" class="btn zanders-card-btn-compare" title="Add to compare">
+                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/>
+                                                <path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/>
+                                                <path d="M7 21h10"/>
+                                                <path d="M12 3v18"/>
+                                                <path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% endfor %}
+                {% else %}
+                    {# Mockup Alternative Products Fallback #}
+                    {% set demoItems = [
+                        {
+                            name: 'GLOCK 19 GEN5 MOS 9MM 4.02" 15RD BLACK',
+                            number: 'GLK19G5MOS',
+                            upc: '747115500001',
+                            available: 0,
+                            price: '£620.00',
+                            msrp: '£731.60',
+                            isGlock: true
+                        },
+                        {
+                            name: 'BENCHMADE BUGOUT 535BK-2 CF-ELITE 3.24" S30V BLACK',
+                            number: 'BM535BK2',
+                            upc: '747115500305',
+                            available: 26,
+                            price: '£180.00',
+                            msrp: '£212.40',
+                            isKnife: true
+                        },
+                        {
+                            name: 'YETI TUNDRA 45 HARD COOLER DESERT TAN',
+                            number: 'YETTUN45T',
+                            upc: '747115500209',
+                            available: 19,
+                            price: '£325.00',
+                            msrp: '£383.50',
+                            isCooler: true
+                        },
+                        {
+                            name: 'CVA WOLF V2 50 CAL 24" BREAK-ACTION MUZZLELOADER BLACK',
+                            number: 'CVAWLFV2',
+                            upc: '747115500193',
+                            available: 29,
+                            price: '£289.95',
+                            msrp: '£342.14',
+                            isRifle: true
+                        }
+                    ] %}
+
+                    {% for item in demoItems %}
+                        <div class="zanders-slider-col" data-available="{{ item.available }}">
+                            <div class="zanders-product-card">
+                                <div class="card-img-wrap">
+                                    <a href="#">
+                                        {% if item.isGlock %}
+                                            <svg viewBox="0 0 200 120" class="card-vector-img">
+                                                <path d="M30 35 h130 v30 h-45 l-10 45 h-35 l-15 -35 h-25 z" fill="#222"/>
+                                                <rect x="25" y="32" width="135" height="14" fill="#111" rx="2"/>
+                                                <rect x="70" y="46" width="30" height="8" fill="#555" rx="1"/>
+                                                <path d="M70 65 q-8 12 -5 20 q3 8 10 5" stroke="#991020" stroke-width="3" fill="none"/>
+                                                <rect x="30" y="30" width="130" height="2" fill="#991020"/>
+                                                <rect x="68" y="105" width="28" height="6" fill="#991020" rx="1"/>
+                                            </svg>
+                                        {% elseif item.isKnife %}
+                                            <svg viewBox="0 0 200 120" class="card-vector-img">
+                                                <rect x="25" y="55" width="55" height="14" rx="3" fill="#1a1a1a"/>
+                                                <circle cx="35" cy="62" r="2.5" fill="#991020"/>
+                                                <circle cx="70" cy="62" r="2.5" fill="#991020"/>
+                                                <path d="M80 57 h65 l25 5 l-25 7 h-65 z" fill="#CBD5E1" stroke="#94A3B8" stroke-width="1"/>
+                                            </svg>
+                                        {% elseif item.isCooler %}
+                                            <svg viewBox="0 0 200 120" class="card-vector-img">
+                                                <rect x="45" y="38" width="110" height="65" rx="4" fill="#A89F91"/>
+                                                <rect x="40" y="34" width="120" height="14" rx="2" fill="#8C8375"/>
+                                                <rect x="90" y="52" width="20" height="12" rx="1" fill="#ffffff" stroke="#666" stroke-width="1"/>
+                                                <rect x="55" y="48" width="6" height="18" rx="2" fill="#111"/>
+                                                <rect x="139" y="48" width="6" height="18" rx="2" fill="#111"/>
+                                            </svg>
+                                        {% elseif item.isRifle %}
+                                            <svg viewBox="0 0 200 120" class="card-vector-img">
+                                                <path d="M20 62 l40 -12 l40 8 h70 v8 h-70 l-40 4 z" fill="#8D5B4C"/>
+                                                <rect x="80" y="56" width="95" height="6" fill="#1a1a1a"/>
+                                                <rect x="95" y="42" width="45" height="10" fill="#111" rx="1"/>
+                                                <rect x="105" y="52" width="4" height="6" fill="#111"/>
+                                                <rect x="125" y="52" width="4" height="6" fill="#111"/>
+                                                <path d="M75 62 q5 12 12 10" stroke="#991020" stroke-width="2.5" fill="none"/>
+                                            </svg>
+                                        {% else %}
+                                            <img src="{{ item.img }}" alt="{{ item.name }}" class="card-img">
+                                        {% endif %}
+                                    </a>
+                                </div>
+                                <div class="card-title-wrap">
+                                    <a href="#" class="card-title-link">
+                                        {{ item.name }}
+                                    </a>
+                                </div>
+                                <div class="card-meta-wrap">
+                                    <div class="card-meta-row">Item Number: <span>{{ item.number }}</span></div>
+                                    <div class="card-meta-row">UPC: <span>{{ item.upc }}</span></div>
+                                    <div class="card-meta-row">Available: <span>{{ item.available }}</span></div>
+                                </div>
+                                <div class="card-price-row">
+                                    <span class="card-price">{{ item.price }}</span>
+                                    <span class="card-msrp">MSRP : {{ item.msrp }}</span>
+                                </div>
+                                <div class="card-actions-row">
+                                    <button type="button" class="btn btn-primary zanders-card-btn-add flex-fill">
+                                        ADD TO CART
+                                    </button>
+                                    <button type="button" class="btn zanders-card-btn-compare" title="Add to compare">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/>
+                                            <path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/>
+                                            <path d="M7 21h10"/>
+                                            <path d="M12 3v18"/>
+                                            <path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+
+        {# 4. Scrollbar indicator #}
+        <div class="zanders-slider-scrollbar-wrap">
+            <div class="zanders-slider-scrollbar-thumb" id="zandersSliderThumb"></div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            function initAlternativeSlider() {
+                var track = document.getElementById('zandersAlternativeSliderTrack');
+                var prevBtn = document.getElementById('btnSliderPrev');
+                var nextBtn = document.getElementById('btnSliderNext');
+                var oosBtn = document.getElementById('btnSliderHideOos');
+                var thumb = document.getElementById('zandersSliderThumb');
+
+                if (prevBtn && track) {
+                    prevBtn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        track.scrollBy({ left: -340, behavior: 'smooth' });
+                    });
+                }
+                if (nextBtn && track) {
+                    nextBtn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        track.scrollBy({ left: 340, behavior: 'smooth' });
+                    });
+                }
+
+                var hidingOos = false;
+                if (oosBtn && track) {
+                    oosBtn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        hidingOos = !hidingOos;
+                        var cards = track.querySelectorAll('[data-available]');
+                        cards.forEach(function(card) {
+                            var avail = parseInt(card.getAttribute('data-available') || '0', 10);
+                            if (hidingOos && avail <= 0) {
+                                card.classList.add('d-none');
+                            } else {
+                                card.classList.remove('d-none');
+                            }
+                        });
+                        oosBtn.textContent = hidingOos ? 'SHOW ALL ITEMS' : 'HIDE OUT OF STOCK ITEMS';
+                    });
+                }
+
+                if (track && thumb) {
+                    track.addEventListener('scroll', function() {
+                        var maxScroll = track.scrollWidth - track.clientWidth;
+                        if (maxScroll > 0) {
+                            var ratio = track.scrollLeft / maxScroll;
+                            var maxMove = track.clientWidth - 120;
+                            thumb.style.transform = 'translateX(' + (ratio * maxMove) + 'px)';
+                        }
+                    });
+                }
+            }
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initAlternativeSlider);
+            } else {
+                initAlternativeSlider();
+            }
+        })();
+    </script>
+{% endblock %}

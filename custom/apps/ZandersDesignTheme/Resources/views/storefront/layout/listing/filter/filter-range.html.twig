@@ -2,10 +2,31 @@
 
 {% set sidebar = true %}
 
-{% block component_filter_range_toggle_icon %}
-    <span class="icon icon-filter-panel-item-toggle" aria-hidden="true">
-        <svg class="chevron-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M13.5101 15.1999L15.4801 13.2299L18.6901 10.0199C19.3601 9.33993 18.8801 8.17993 17.9201 8.17993L11.6901 8.17993L6.08007 8.17993C5.12007 8.17993 4.64007 9.33993 5.32007 10.0199L10.5001 15.1999C11.3201 16.0299 12.6801 16.0299 13.5101 15.1999Z" fill="#292D32"/>
-        </svg>
-    </span>
+{% block component_filter_range_toggle %}
+    <button class="filter-panel-item-toggle btn collapsed"
+            aria-expanded="false"
+            disabled
+            data-filter-loading
+            {% if ariaLabel %}
+            aria-label="{{ ariaLabel }}"
+            {% endif %}
+            {% if sidebar %}
+            data-bs-toggle="collapse"
+            data-bs-target="#{{ filterItemId }}"
+            {% else %}
+            data-bs-toggle="dropdown"
+            data-boundary="viewport"
+            {% endif %}>
+        {% block component_filter_range_display_name %}
+            {{ displayName }}
+        {% endblock %}
+
+        {% block component_filter_range_toggle_icon %}
+            <span class="icon icon-filter-panel-item-toggle" aria-hidden="true">
+                <svg class="chevron-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M13.5101 15.1999L15.4801 13.2299L18.6901 10.0199C19.3601 9.33993 18.8801 8.17993 17.9201 8.17993L11.6901 8.17993L6.08007 8.17993C5.12007 8.17993 4.64007 9.33993 5.32007 10.0199L10.5001 15.1999C11.3201 16.0299 12.6801 16.0299 13.5101 15.1999Z" fill="#292D32"/>
+                </svg>
+            </span>
+        {% endblock %}
+    </button>
 {% endblock %}

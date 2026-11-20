@@ -1,0 +1,1036 @@
+// PDP Layout container
+.is-active-route-frontend-detail-page {
+    // Hide default full-width heading block because title is in right column (Buy Box)
+    .cms-block-product-heading {
+        display: none !important;
+    }
+
+    // Spacing for PDP content & Flexbox Reordering:
+    // 1. Gallery & Buybox
+    // 2. Alternative Products Slider (ABOVE Additional Info!)
+    // 3. Additional Information (BELOW Alternative Products!)
+    .cms-section-default {
+        display: flex;
+        flex-direction: column;
+        padding-top: 10px;
+        padding-bottom: 40px;
+
+        .cms-block-gallery-buybox {
+            order: 1 !important;
+        }
+
+        .cms-block-cross-selling,
+        .zanders-pdp-cross-selling-section {
+            display: block !important;
+            order: 2 !important;
+        }
+
+        .cms-block-product-description-reviews {
+            order: 3 !important;
+        }
+    }
+
+    // On Desktop (>= 1024px), offset only the specific CMS block and breadcrumb beside the open Catalog menu (280px)
+    @include media-breakpoint-up(lg) {
+        .cms-breadcrumb,
+        .cms-block-gallery-buybox {
+            padding-left: 300px;
+        }
+    }
+}
+
+// PDP Breadcrumbs
+.zanders-breadcrumb-nav {
+    padding-block: 10px;
+    border-bottom: 1px solid #E5E7EB;
+    margin-bottom: 24px;
+
+    .breadcrumb {
+        margin: 0;
+        padding: 0;
+        background: transparent;
+        font-size: 14px;
+        line-height: 1.4;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+
+        @media (max-width: 767.98px) {
+            font-size: 12px;
+        }
+
+        .breadcrumb-item {
+            color: #777777;
+
+            + .breadcrumb-item::before {
+                content: "/";
+                padding-inline: 8px;
+                color: #777777;
+            }
+
+            a.breadcrumb-link {
+                color: #777777;
+                text-decoration: none;
+                transition: color 0.15s ease;
+
+                &:hover {
+                    color: $zanders-red;
+                }
+            }
+
+            &.is-active,
+            .zanders-breadcrumb-product {
+                color: $zanders-red;
+                font-weight: 500;
+            }
+        }
+    }
+}
+
+// PDP Main Grid (59% Gallery / 41% Buy Box)
+.zanders-pdp-main-row {
+    margin: 0;
+    width: 100%;
+
+    @include media-breakpoint-up(lg) {
+        display: grid;
+        grid-template-columns: 59% 41%;
+        gap: 24px;
+        align-items: start;
+    }
+
+    @media (min-width: 992px) and (max-width: 1199.98px) {
+        grid-template-columns: 55% 45%;
+        gap: 16px;
+    }
+
+    .zanders-pdp-gallery-col {
+        padding: 0;
+        width: 100%;
+        max-width: 100%;
+
+        @include media-breakpoint-up(lg) {
+            padding-right: 12px;
+        }
+    }
+
+    .zanders-pdp-buybox-col {
+        padding: 0;
+        width: 100%;
+        max-width: 100%;
+
+        @media (max-width: 1023.98px) {
+            margin-top: 24px;
+        }
+    }
+}
+
+// Media Gallery (Left Column)
+.zanders-pdp-gallery-col {
+    .cms-element-image-gallery {
+        width: 100%;
+
+        .gallery-slider-row {
+            margin: 0;
+            width: 100%;
+        }
+
+        .gallery-slider-col {
+            padding: 0;
+            width: 100%;
+            max-width: 100%;
+        }
+
+        .base-slider {
+            width: 100%;
+            display: block;
+        }
+
+        .gallery-slider-single-image,
+        .gallery-slider-item-container {
+            background-color: #ffffff;
+            border: 1px solid #E5E7EB;
+            padding: 24px;
+            display: flex !important;
+            align-items: center;
+            justify-content: center;
+            min-height: 440px;
+            width: 100% !important;
+            box-sizing: border-box;
+
+            @media (max-width: 767.98px) {
+                padding: 12px;
+                min-height: 260px;
+            }
+
+            img.gallery-slider-image {
+                max-height: 480px;
+                width: auto;
+                max-width: 100%;
+                height: auto;
+                object-fit: contain;
+                display: block;
+                margin: 0 auto;
+
+                @media (max-width: 767.98px) {
+                    max-height: 300px;
+                }
+            }
+        }
+
+        // Thumbnails Strip
+        .gallery-slider-thumbnails-col {
+            margin-top: 16px;
+            padding: 0;
+            width: 100%;
+        }
+
+        .gallery-slider-thumbnails-item {
+            border: 1px solid #E5E7EB;
+            padding: 4px;
+            cursor: pointer;
+            transition: border-color 0.15s ease;
+            background: #ffffff;
+            width: 80px;
+            height: 80px;
+
+            @media (max-width: 767.98px) {
+                width: 60px;
+                height: 60px;
+            }
+
+            &:hover,
+            &.is-nav-selected,
+            &.is-active {
+                border: 2px solid $zanders-red;
+            }
+
+            img {
+                width: 100%;
+                height: 100%;
+                object-fit: contain;
+            }
+        }
+    }
+}
+
+// Product Details & Buy Box (Right Column)
+.zanders-pdp-buybox {
+    // 1. Product Title
+    .zanders-pdp-title {
+        font-family: $font-family-base;
+        font-size: 24px;
+        line-height: 1.25;
+        font-weight: 800;
+        color: #111827;
+        text-transform: uppercase;
+        letter-spacing: -0.2px;
+        margin: 0 0 10px 0;
+
+        @media (max-width: 1199.98px) {
+            font-size: 22px;
+        }
+
+        @media (max-width: 767.98px) {
+            font-size: 19px;
+        }
+    }
+
+    // 2. Metadata Block (Item Number & Availability)
+    .zanders-pdp-meta-list {
+        margin: 0 0 14px 0;
+        padding: 0;
+
+        .zanders-pdp-meta-row {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            line-height: 1.4;
+            margin-bottom: 4px;
+
+            &.item-number-row {
+                font-weight: 700;
+                color: #111827;
+
+                .zanders-pdp-meta-label {
+                    margin-right: 6px;
+                }
+
+                .zanders-pdp-meta-val {
+                    color: #111827;
+                }
+            }
+
+            &.available-row {
+                margin-bottom: 12px;
+
+                .zanders-pdp-stock-val {
+                    font-weight: 800;
+                    text-transform: uppercase;
+                    letter-spacing: 0.3px;
+
+                    &.text-theme-green {
+                        color: #16A34A;
+                    }
+
+                    &.text-theme-red {
+                        color: $zanders-red;
+                    }
+                }
+            }
+        }
+    }
+
+    // 3. Price & MSRP Row
+    .zanders-pdp-price-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        margin-top: 4px;
+        margin-bottom: 18px;
+
+        .zanders-pdp-current-price {
+            font-size: 26px;
+            font-weight: 800;
+            color: $zanders-red;
+            line-height: 1;
+
+            @media (max-width: 767.98px) {
+                font-size: 22px;
+            }
+        }
+
+        .zanders-pdp-msrp-price {
+            font-size: 16px;
+            font-weight: 700;
+            color: $zanders-red;
+            text-transform: uppercase;
+            line-height: 1;
+
+            @media (max-width: 767.98px) {
+                font-size: 14px;
+            }
+        }
+    }
+
+    // 4. Quantity & ADD TO CART Form
+    .zanders-pdp-buy-form {
+        margin-bottom: 22px;
+
+        .zanders-pdp-purchase-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+
+            .zanders-qty-label {
+                font-size: 15px;
+                font-weight: 600;
+                color: #111827;
+                margin: 0;
+            }
+
+            .zanders-qty-input {
+                width: 60px;
+                height: 46px;
+                border: 1px solid #D5D5D5;
+                border-radius: 0;
+                text-align: center;
+                font-size: 16px;
+                font-weight: 600;
+                color: #111827;
+                padding: 0 4px;
+
+                &:focus {
+                    border-color: $zanders-red;
+                    box-shadow: 0 0 0 1px $zanders-red;
+                    outline: none;
+                }
+            }
+
+            .zanders-btn-add-to-cart {
+                flex: 1;
+                height: 46px;
+                background-color: $zanders-red !important;
+                border: none !important;
+                color: #ffffff !important;
+                font-size: 14px;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                border-radius: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: background-color 0.2s ease;
+
+                &:hover,
+                &:focus {
+                    background-color: darken($zanders-red, 8%) !important;
+                }
+            }
+        }
+    }
+
+    // 5 & 6. Light Gray Cards (Quick Overview & Features)
+    .zanders-pdp-card {
+        background-color: #EEEEEE;
+        padding: 18px 20px;
+        margin-bottom: 16px;
+
+        .zanders-pdp-card-title {
+            font-size: 13px;
+            font-weight: 800;
+            color: #111827;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin-bottom: 10px;
+        }
+
+        .zanders-pdp-card-content {
+            font-size: 13.5px;
+            line-height: 1.55;
+            color: #374151;
+
+            p {
+                margin-bottom: 8px;
+
+                &:last-child {
+                    margin-bottom: 0;
+                }
+            }
+
+            .zanders-pdp-features-bullets {
+                list-style-type: disc !important;
+                padding-left: 18px;
+                margin: 0;
+
+                li {
+                    margin-bottom: 5px;
+                    line-height: 1.55;
+                    color: #374151;
+                    font-size: 13.5px;
+
+                    &:last-child {
+                        margin-bottom: 0;
+                    }
+                }
+            }
+        }
+    }
+
+    // 7. Secondary Action Buttons (Charcoal)
+    .zanders-pdp-secondary-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-bottom: 18px;
+
+        @media (max-width: 480px) {
+            grid-template-columns: 1fr;
+        }
+
+        .zanders-btn-charcoal {
+            height: 44px;
+            background-color: #2B3136 !important;
+            border: none !important;
+            color: #ffffff !important;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-radius: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            text-decoration: none;
+            padding: 0 10px;
+            transition: background-color 0.2s ease;
+
+            &:hover,
+            &:focus {
+                background-color: #1a1e21 !important;
+                color: #ffffff !important;
+            }
+        }
+    }
+
+    // 8. California Prop 65 Warning Box
+    .zanders-pdp-warning-banner {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        background-color: #FFFDF0;
+        border: 1px solid #FFE082;
+        padding: 10px 16px;
+        margin-bottom: 24px;
+        color: #111827;
+        font-size: 13px;
+        text-align: center;
+
+        .warning-icon {
+            display: flex;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .warning-text {
+            color: #111827;
+
+            strong {
+                color: #111827;
+            }
+
+            .prop65-link {
+                color: #111827;
+                text-decoration: underline;
+                font-weight: 500;
+
+                &:hover {
+                    color: $zanders-red;
+                }
+            }
+        }
+    }
+}
+
+// =============================================================================
+// Alternative Products Slider Section
+// =============================================================================
+.cms-block-cross-selling,
+.zanders-pdp-cross-selling-section {
+    width: 100%;
+    padding-inline: 45px;
+    margin-top: 40px;
+    margin-bottom: 30px;
+
+    @media (max-width: 767.98px) {
+        padding-inline: 14px;
+        margin-top: 24px;
+        margin-bottom: 20px;
+    }
+
+    .card.card-tabs {
+        border: 0 !important;
+        background: transparent !important;
+
+        .card-body,
+        .product-detail-tabs-content {
+            padding: 0 !important;
+        }
+    }
+
+    // 1. Header (Title & Controls)
+    .zanders-pdp-slider-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+        flex-wrap: wrap;
+        gap: 12px;
+
+        @media (max-width: 575.98px) {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 10px;
+
+            .zanders-pdp-slider-controls {
+                width: 100%;
+                justify-content: space-between;
+            }
+        }
+
+        .zanders-pdp-slider-title {
+            font-family: $font-family-base;
+            font-size: 26px;
+            line-height: 1.2;
+            font-weight: 800;
+            color: $zanders-red;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 0;
+
+            @media (max-width: 767.98px) {
+                font-size: 20px;
+            }
+        }
+
+        .zanders-pdp-slider-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            .zanders-btn-slider-stock-toggle {
+                height: 38px;
+                background-color: $zanders-red !important;
+                border: none !important;
+                color: #ffffff !important;
+                font-family: $font-family-base;
+                font-size: 12px;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                padding: 0 18px;
+                border-radius: 0;
+                display: flex;
+                align-items: center;
+                cursor: pointer;
+                transition: background-color 0.15s ease;
+
+                &:hover,
+                &:focus {
+                    background-color: darken($zanders-red, 8%) !important;
+                }
+
+                @media (max-width: 575.98px) {
+                    padding: 0 12px;
+                    font-size: 11px;
+                    height: 34px;
+                }
+            }
+
+            .zanders-pdp-slider-nav-arrows {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+
+                .zanders-slider-arrow {
+                    width: 38px;
+                    height: 38px;
+                    padding: 0;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    border-radius: 0;
+                    cursor: pointer;
+                    transition: all 0.15s ease;
+
+                    @media (max-width: 575.98px) {
+                        width: 34px;
+                        height: 34px;
+                    }
+
+                    &.arrow-prev {
+                        background-color: #ffffff !important;
+                        border: 1px solid #D1D5DB !important;
+                        color: #374151 !important;
+
+                        &:hover {
+                            border-color: #9CA3AF !important;
+                            background-color: #F9FAFB !important;
+                        }
+                    }
+
+                    &.arrow-next {
+                        background-color: $zanders-red !important;
+                        border: 1px solid $zanders-red !important;
+                        color: #ffffff !important;
+
+                        &:hover {
+                            background-color: darken($zanders-red, 8%) !important;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // 2. Red Dividing Underline
+    .zanders-pdp-slider-divider {
+        width: 100%;
+        height: 2px;
+        background-color: $zanders-red;
+        margin-bottom: 24px;
+    }
+
+    // 3. Slider Container & Track
+    .zanders-slider-container {
+        width: 100%;
+        position: relative;
+    }
+
+    .zanders-slider-track {
+        display: flex;
+        gap: 20px;
+        overflow-x: auto;
+        scroll-behavior: smooth;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        padding-bottom: 8px;
+
+        &::-webkit-scrollbar {
+            display: none;
+        }
+
+        .zanders-slider-col {
+            flex: 0 0 calc(25% - 15px);
+            min-width: 270px;
+            box-sizing: border-box;
+
+            @media (max-width: 1279.98px) {
+                flex: 0 0 calc(33.333% - 14px);
+                min-width: 260px;
+            }
+
+            @media (max-width: 991.98px) {
+                flex: 0 0 calc(50% - 10px);
+                min-width: 240px;
+            }
+
+            @media (max-width: 575.98px) {
+                flex: 0 0 85%;
+                min-width: 240px;
+            }
+
+            &.d-none {
+                display: none !important;
+            }
+        }
+    }
+
+    // 4. Product Card
+    .zanders-product-card {
+        background-color: #ffffff;
+        border: 1px solid #E5E7EB;
+        border-radius: 0;
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        box-sizing: border-box;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+        &:hover {
+            border-color: #D1D5DB;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .card-img-wrap {
+            width: 100%;
+            height: 180px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 14px;
+            position: relative;
+
+            a {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 100%;
+                height: 100%;
+            }
+
+            .card-img {
+                max-height: 170px;
+                max-width: 100%;
+                object-fit: contain;
+                transition: transform 0.2s ease;
+
+                &:hover {
+                    transform: scale(1.03);
+                }
+            }
+
+            .card-vector-img {
+                max-height: 140px;
+                width: auto;
+                max-width: 90%;
+                filter: drop-shadow(0 6px 8px rgba(0, 0, 0, 0.12));
+                transition: transform 0.2s ease;
+
+                &:hover {
+                    transform: scale(1.04);
+                }
+            }
+        }
+
+        .card-title-wrap {
+            margin-bottom: 10px;
+            min-height: 38px;
+            text-align: center;
+
+            .card-title-link {
+                font-family: $font-family-base;
+                font-size: 13.5px;
+                line-height: 1.35;
+                font-weight: 700;
+                color: #111827;
+                text-transform: uppercase;
+                text-decoration: none;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+                transition: color 0.15s ease;
+
+                &:hover {
+                    color: $zanders-red;
+                }
+            }
+        }
+
+        .card-meta-wrap {
+            text-align: center;
+            font-size: 12px;
+            line-height: 1.45;
+            color: #6B7280;
+            margin-bottom: 12px;
+
+            .card-meta-row {
+                margin-bottom: 2px;
+
+                span {
+                    color: #111827;
+                    font-weight: 600;
+                }
+            }
+        }
+
+        .card-price-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-top: auto;
+            margin-bottom: 12px;
+            padding-top: 8px;
+
+            .card-price {
+                font-size: 15px;
+                font-weight: 700;
+                color: $zanders-red;
+            }
+
+            .card-msrp {
+                font-size: 12px;
+                font-weight: 600;
+                color: $zanders-red;
+                text-transform: uppercase;
+            }
+        }
+
+        .card-actions-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+
+            .zanders-card-btn-add {
+                height: 40px;
+                background-color: $zanders-red !important;
+                border: none !important;
+                color: #ffffff !important;
+                font-family: $font-family-base;
+                font-size: 12px;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                border-radius: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: background-color 0.15s ease;
+
+                &:hover,
+                &:focus {
+                    background-color: darken($zanders-red, 8%) !important;
+                }
+            }
+
+            .zanders-card-btn-compare {
+                width: 40px;
+                height: 40px;
+                background-color: #ffffff !important;
+                border: 1px solid #D1D5DB !important;
+                color: #6B7280 !important;
+                border-radius: 0;
+                padding: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
+                transition: all 0.15s ease;
+
+                &:hover,
+                &:focus {
+                    border-color: $zanders-red !important;
+                    color: $zanders-red !important;
+                    background-color: #FFF5F5 !important;
+                }
+            }
+        }
+    }
+
+    // 5. Scrollbar Indicator
+    .zanders-slider-scrollbar-wrap {
+        width: 100%;
+        height: 4px;
+        background-color: #E5E7EB;
+        border-radius: 2px;
+        margin-top: 18px;
+        position: relative;
+        overflow: hidden;
+
+        .zanders-slider-scrollbar-thumb {
+            width: 120px;
+            height: 100%;
+            background-color: #9CA3AF;
+            border-radius: 2px;
+            position: absolute;
+            left: 0;
+            top: 0;
+            transition: transform 0.1s ease-out;
+        }
+    }
+}
+
+// =============================================================================
+// Additional Information Section
+// =============================================================================
+.cms-block-product-description-reviews {
+    margin-top: 40px;
+    margin-bottom: 50px;
+    width: 100%;
+    padding-inline: 45px;
+
+    @media (max-width: 767.98px) {
+        padding-inline: 14px;
+    }
+
+    .card.card-tabs {
+        border: 0 !important;
+        background: transparent !important;
+
+        .card-body,
+        .product-detail-tabs-content {
+            padding: 0 !important;
+        }
+    }
+
+    // Header matching live Zanders
+    .zanders-pdp-tab-header,
+    .mx-auto.flex.items-center {
+        display: flex;
+        align-items: center;
+        border-bottom: 2px solid $zanders-red !important;
+        padding-top: 16px;
+        padding-bottom: 12px;
+        margin-bottom: 24px;
+    }
+
+    .zanders-pdp-tab-title,
+    h2.title-font,
+    .product-detail-description-title {
+        font-family: $font-family-base;
+        font-size: 28px !important;
+        line-height: 1.3;
+        font-weight: 600 !important;
+        color: $zanders-red !important;
+        text-transform: uppercase;
+        margin: 0 !important;
+        border: 0 !important;
+
+        @media (max-width: 767.98px) {
+            font-size: 20px !important;
+        }
+    }
+
+    // Attributes Table Wrapper
+    .table-wrapper {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: auto;
+    }
+
+    table.additional-attributes,
+    table.product-detail-properties-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 8px;
+        margin-bottom: 30px;
+
+        tr {
+            border-bottom: 1px solid #E5E7EB;
+            display: flex;
+            flex-direction: row;
+
+            @media (max-width: 767.98px) {
+                flex-direction: column;
+            }
+
+            &:last-child {
+                border-bottom: 0;
+            }
+        }
+
+        th.col.label,
+        th.product-attribute-label,
+        th.properties-label {
+            background-color: #F8F9FA !important;
+            color: #000000 !important;
+            font-size: 16px;
+            font-weight: 500;
+            text-transform: uppercase;
+            text-align: left;
+            padding: 14px 18px;
+            width: 320px;
+            max-width: 36%;
+            flex-shrink: 0;
+            box-sizing: border-box;
+            border: 0 !important;
+
+            @media (max-width: 1199.98px) {
+                font-size: 15px;
+                padding: 12px 14px;
+                width: 240px;
+                max-width: 40%;
+            }
+
+            @media (max-width: 767.98px) {
+                width: 100% !important;
+                max-width: 100% !important;
+                font-size: 14px;
+                padding: 10px 14px;
+                border-bottom: 0 !important;
+            }
+        }
+
+        td.col.data,
+        td.product-attribute-value,
+        td.properties-value {
+            background-color: #FFFFFF !important;
+            color: #000000 !important;
+            font-size: 16px;
+            font-weight: 400;
+            text-align: left;
+            padding: 14px 18px;
+            flex: 1;
+            box-sizing: border-box;
+            border: 0 !important;
+
+            @media (max-width: 1199.98px) {
+                font-size: 15px;
+                padding: 12px 14px;
+            }
+
+            @media (max-width: 767.98px) {
+                width: 100% !important;
+                max-width: 100% !important;
+                font-size: 14px;
+                padding: 6px 14px 12px 14px;
+            }
+
+            a {
+                color: $zanders-red;
+                text-decoration: none;
+                font-weight: 500;
+
+                &:hover {
+                    text-decoration: underline;
+                }
+            }
+        }
+    }
+}

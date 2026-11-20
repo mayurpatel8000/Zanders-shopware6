@@ -368,16 +368,42 @@ $roboto-font-stack: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Rob
                 }
             }
 
+            // Explicit Closed / Collapsed State
+            &[aria-expanded='false'],
+            &.collapsed {
+                color: #000000;
+                background-color: transparent;
+
+                .icon-filter-panel-item-toggle,
+                .icon {
+                    transform: none; // Points DOWN ▼
+
+                    .chevron-icon path,
+                    svg path {
+                        fill: #292D32;
+                    }
+                }
+
+                &:hover {
+                    color: $zanders-red;
+                    background-color: #ffffff;
+
+                    .icon-filter-panel-item-toggle .chevron-icon path,
+                    .icon svg path {
+                        fill: $zanders-red;
+                    }
+                }
+            }
+
             // Expanded / Open state: Caret points UP ▲ (180deg rotated)
             &[aria-expanded='true'],
-            &.show,
-            &:not(.collapsed)[data-bs-toggle="collapse"] {
+            &.show:not(.collapsed) {
                 color: $zanders-red;
                 background-color: #ffffff;
 
                 .icon-filter-panel-item-toggle,
                 .icon {
-                    transform: rotate(180deg);
+                    transform: rotate(180deg); // Points UP ▲
 
                     .chevron-icon path,
                     svg path {

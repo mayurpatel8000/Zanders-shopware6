@@ -17,5 +17,7 @@
 /auth.json
 /install.lock
 /public/asset-manifest.json
-/SCSS_IMPORTANT_USAGE_REFERENCE.md
+*.md
+**/*.md
+
 ###< shopware/core ###

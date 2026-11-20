@@ -1,0 +1,329 @@
+// =============================================================================
+// Zanders Account Address Book Page Styling
+// =============================================================================
+
+$zanders-red: #991020 !default;
+$zanders-red-hover: #7f0d1b !default;
+$zanders-charcoal: #2B3136 !default;
+$zanders-charcoal-hover: #1f2327 !default;
+
+// 1. Address Cards Container
+.address-manager-select-address {
+    background-color: #ffffff;
+    border: 1px solid #E5E7EB !important;
+    border-radius: 4px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+    &:hover {
+        border-color: $zanders-red !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    }
+}
+
+// 2. Default Address Badges / Status Labels
+.address-item-default-badge {
+    font-family: $font-family-base;
+    font-size: 12px !important;
+    line-height: 1.2;
+    font-weight: 700 !important;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 6px 14px !important;
+    border-radius: 4px !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid transparent;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+
+    // Default / Shipping: Zanders Brand Red
+    &,
+    &.address-badge-shipping,
+    &.address-badge-default,
+    &.text-bg-info {
+        background-color: $zanders-red !important;
+        border-color: $zanders-red !important;
+        color: #ffffff !important;
+    }
+
+    // Billing: Dark Slate / Charcoal for clear visual distinction
+    &.address-badge-billing {
+        background-color: $zanders-charcoal !important;
+        border-color: $zanders-charcoal !important;
+        color: #ffffff !important;
+    }
+}
+
+// 3. "+ Add new address" Button (Target specifically without affecting dropdown items)
+.address-manager-list-base .btn-outline-primary,
+.address-manager-list-base a.address-manager-modal-address-form,
+a.address-manager-modal-address-form.btn:not(.dropdown-item) {
+    background-color: transparent !important;
+    border: 1.5px solid $zanders-red !important;
+    color: $zanders-red !important;
+    font-family: $font-family-base;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 8px 20px !important;
+    border-radius: 4px !important;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    transition: all 0.2s ease-in-out;
+
+    .icon,
+    svg {
+        color: $zanders-red;
+        stroke: $zanders-red;
+        transition: all 0.2s ease-in-out;
+
+        path {
+            fill: $zanders-red;
+        }
+    }
+
+    &:hover,
+    &:focus,
+    &:active {
+        background-color: $zanders-red !important;
+        border-color: $zanders-red !important;
+        color: #ffffff !important;
+        box-shadow: 0 2px 8px rgba(153, 16, 32, 0.25);
+
+        .icon,
+        svg {
+            color: #ffffff !important;
+            stroke: #ffffff !important;
+
+            path {
+                fill: #ffffff !important;
+            }
+        }
+    }
+}
+
+// 4. 3-Dots Action Trigger & Dropdown Menu
+.address-manager-select-address .dropdown {
+    button.bg-transparent.border-0 {
+        width: 36px;
+        height: 36px;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        color: #4B5563;
+        border: none !important;
+        outline: none !important;
+        box-shadow: none !important;
+        transition: background-color 0.15s ease, color 0.15s ease;
+
+        &:hover,
+        &:focus,
+        &[aria-expanded="true"] {
+            background-color: #F3F4F6 !important;
+            color: $zanders-red !important;
+            border: none !important;
+            outline: none !important;
+            box-shadow: none !important;
+
+            svg {
+                color: $zanders-red;
+            }
+        }
+    }
+
+    .dropdown-menu {
+        border: 1px solid #E5E7EB;
+        border-radius: 4px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        padding: 6px 0;
+        min-width: 220px;
+
+        .dropdown-item {
+            font-size: 14px !important;
+            font-weight: 500 !important;
+            color: #374151 !important;
+            background-color: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            text-transform: none !important;
+            letter-spacing: normal !important;
+            padding: 8px 18px !important;
+            border-radius: 0 !important;
+            transition: background-color 0.15s ease, color 0.15s ease;
+
+            &:hover,
+            &:focus {
+                background-color: #F8F9FA !important;
+                color: $zanders-red !important;
+            }
+
+            &.text-danger {
+                color: $zanders-red !important;
+
+                &:hover,
+                &:focus {
+                    background-color: #FEE2E2 !important;
+                    color: $zanders-red-hover !important;
+                }
+            }
+        }
+    }
+}
+
+// 5. Search Addresses Input
+.address-manager-list-search {
+    height: 42px;
+    border: 1px solid #D5D5D5 !important;
+    border-radius: 4px !important;
+    padding-inline: 16px;
+    font-size: 14px;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+    &:focus {
+        border-color: $zanders-red !important;
+        box-shadow: 0 0 0 2px rgba(153, 16, 32, 0.15) !important;
+        outline: none;
+    }
+}
+
+// 6. Address Manager Modal & Address Forms
+.address-manager-modal,
+.account-address-form,
+.account-address {
+    .modal-content {
+        border-radius: 6px;
+        border: 1px solid #E5E7EB;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    // Modal Radio Tabs (Shipping vs Billing)
+    .address-manager-modal-tab-navigation-list {
+        border-radius: 4px;
+        overflow: hidden;
+        border: 1px solid #D5D5D5;
+
+        .btn.btn-outline-secondary {
+            border: none;
+            border-right: 1px solid #D5D5D5;
+            color: #374151;
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            padding: 10px 18px;
+            background-color: #ffffff;
+            transition: all 0.15s ease;
+
+            &:last-child {
+                border-right: none;
+            }
+
+            &:hover {
+                background-color: #F8F9FA;
+                color: $zanders-red;
+            }
+        }
+
+        .btn-check:checked + .btn.btn-outline-secondary {
+            background-color: $zanders-red !important;
+            border-color: $zanders-red !important;
+            color: #ffffff !important;
+            font-weight: 700;
+        }
+    }
+
+    // Radio Checkboxes inside modal
+    .form-check-input {
+        &:checked {
+            background-color: $zanders-red !important;
+            border-color: $zanders-red !important;
+        }
+
+        &:focus {
+            border-color: $zanders-red;
+            box-shadow: 0 0 0 2px rgba(153, 16, 32, 0.2);
+        }
+    }
+
+    // Submit / Primary Buttons ("Change address", "Save address", "Save and use")
+    .btn-primary,
+    #submit-button,
+    .address-form-submit,
+    .address-form-create-submit {
+        background-color: $zanders-red !important;
+        border: 1px solid $zanders-red !important;
+        color: #ffffff !important;
+        font-family: $font-family-base;
+        font-size: 13px !important;
+        font-weight: 700 !important;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 9px 22px !important;
+        border-radius: 4px !important;
+        transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+
+        &:hover,
+        &:focus {
+            background-color: $zanders-red-hover !important;
+            border-color: $zanders-red-hover !important;
+            color: #ffffff !important;
+            box-shadow: 0 2px 8px rgba(153, 16, 32, 0.25);
+        }
+    }
+
+    // Secondary / Cancel / Back Buttons ("Close", "Back")
+    .btn-secondary,
+    .btn-outline-secondary,
+    .btn-outline-dark,
+    .account-address-back,
+    .address-form-create-cancel {
+        background-color: transparent !important;
+        border: 1.5px solid $zanders-charcoal !important;
+        color: $zanders-charcoal !important;
+        font-family: $font-family-base;
+        font-size: 13px !important;
+        font-weight: 700 !important;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 8.5px 22px !important;
+        border-radius: 4px !important;
+        transition: all 0.2s ease;
+
+        .icon,
+        svg {
+            color: $zanders-charcoal;
+            stroke: $zanders-charcoal;
+            transition: all 0.2s ease;
+        }
+
+        &:hover,
+        &:focus {
+            background-color: $zanders-charcoal !important;
+            border-color: $zanders-charcoal !important;
+            color: #ffffff !important;
+
+            .icon,
+            svg {
+                color: #ffffff !important;
+                stroke: #ffffff !important;
+            }
+        }
+    }
+
+    // Form inputs focus
+    .form-control,
+    .form-select {
+        border-radius: 4px;
+
+        &:focus {
+            border-color: $zanders-red !important;
+            box-shadow: 0 0 0 2px rgba(153, 16, 32, 0.15) !important;
+            outline: none;
+        }
+    }
+}

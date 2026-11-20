@@ -19,6 +19,8 @@
 @import 'layout/footer';
 @import 'layout/age-verification';
 @import 'pages/home';
+@import 'pages/product-detail';
+@import 'pages/account-address';
 
 // Container width & padding inline
 .container {
@@ -273,7 +275,8 @@
 
     // Default open on Homepage
     body.is-ctl-index,
-    body.is-active-route-frontend-home-page {
+    body.is-active-route-frontend-home-page,
+    body.is-active-route-frontend-detail-page {
         .navbar-nav > li.dropdown.nav-item:first-of-type {
             > .dropdown-menu {
                 display: block !important;

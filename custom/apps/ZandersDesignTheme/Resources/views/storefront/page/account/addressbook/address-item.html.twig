@@ -1,0 +1,20 @@
+{% sw_extends '@Storefront/storefront/page/account/addressbook/address-item.html.twig' %}
+
+{% block address_item_badge_content %}
+    {% if defaultShipping or defaultBilling %}
+        {% block address_item_badge %}
+            <div class="mt-auto d-flex flex-wrap justify-content-end gap-2">
+                {% if defaultShipping %}
+                    <span class="address-item-default-badge address-badge-shipping">
+                        {{ 'account.addressesTitleDefaultShippingAddress'|trans|sw_sanitize }}
+                    </span>
+                {% endif %}
+                {% if defaultBilling %}
+                    <span class="address-item-default-badge address-badge-billing">
+                        {{ 'account.addressesTitleDefaultBillingAddress'|trans|sw_sanitize }}
+                    </span>
+                {% endif %}
+            </div>
+        {% endblock %}
+    {% endif %}
+{% endblock %}
